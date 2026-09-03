@@ -15,18 +15,9 @@
     var explore=document.querySelector('#explore .section-heading');
     var gallery=document.querySelector('#gallery .section-heading');
     var contribute=document.querySelector('#contribute .section-heading');
-    if(explore){
-      var p=explore.querySelector('p');
-      if(p)p.innerHTML='Follow the thread from one working table to the next. Each knot marks a person, a place, and a life at work.';
-    }
-    if(gallery){
-      var p2=gallery.querySelector('p');
-      if(p2)p2.innerHTML='A growing visual archive of the objects, surfaces, tools and small details that make each table theirs.';
-    }
-    if(contribute){
-      var p3=contribute.querySelector('p');
-      if(p3)p3.innerHTML='The thread is still being woven. Add your table and become part of the story.';
-    }
+    if(explore){var p=explore.querySelector('p');if(p)p.innerHTML='Follow the thread from one working table to the next. Each knot marks a person, a place, and a life at work.';}
+    if(gallery){var p2=gallery.querySelector('p');if(p2)p2.innerHTML='A growing visual archive of the objects, surfaces, tools and small details that make each table theirs.';}
+    if(contribute){var p3=contribute.querySelector('p');if(p3)p3.innerHTML='The thread is still being woven. Add your table and become part of the story.';}
   }
 
   function initStoriesThread(){
@@ -56,83 +47,57 @@
     cards.forEach(function(card,i){
       card.dataset.storyIndex=i;
       card.classList.add(i%2===0?'thread-left':'thread-right');
-      card.setAttribute('aria-label','Story '+String(i+1).padStart(2,'0')+': '+(card.querySelector('h3')?card.querySelector('h3').textContent.trim():''));
+      var number=String(i+1).padStart(2,'0');
+      var copy=card.querySelector('.table-card-copy');
+      if(copy)copy.setAttribute('data-story-number',number);
+      card.setAttribute('aria-label','Story '+number+': '+(card.querySelector('h3')?card.querySelector('h3').textContent.trim():''));
       var knot=document.createElement('button');
-      knot.type='button';
-      knot.className='story-knot-access';
-      knot.setAttribute('aria-label','Go to story '+(i+1));
-      knot.textContent=String(i+1).padStart(2,'0');
+      knot.type='button';knot.className='story-knot-access';knot.setAttribute('aria-label','Go to story '+(i+1));knot.textContent=number;
       knot.style.cssText='position:absolute;opacity:0;pointer-events:auto;width:50px;height:50px;border:0;background:transparent;cursor:pointer;z-index:6;';
       knot.addEventListener('click',function(){card.scrollIntoView({behavior:'smooth',block:'center'});});
-      stage.appendChild(knot);
-      knots.push(knot);
+      stage.appendChild(knot);knots.push(knot);
     });
 
     function layoutRope(){
       var w=stage.clientWidth,h=stage.scrollHeight||stage.clientHeight;
-      svg.setAttribute('viewBox','0 0 '+Math.max(w,1)+' '+Math.max(h,1));
-      svg.setAttribute('height',Math.max(h,1));
-      var center=w/2;
-      var points=cards.map(function(card){return {x:center,y:card.offsetTop+card.offsetHeight/2};});
+      svg.setAttribute('viewBox','0 0 '+Math.max(w,1)+' '+Math.max(h,1));svg.setAttribute('height',Math.max(h,1));
+      var center=w/2,points=cards.map(function(card){return{x:center,y:card.offsetTop+card.offsetHeight/2};});
       if(!points.length)return;
-
       var d='M '+center+' '+Math.max(10,points[0].y-180);
       points.forEach(function(p,i){
         var prev=i?points[i-1]:{x:center,y:p.y-180};
         var swayPattern=[-1,1,.65,-.85,.45,-.6,1,-.4];
-        var sway=swayPattern[i%swayPattern.length]*Math.min(120,w*.105);
-        var tension=50+(i%3)*18;
+        var sway=swayPattern[i%swayPattern.length]*Math.min(120,w*.105),tension=50+(i%3)*18;
         d+=' C '+(center+sway)+' '+(prev.y+tension)+' '+(center-sway*.72)+' '+(p.y-tension)+' '+p.x+' '+p.y;
-        knots[i].style.left=(center-25)+'px';
-        knots[i].style.top=(p.y-25)+'px';
+        knots[i].style.left=(center-25)+'px';knots[i].style.top=(p.y-25)+'px';
       });
       var last=points[points.length-1];
       d+=' C '+(center-105)+' '+(last.y+80)+' '+(center+95)+' '+(last.y+145)+' '+center+' '+(last.y+210);
-
-      svg.querySelector('.thread-rope-shadow').setAttribute('d',d);
-      svg.querySelector('.thread-rope-body').setAttribute('d',d);
-      svg.querySelector('.thread-rope-mid').setAttribute('d',d);
-      svg.querySelector('.thread-rope-light').setAttribute('d',d);
+      svg.querySelector('.thread-rope-shadow').setAttribute('d',d);svg.querySelector('.thread-rope-body').setAttribute('d',d);svg.querySelector('.thread-rope-mid').setAttribute('d',d);svg.querySelector('.thread-rope-light').setAttribute('d',d);
 
       Array.prototype.slice.call(svg.querySelectorAll('.thread-rope-knot-group')).forEach(function(el){el.remove();});
       points.forEach(function(p,i){
-        var g=document.createElementNS('http://www.w3.org/2000/svg','g');
-        g.setAttribute('class','thread-rope-knot-group');
-        g.dataset.index=i;
-        var loop=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
-        loop.setAttribute('cx',p.x);loop.setAttribute('cy',p.y);loop.setAttribute('rx','23');loop.setAttribute('ry','15');
-        loop.setAttribute('transform','rotate('+(i%2?22:-18)+' '+p.x+' '+p.y+')');
-        loop.setAttribute('class','thread-rope-knot-loop');
-        var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
-        c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r','14');c.setAttribute('class','thread-rope-knot');c.dataset.index=i;
-        var core=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
-        core.setAttribute('cx',p.x-2);core.setAttribute('cy',p.y-3);core.setAttribute('rx','7');core.setAttribute('ry','4');
-        core.setAttribute('transform','rotate(-18 '+p.x+' '+p.y+')');core.setAttribute('class','thread-rope-knot-core');
+        var g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','thread-rope-knot-group');g.dataset.index=i;
+        var loop=document.createElementNS('http://www.w3.org/2000/svg','ellipse');loop.setAttribute('cx',p.x);loop.setAttribute('cy',p.y);loop.setAttribute('rx','23');loop.setAttribute('ry','15');loop.setAttribute('transform','rotate('+(i%2?22:-18)+' '+p.x+' '+p.y+')');loop.setAttribute('class','thread-rope-knot-loop');
+        var c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r','14');c.setAttribute('class','thread-rope-knot');c.dataset.index=i;
+        var core=document.createElementNS('http://www.w3.org/2000/svg','ellipse');core.setAttribute('cx',p.x-2);core.setAttribute('cy',p.y-3);core.setAttribute('rx','7');core.setAttribute('ry','4');core.setAttribute('transform','rotate(-18 '+p.x+' '+p.y+')');core.setAttribute('class','thread-rope-knot-core');
         g.appendChild(loop);g.appendChild(c);g.appendChild(core);svg.appendChild(g);
       });
     }
 
     function updatePerspective(){
       if(window.innerWidth<=800)return;
-      var rect=stage.getBoundingClientRect();
-      var viewport=window.innerHeight;
+      var rect=stage.getBoundingClientRect(),viewport=window.innerHeight;
       var progress=Math.max(0,Math.min(1,(viewport-rect.top)/(viewport+Math.max(1,rect.height))));
-      var scale=(1.035-(progress*.045)).toFixed(3);
-      var tilt=(2.5+(progress*4.5)).toFixed(2)+'deg';
-      stage.style.setProperty('--thread-scale',scale);
-      stage.style.setProperty('--thread-tilt',tilt);
+      stage.style.setProperty('--thread-scale',(1.035-(progress*.045)).toFixed(3));
+      stage.style.setProperty('--thread-tilt',(2.5+(progress*4.5)).toFixed(2)+'deg');
       var center=viewport*.5;
       cards.forEach(function(card,i){
-        var r=card.getBoundingClientRect();
-        var distance=(r.top+r.height/2-center)/Math.max(viewport*.8,1);
-        var z=Math.max(-46,Math.min(22,-distance*34));
-        var y=Math.max(-10,Math.min(14,distance*8));
-        var rx=Math.max(-1.5,Math.min(1.5,-distance*1.8));
-        var ry=(i%2?1:-1)*Math.max(-1.2,Math.min(1.2,distance*1.4));
-        card.style.setProperty('--depth-z',z.toFixed(1)+'px');
-        card.style.setProperty('--depth-y',y.toFixed(1)+'px');
-        card.style.setProperty('--depth-rx',rx.toFixed(2)+'deg');
-        card.style.setProperty('--depth-ry',ry.toFixed(2)+'deg');
+        var r=card.getBoundingClientRect(),distance=(r.top+r.height/2-center)/Math.max(viewport*.8,1);
+        card.style.setProperty('--depth-z',Math.max(-46,Math.min(22,-distance*34)).toFixed(1)+'px');
+        card.style.setProperty('--depth-y',Math.max(-10,Math.min(14,distance*8)).toFixed(1)+'px');
+        card.style.setProperty('--depth-rx',Math.max(-1.5,Math.min(1.5,-distance*1.8)).toFixed(2)+'deg');
+        card.style.setProperty('--depth-ry',((i%2?1:-1)*Math.max(-1.2,Math.min(1.2,distance*1.4))).toFixed(2)+'deg');
       });
     }
 
@@ -141,16 +106,13 @@
     window.addEventListener('resize',function(){layoutRope();updatePerspective();});
     window.addEventListener('scroll',updatePerspective,{passive:true});
 
-    var observer=new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){if(entry.isIntersecting)select(Number(entry.target.dataset.storyIndex)||0);});
-    },{root:null,rootMargin:'-40% 0px -40% 0px',threshold:0});
+    var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)select(Number(entry.target.dataset.storyIndex)||0);});},{root:null,rootMargin:'-40% 0px -40% 0px',threshold:0});
     function select(index){
       if(index<0||index>=cards.length)return;
       cards.forEach(function(card,j){card.classList.toggle('is-lit',j===index);});
       Array.prototype.slice.call(svg.querySelectorAll('.thread-rope-knot-group')).forEach(function(g){g.classList.toggle('is-active',Number(g.dataset.index)===index);});
     }
-    cards.forEach(function(card){observer.observe(card);});
-    select(0);
+    cards.forEach(function(card){observer.observe(card);});select(0);
 
     window.addEventListener('keydown',function(e){
       if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
