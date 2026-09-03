@@ -27,6 +27,8 @@ jobs:
           h=re.sub(r'<script id="table-experience-redesign-script">.*?</script>\s*','',h,flags=re.S)
           h=re.sub(r'<link rel="stylesheet" href="assets/table-redesign.css">\s*','',h)
           h=re.sub(r'<script src="assets/table-redesign.js"></script>\s*','',h)
+          # Keep the core headline canonical in HTML, not only via runtime JS.
+          h=re.sub(r'<h1>Every table tells a <em>[^<]*</em></h1>', '<h1>Every table tells a <em>tale.</em></h1>', h, count=1)
           h=h.replace('</head>','<link rel="stylesheet" href="assets/table-redesign.css">\n</head>',1)
           h=h.replace('</body>','<script src="assets/table-redesign.js"></script>\n</body>',1)
           p.write_text(h,encoding='utf-8')
@@ -36,5 +38,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html .github/workflows/apply-stories.yml assets/table-redesign.css assets/table-redesign.js
-          git diff --cached --quiet || git commit -m "Finalize table hero and visible stories"
+          git diff --cached --quiet || git commit -m "Finalize responsive 3D story thread"
           git push
