@@ -1,60 +1,94 @@
 (function(){
   function init(){
-    if(document.querySelector('.table-hero')) return;
-    const map=document.querySelector('#map.map-section');
-    if(!map) return;
-
-    const hero=document.createElement('section');
-    hero.className='table-hero'; hero.id='home';
-    hero.innerHTML=`
-      <div class="hero-kicker">A living archive / India</div>
-      <h1 class="hero-title">The Great<br><em>Indian</em> Table</h1>
-      <p class="hero-subtitle">Everyday India, seen through the tables, desks and workspaces where people make a living.</p>
-      <div class="hero-table-scene" aria-hidden="true">
-        <div class="wood-table"><div class="wood-top"></div><div class="wood-leg one"></div><div class="wood-leg two"></div></div>
-        <div class="table-object object-cup"></div><div class="table-object object-notebook"></div><div class="table-object object-pen"></div>
-      </div>
-      <div class="hero-side-note left">Tables / Desks / Workspaces</div>
-      <div class="hero-side-note right">Scroll to travel across India ↓</div>
-      <div class="hero-scroll-word">INDIA</div>`;
-    map.parentNode.insertBefore(hero,map);
-
-    document.querySelectorAll('a[href="#map"]').forEach(a=>{if((a.textContent||'').trim().toLowerCase()==='home')a.href='#home'});
-
-    const scene=hero.querySelector('.hero-table-scene');
-    let raf=false;
-    function parallax(){
-      raf=false; const r=hero.getBoundingClientRect(); const p=Math.max(0,Math.min(1,-r.top/Math.max(1,innerHeight*.9))); hero.style.setProperty('--hero-p',p.toFixed(3));
-    }
-    addEventListener('scroll',()=>{if(!raf){raf=true;requestAnimationFrame(parallax)}},{passive:true});
-    addEventListener('pointermove',e=>{if(!scene)return;const x=(e.clientX/innerWidth-.5)*2,y=(e.clientY/innerHeight-.5)*2;scene.style.transform=`translate(-50%,-50%) translate3d(0,calc(var(--hero-p,0)*-9vh),0) rotateX(${y*2.2}deg) rotateY(${x*3.5}deg)`},{passive:true});
-    parallax();
-
-    initStories();
+    // The table landing experiment is intentionally removed. The original map remains the home/landing view.
+    document.querySelectorAll('.table-hero').forEach(function(el){ el.remove(); });
+    initStoriesThread();
   }
 
-  function initStories(){
-    const stage=document.querySelector('.stories-stage'); const grid=document.getElementById('stories-grid');
-    if(!stage||!grid) return;
-    const cards=Array.from(grid.querySelectorAll('.table-card'));
+  function initStoriesThread(){
+    var stage=document.querySelector('.stories-stage');
+    var grid=document.getElementById('stories-grid');
+    if(!stage || !grid) return;
+
+    var cards=Array.prototype.slice.call(grid.querySelectorAll('.table-card'));
     if(!cards.length) return;
-    const old=document.querySelector('.story-counter'); if(old) old.remove();
-    stage.classList.remove('immersive'); stage.classList.add('has-navigation');
-    cards.forEach(c=>{c.style.cssText='';c.classList.remove('is-selected')});
+    if(stage.dataset.threadReady==='1') return;
+    stage.dataset.threadReady='1';
 
-    const nav=document.createElement('aside'); nav.className='story-navigation'; nav.setAttribute('aria-label','Choose a story');
-    cards.forEach((card,i)=>{
-      const name=(card.querySelector('h3')?.textContent||card.querySelector('.table-card-copy strong')?.textContent||`Story ${i+1}`).trim();
-      const city=(card.querySelector('p')?.textContent||'').split('·')[0].trim();
-      const b=document.createElement('button'); b.type='button'; b.className='story-nav-item'; b.innerHTML=`<span class="num">${String(i+1).padStart(2,'0')}</span><span class="label">${escapeHtml(name)}<span class="city">${escapeHtml(city)}</span></span>`;
-      b.addEventListener('click',()=>{card.scrollIntoView({behavior:'smooth',block:'center'}); select(i,true)}); nav.appendChild(b);
+    stage.classList.remove('immersive','vertical-stories','has-navigation');
+    stage.classList.add('thread-stories');
+
+    var old=stage.querySelector('.story-navigation');
+    if(old) old.remove();
+    var oldCounter=stage.querySelector('.story-counter');
+    if(oldCounter) oldCounter.remove();
+
+    var thread=document.createElement('div');
+    thread.className='story-thread';
+    thread.setAttribute('aria-hidden','true');
+    thread.innerHTML='<div class="story-thread-line"><span class="story-thread-progress"></span></div>';
+
+    var knots=document.createElement('div');
+    knots.className='story-knots';
+
+    cards.forEach(function(card,i){
+      var name=(card.querySelector('h3') ? card.querySelector('h3').textContent : 'Story '+(i+1)).trim();
+      var city=(card.querySelector('p') ? card.querySelector('p').textContent : '').trim();
+      var knot=document.createElement('button');
+      knot.type='button';
+      knot.className='story-knot';
+      knot.setAttribute('aria-label','Go to story '+(i+1)+': '+name);
+      knot.innerHTML='<span class="knot-number">'+String(i+1).padStart(2,'0')+'</span>';
+      knot.addEventListener('click',function(){
+        card.scrollIntoView({behavior:'smooth',block:'center'});
+      });
+      knots.appendChild(knot);
+      card.dataset.storyIndex=i;
+      card.dataset.storyName=name;
+      card.dataset.storyCity=city;
+      card.classList.add(i%2===0?'thread-left':'thread-right');
     });
-    stage.insertBefore(nav,grid);
-    const buttons=Array.from(nav.querySelectorAll('.story-nav-item'));
-    function select(i,focus){buttons.forEach((b,j)=>b.classList.toggle('is-active',i===j));cards.forEach((c,j)=>c.classList.toggle('is-selected',i===j));if(focus)buttons[i]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})}
-    const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)select(cards.indexOf(e.target),false)}),{rootMargin:'-42% 0px -42% 0px',threshold:0}); cards.forEach(c=>io.observe(c)); select(0,false);
-    addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select'))return;const active=buttons.findIndex(b=>b.classList.contains('is-active'));if(e.key==='ArrowDown'||e.key==='j'){e.preventDefault();cards[Math.min(cards.length-1,active+1)].scrollIntoView({behavior:'smooth',block:'center'})}if(e.key==='ArrowUp'||e.key==='k'){e.preventDefault();cards[Math.max(0,active-1)].scrollIntoView({behavior:'smooth',block:'center'})}});
+
+    thread.appendChild(knots);
+    stage.insertBefore(thread,grid);
+
+    var buttons=Array.prototype.slice.call(knots.querySelectorAll('.story-knot'));
+    var progress=thread.querySelector('.story-thread-progress');
+
+    function select(index){
+      if(index<0 || index>=cards.length) return;
+      cards.forEach(function(card,j){ card.classList.toggle('is-lit',j===index); });
+      buttons.forEach(function(button,j){
+        button.classList.toggle('is-active',j===index);
+      });
+      if(progress){
+        var ratio=cards.length===1 ? 1 : index/(cards.length-1);
+        progress.style.height=(ratio*100)+'%';
+      }
+      stage.style.setProperty('--active-story',index);
+    }
+
+    var observer=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ select(Number(entry.target.dataset.storyIndex)||0); }
+      });
+    },{root:null,rootMargin:'-42% 0px -42% 0px',threshold:0});
+    cards.forEach(function(card){ observer.observe(card); });
+    select(0);
+
+    // Keep the story sequence easy to travel with the keyboard too.
+    window.addEventListener('keydown',function(e){
+      if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+      var active=buttons.findIndex(function(b){return b.classList.contains('is-active');});
+      if(e.key==='ArrowDown' || e.key==='j'){
+        e.preventDefault();
+        cards[Math.min(cards.length-1,active+1)].scrollIntoView({behavior:'smooth',block:'center'});
+      }else if(e.key==='ArrowUp' || e.key==='k'){
+        e.preventDefault();
+        cards[Math.max(0,active-1)].scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    },{passive:false});
   }
-  function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
