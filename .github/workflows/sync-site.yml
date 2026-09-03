@@ -1,0 +1,40 @@
+name: Sync exact site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror the verified site
+        run: |
+          set -e
+          rm -rf site-mirror
+          mkdir site-mirror
+          wget --recursive --level=2 --no-parent --page-requisites --convert-links --adjust-extension --no-host-directories --directory-prefix=site-mirror https://great-indian-table.netlify.app/
+          cp -a site-mirror/great-indian-table.netlify.app/. ./
+          rm -rf site-mirror
+          rm -f .github/workflows/sync-site.yml
+
+      - name: Commit mirrored project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Sync exact Great Indian Table site"
+            git push
+          fi
