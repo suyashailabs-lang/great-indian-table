@@ -4,12 +4,10 @@
     fixCopy();
     initStoriesThread();
   }
-
   function fixCopy(){
     var hero=document.querySelector('#map h1');
     if(hero)hero.innerHTML='Every table tells a <em>tale.</em>';
   }
-
   function initStoriesThread(){
     var stage=document.querySelector('.stories-stage');
     var grid=document.getElementById('stories-grid');
@@ -28,7 +26,7 @@
       '<filter id="rope-texture" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="2" seed="8" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1.7"/><feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-opacity=".25"/></filter>'+
       '<filter id="rope-shadow" x="-20%" y="-20%" width="140%" height="150%"><feGaussianBlur stdDeviation="3"/><feOffset dy="5"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
       '<filter id="rope-knot-shadow" x="-100%" y="-100%" width="300%" height="300%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity=".3"/></filter>'+
-      '<filter id="rope-knot-active" x="-100%" y="-100%" width="300%" height="300%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#b95537" flood-opacity=".35"/></filter>'+
+      '<filter id="rope-knot-active" x="-100%" y="-100%" width="300%" height="300%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#d7a64c" flood-opacity=".4"/></filter>'+
       '</defs><path class="thread-rope-shadow"></path><path class="thread-rope-body"></path><path class="thread-rope-mid"></path><path class="thread-rope-light"></path>';
     stage.insertBefore(svg,grid);
 
@@ -53,20 +51,19 @@
       svg.setAttribute('height',Math.max(h,1));
       var points=cards.map(function(card){return {x:w/2,y:card.offsetTop+card.offsetHeight/2};});
       if(!points.length)return;
-      var d='M '+(w/2)+' '+Math.max(18,points[0].y-170);
+      var d='M '+(w/2)+' '+Math.max(18,points[0].y-190);
       points.forEach(function(p,i){
-        var prev=i?points[i-1]:{x:w/2,y:p.y-170};
-        var bend=(i%2===0?1:-1)*Math.min(92,w*.09);
-        d+=' C '+(w/2+bend)+' '+(prev.y+70)+' '+(w/2-bend)+' '+(p.y-70)+' '+p.x+' '+p.y;
+        var prev=i?points[i-1]:{x:w/2,y:p.y-190};
+        var bend=(i%2===0?1:-1)*Math.min(110,w*.11);
+        d+=' C '+(w/2+bend)+' '+(prev.y+78)+' '+(w/2-bend)+' '+(p.y-78)+' '+p.x+' '+p.y;
         knots[i].style.left=(w/2-22)+'px';
         knots[i].style.top=(p.y-22)+'px';
       });
-      d+=' C '+(w/2-70)+' '+(points[points.length-1].y+95)+' '+(w/2+75)+' '+(points[points.length-1].y+145)+' '+(w/2)+' '+(points[points.length-1].y+190);
+      d+=' C '+(w/2-85)+' '+(points[points.length-1].y+110)+' '+(w/2+90)+' '+(points[points.length-1].y+160)+' '+(w/2)+' '+(points[points.length-1].y+220);
       svg.querySelector('.thread-rope-shadow').setAttribute('d',d);
       svg.querySelector('.thread-rope-body').setAttribute('d',d);
       svg.querySelector('.thread-rope-mid').setAttribute('d',d);
       svg.querySelector('.thread-rope-light').setAttribute('d',d);
-
       Array.prototype.slice.call(svg.querySelectorAll('.thread-rope-knot,.thread-rope-knot-core')).forEach(function(el){el.remove();});
       points.forEach(function(p,i){
         var g=document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -85,21 +82,27 @@
       cards.forEach(function(card){
         var r=card.getBoundingClientRect();
         var cardCenter=r.top+r.height*.5;
-        var distance=(cardCenter-center)/Math.max(window.innerHeight*.72,1);
-        var proximity=Math.max(-1,Math.min(1,1-Math.abs(distance)));
-        var z=Math.max(-260,Math.min(150,proximity*150-distance*85));
-        var y=Math.max(-18,Math.min(18,distance*13));
-        var rotY=Math.max(-2.2,Math.min(2.2,distance*2.4));
-        var rotX=Math.max(-1.5,Math.min(1.5,-distance*1.5));
-        var depthScale=1+(z/1100);
+        var distance=(cardCenter-center)/Math.max(window.innerHeight*.62,1);
+        var proximity=Math.max(0,1-Math.abs(distance));
+        /* Depth is the primary motion: distant stories sit behind the camera plane,
+           while the story crossing the focal line comes decisively forward. */
+        var z=Math.max(-380,Math.min(260,(proximity*300)-(Math.abs(distance)*115)));
+        var y=Math.max(-24,Math.min(24,distance*15));
+        var rotY=Math.max(-3.5,Math.min(3.5,distance*3.4));
+        var rotX=Math.max(-2,Math.min(2,-distance*1.8));
+        var depthScale=Math.max(.76,Math.min(1.16,1+(z/1450)));
+        var blur=Math.max(0,Math.min(1.6,(Math.abs(distance)-.35)*1.8));
         card.style.setProperty('--depth-z',z.toFixed(1)+'px');
         card.style.setProperty('--depth-y',y.toFixed(1)+'px');
         card.style.setProperty('--depth-scale',depthScale.toFixed(4));
         card.style.setProperty('--depth-ry',rotY.toFixed(2)+'deg');
         card.style.setProperty('--depth-rx',rotX.toFixed(2)+'deg');
+        card.style.setProperty('--depth-blur',blur.toFixed(2)+'px');
         if(card.classList.contains('is-lit'))focalDepth=z;
       });
+      /* The rope follows the same camera depth as the focal story instead of scaling the page. */
       stage.style.setProperty('--camera-depth',focalDepth.toFixed(1)+'px');
+      stage.style.setProperty('--rope-depth',(focalDepth*.62).toFixed(1)+'px');
     }
 
     requestAnimationFrame(function(){layoutRope();updateDepth();});
