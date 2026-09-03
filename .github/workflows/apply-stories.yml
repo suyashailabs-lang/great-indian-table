@@ -13,15 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install redesign
+      - name: Install final redesign
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
           p=Path('index.html')
           h=p.read_text(encoding='utf-8')
+          # Remove every previous injected redesign block.
           h=re.sub(r'<style id="stories-immersive-style">.*?</style>\s*','',h,flags=re.S)
           h=re.sub(r'<script id="stories-immersive-script">.*?</script>\s*','',h,flags=re.S)
+          h=re.sub(r'<style id="table-experience-redesign">.*?</style>\s*','',h,flags=re.S)
+          h=re.sub(r'<script id="table-experience-redesign-script">.*?</script>\s*','',h,flags=re.S)
           h=re.sub(r'<link rel="stylesheet" href="assets/table-redesign.css">\s*','',h)
           h=re.sub(r'<script src="assets/table-redesign.js"></script>\s*','',h)
           h=h.replace('</head>','<link rel="stylesheet" href="assets/table-redesign.css">\n</head>',1)
@@ -33,5 +36,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html .github/workflows/apply-stories.yml assets/table-redesign.css assets/table-redesign.js
-          git diff --cached --quiet || git commit -m "Redesign landing hero map and story navigation"
+          git diff --cached --quiet || git commit -m "Finalize table hero and visible stories"
           git push
