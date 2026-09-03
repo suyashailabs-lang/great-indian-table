@@ -1,0 +1,1969 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Story — The Great Indian Table</title>
+<meta name="description" content="Meet the person behind the table.">
+<style>/* =========================================================
+   THE GREAT INDIAN TABLE — design system
+   Palette + type pulled from the workspace-collage artwork:
+   terracotta clay from the potter's wheel, mustard fabric
+   from the tailor's shop, deep teal from the fishing ropes
+   and backwaters, and a cyan neon glow lifted from the
+   "NEXA TECH" sign — the traditional-craft/new-India mix
+   the whole site now runs on. Cards are styled as postcards:
+   the site's core visual joke is "every desk, mailed to you".
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Yeseva+One&family=Kalam:wght@400;700&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap');
+
+:root{
+  --paper:        #F5EDE0;   /* postcard paper cream       */
+  --paper-shade:  #EBDFC7;   /* slightly deeper cream      */
+  --ink:          #221A14;   /* charcoal ink                */
+  --ink-soft:     #4C4038;
+  --red:          #B34B26;   /* terracotta clay             */
+  --red-dark:     #7C3116;   /* fired-clay shadow           */
+  --marigold:     #DE9F35;   /* mustard / turmeric fabric   */
+  --leaf:         #1E5754;   /* backwater teal (nets/boats) */
+  --leaf-dark:    #123634;
+  --neon:         #2FD8E5;   /* NEXA TECH neon cyan         */
+  --neon-ink:     #0C3C41;
+  --paper-rgb:    245,237,224;
+  --ink-rgb:      34,26,20;
+
+  --font-display: 'Yeseva One', Georgia, serif;
+  --font-script:  'Kalam', cursive;
+  --font-body:    'Work Sans', -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --radius: 4px;
+  --awning-h: 20px;
+  --container: 1180px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; }
+ul{ margin:0; padding:0; list-style:none; }
+h1,h2,h3,h4{ margin:0; font-family:var(--font-display); font-weight:400; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+}
+
+::selection{ background:var(--marigold); color:var(--ink); }
+
+:focus-visible{
+  outline:3px solid var(--marigold);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+/* -----------------------------------------------------------
+   Page transitions — a quick cross-fade between pages so
+   Explore / Gallery / Story feel like one continuous site
+   instead of hard reloads. See app.js:initPageTransitions().
+----------------------------------------------------------- */
+body{
+  opacity:0;
+  transition:opacity .32s ease;
+}
+body.is-ready{ opacity:1; }
+body.is-leaving{ opacity:0; pointer-events:none; }
+
+.wrap{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 20px;
+}
+@media (min-width:768px){ .wrap{ padding:0 40px; } }
+
+/* -----------------------------------------------------------
+   Awning scallop — the signature device. A striped triangular
+   fringe, like the red-and-cream shop awning in the artwork.
+   Used on cards, section tops and the story hero.
+----------------------------------------------------------- */
+.awning{
+  --stripe: 34px;
+  height:var(--awning-h);
+  background-image:
+    linear-gradient(135deg, var(--red) 25%, transparent 25.5%),
+    linear-gradient(-135deg, var(--red) 25%, transparent 25.5%);
+  background-size: var(--stripe) calc(var(--awning-h) * 2);
+  background-position: 0 0, 0 0;
+  background-color: var(--paper-shade);
+  background-repeat: repeat-x;
+}
+.awning--dark{ background-color:var(--ink); }
+.awning--rev{
+  background-image:
+    linear-gradient(45deg, var(--red) 25%, transparent 25.5%),
+    linear-gradient(-45deg, var(--red) 25%, transparent 25.5%);
+  background-position: 0 100%, 0 100%;
+}
+
+/* -----------------------------------------------------------
+   Top nav — painted board on a rope
+----------------------------------------------------------- */
+.site-header{
+  position:sticky; top:0; z-index:50;
+  background:var(--ink);
+  color:var(--paper);
+  border-bottom:3px solid var(--red);
+}
+.site-header .wrap{
+  display:flex; align-items:center; justify-content:space-between;
+  height:64px;
+}
+.brand{
+  font-family:var(--font-display);
+  font-size:1.05rem;
+  letter-spacing:.02em;
+  display:flex; align-items:baseline; gap:8px;
+}
+.brand .brand-mark{
+  color:var(--marigold);
+  font-family:var(--font-script);
+  font-size:1.3rem;
+}
+.brand small{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:.6rem;
+  letter-spacing:.14em;
+  color:var(--paper);
+  opacity:.55;
+  text-transform:uppercase;
+  margin-top:2px;
+}
+nav.main-nav{ display:none; gap:2px; }
+@media (min-width:760px){ nav.main-nav{ display:flex; } }
+nav.main-nav a{
+  padding:10px 16px;
+  font-size:.82rem;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  font-weight:600;
+  color:var(--paper);
+  opacity:.75;
+  border-bottom:2px solid transparent;
+  transition:opacity .15s ease, border-color .15s ease;
+}
+nav.main-nav a:hover, nav.main-nav a.is-active{ opacity:1; border-color:var(--marigold); }
+
+.nav-toggle{
+  background:none; border:2px solid var(--paper); color:var(--paper);
+  width:40px; height:36px; border-radius:3px;
+  display:flex; align-items:center; justify-content:center;
+}
+@media (min-width:760px){ .nav-toggle{ display:none; } }
+.nav-toggle span{ display:block; width:18px; height:2px; background:var(--paper); position:relative; }
+.nav-toggle span::before,.nav-toggle span::after{
+  content:''; position:absolute; left:0; width:18px; height:2px; background:var(--paper);
+}
+.nav-toggle span::before{ top:-6px; } .nav-toggle span::after{ top:6px; }
+
+.mobile-nav{
+  display:none;
+  flex-direction:column;
+  background:var(--ink);
+  border-top:1px solid rgba(244,235,216,.15);
+}
+.mobile-nav.is-open{ display:flex; }
+.mobile-nav a{
+  padding:16px 20px;
+  color:var(--paper);
+  font-size:.95rem;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  font-weight:600;
+  border-bottom:1px solid rgba(244,235,216,.1);
+}
+
+/* -----------------------------------------------------------
+   Buttons / badges / pills
+----------------------------------------------------------- */
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 26px;
+  font-size:.85rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+  border-radius:3px;
+  border:2px solid var(--ink);
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+}
+.btn--solid{ background:var(--red); border-color:var(--red); color:var(--paper); }
+.btn--solid:hover{ background:var(--red-dark); border-color:var(--red-dark); transform:translateY(-2px); box-shadow:0 6px 0 rgba(0,0,0,.15); }
+.btn--ghost{ background:transparent; color:var(--ink); }
+.btn--ghost:hover{ background:var(--ink); color:var(--paper); transform:translateY(-2px); }
+.btn--light{ border-color:var(--paper); color:var(--paper); }
+.btn--light:hover{ background:var(--paper); color:var(--ink); transform:translateY(-2px); }
+
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:.72rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--red);
+  display:inline-flex; align-items:center; gap:10px;
+}
+.eyebrow::before{ content:''; width:22px; height:2px; background:var(--red); display:inline-block; }
+
+.tag-badge{
+  display:inline-block;
+  background:var(--marigold);
+  color:var(--ink);
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-weight:700;
+  padding:5px 10px;
+  border-radius:2px;
+}
+
+/* -----------------------------------------------------------
+   HOME — hero
+----------------------------------------------------------- */
+.hero{
+  position:relative;
+  overflow:hidden;
+  color:var(--paper);
+  isolation:isolate;
+}
+.hero-bg{
+  position:absolute; inset:0;
+  background-image:url('img/background.jpg');
+  background-size:cover;
+  background-position:center 22%;
+  opacity:.32;
+  filter:saturate(1.05);
+  z-index:-2;
+}
+.hero-bg::after{ content:''; }
+.hero-scrim{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(180deg, rgba(var(--ink-rgb),.62) 0%, rgba(var(--ink-rgb),.88) 58%, var(--ink) 100%);
+  z-index:-1;
+}
+.hero-inner{
+  padding:64px 0 56px;
+  display:flex; flex-direction:column; gap:22px;
+  min-height:min(86vh,740px);
+  justify-content:center;
+}
+@media (min-width:760px){ .hero-inner{ padding:110px 0 84px; } }
+
+.hero-credential{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:var(--paper);
+  color:var(--ink);
+  padding:8px 16px 8px 8px;
+  border-radius:3px;
+  border:1.5px dashed rgba(34,26,20,.35);
+  transform:rotate(-2deg);
+  box-shadow:0 6px 14px rgba(0,0,0,.28);
+  flex-shrink:0;
+}
+.hero-credential-logo{
+  width:34px; height:34px;
+  object-fit:cover;
+  border-radius:50%;
+  border:2px solid var(--paper);
+  box-shadow:0 0 0 1.5px var(--ink);
+  flex-shrink:0;
+}
+.hero-credential-text{
+  font-family:var(--font-mono);
+  font-size:.66rem;
+  line-height:1.35;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  max-width:19ch;
+}
+.hero-credential-text strong{
+  display:block;
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:.72rem;
+  text-transform:none;
+  letter-spacing:0;
+  color:var(--red-dark);
+}
+
+/* -----------------------------------------------------------
+   Hero top row — the credential stamp on the left, three tiny
+   postcard buttons on the right. Each mini postcard carries the
+   same airmail stripe + folded-corner detail as the full-size
+   postcards elsewhere on the site, just shrunk to button scale.
+----------------------------------------------------------- */
+.hero-top-row{
+  display:flex; flex-wrap:wrap;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px 14px;
+}
+
+.mini-postcards{
+  display:flex; gap:12px; flex-wrap:wrap;
+}
+
+.mini-postcard{
+  position:relative;
+  width:84px;
+  background:var(--paper);
+  color:var(--ink);
+  border-radius:5px;
+  padding:9px 6px 8px;
+  display:flex; flex-direction:column; align-items:center;
+  text-align:center;
+  gap:5px;
+  box-shadow:0 8px 16px -8px rgba(0,0,0,.5);
+  transform:rotate(var(--mtilt,-3deg));
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.mini-postcards a:nth-child(1){ --mtilt:-4deg; }
+.mini-postcards a:nth-child(2){ --mtilt:2.5deg; }
+.mini-postcards a:nth-child(3){ --mtilt:-1.5deg; }
+.mini-postcard:hover{
+  transform:rotate(0deg) translateY(-4px);
+  box-shadow:0 16px 22px -10px rgba(0,0,0,.55);
+  z-index:2;
+}
+
+.mini-postcard-stripe{
+  position:absolute; top:0; left:0; right:0; height:4px;
+  border-radius:5px 5px 0 0;
+  background:repeating-linear-gradient(
+    -45deg,
+    var(--red) 0 4px,
+    var(--paper) 4px 6px,
+    var(--neon-ink) 6px 10px,
+    var(--paper) 10px 12px
+  );
+}
+/* folded-corner detail, like a postcard with a peeling corner */
+.mini-postcard::after{
+  content:'';
+  position:absolute; top:0; right:0;
+  width:0; height:0;
+  border-style:solid;
+  border-width:0 11px 11px 0;
+  border-color:transparent var(--paper-shade) transparent transparent;
+  filter:drop-shadow(-1px 1px 1px rgba(0,0,0,.18));
+  border-radius:0 5px 0 0;
+}
+
+.mini-postcard-icon{
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  margin-top:6px;
+}
+.mini-postcard-icon svg{ width:14px; height:14px; }
+.mini-postcards a:nth-child(1) .mini-postcard-icon{ background:var(--red); color:var(--paper); }
+.mini-postcards a:nth-child(2) .mini-postcard-icon{ background:var(--neon); color:var(--neon-ink); }
+.mini-postcards a:nth-child(3) .mini-postcard-icon{ background:var(--leaf-dark); color:var(--paper); }
+
+.mini-postcard-label{
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:.66rem;
+  letter-spacing:.01em;
+  line-height:1.2;
+}
+
+.hero-title{
+  font-size:clamp(2.6rem, 9vw, 5.4rem);
+  line-height:.98;
+  letter-spacing:-.01em;
+}
+.hero-title em{
+  font-style:normal;
+  color:var(--neon);
+  text-shadow:0 0 22px rgba(47,216,229,.45);
+}
+.hero-sub{
+  font-family:var(--font-script);
+  font-size:clamp(1.1rem,3vw,1.55rem);
+  color:var(--paper);
+  opacity:.92;
+}
+.hero-desc{
+  max-width:52ch;
+  font-size:1.02rem;
+  color:rgba(244,235,216,.82);
+}
+.hero-cta{ display:flex; flex-wrap:wrap; gap:14px; margin-top:6px; }
+.hero-stats{
+  display:flex; flex-wrap:wrap; gap:28px;
+  margin-top:18px;
+  padding-top:22px;
+  border-top:1px solid rgba(244,235,216,.2);
+}
+.hero-stat b{
+  display:block; font-family:var(--font-display); font-size:1.7rem; color:var(--marigold);
+}
+.hero-stat span{
+  font-family:var(--font-mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; opacity:.7;
+}
+
+/* -----------------------------------------------------------
+   "Show your desk to the world" — a blank postcard, ready to
+   fill in. Same fields as every gallery table, so a submission
+   drops straight into the archive.
+----------------------------------------------------------- */
+.desk-cta{ background:var(--paper); padding:60px 0 70px; }
+
+.postcard-form{
+  background:var(--paper-shade);
+  border-radius:6px;
+  overflow:hidden;
+  box-shadow:0 18px 40px -20px rgba(34,26,20,.35);
+}
+.airmail-edge{
+  height:10px;
+  background:repeating-linear-gradient(
+    -45deg,
+    var(--red) 0 18px,
+    var(--paper) 18px 26px,
+    var(--neon-ink) 26px 44px,
+    var(--paper) 44px 52px
+  );
+}
+.postcard-form-inner{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0;
+}
+@media (min-width:860px){
+  .postcard-form-inner{ grid-template-columns:1fr 1fr; }
+  .postcard-form-inner{ position:relative; }
+  .postcard-form-inner::before{
+    content:'';
+    position:absolute; top:24px; bottom:24px; left:50%;
+    border-left:1.5px dashed rgba(34,26,20,.25);
+  }
+}
+.pf-col{ padding:30px 26px; }
+.pf-col h3{
+  font-family:var(--font-mono);
+  font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--red); margin-bottom:16px;
+}
+.pf-field{ margin-bottom:16px; }
+.pf-field label{
+  display:block; font-size:.78rem; font-weight:600; color:var(--ink-soft);
+  margin-bottom:6px; letter-spacing:.02em;
+}
+.pf-field .hint{ font-weight:400; opacity:.7; text-transform:none; }
+.pf-hint{ font-size:.72rem; color:var(--ink-soft); opacity:.75; margin:6px 0 0; }
+.pf-field input[type="text"],
+.pf-field textarea{
+  width:100%;
+  background:var(--paper);
+  border:1.5px solid rgba(34,26,20,.18);
+  border-radius:3px;
+  padding:10px 12px;
+  font-family:var(--font-body);
+  font-size:.92rem;
+  color:var(--ink);
+  resize:vertical;
+}
+.pf-field input[type="text"]:focus,
+.pf-field textarea:focus{ border-color:var(--red); }
+.pf-counter{
+  font-family:var(--font-mono); font-size:.68rem; color:var(--ink-soft);
+  opacity:.7; text-align:right; margin-top:4px;
+}
+.pf-upload{
+  display:flex; align-items:center; gap:12px;
+  border:1.5px dashed rgba(34,26,20,.3);
+  border-radius:3px;
+  padding:12px 14px;
+  background:var(--paper);
+  font-size:.8rem; color:var(--ink-soft);
+  cursor:pointer;
+}
+.pf-upload input{ display:none; }
+.pf-upload .pf-upload-icon{
+  width:32px; height:32px; flex-shrink:0; border-radius:50%;
+  background:var(--marigold); color:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:1rem;
+}
+.pf-checkbox{
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:.82rem; color:var(--ink-soft);
+}
+.pf-checkbox input{ margin-top:3px; }
+.pf-submit-row{
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding-top:6px;
+}
+.pf-note{ font-family:var(--font-mono); font-size:.68rem; color:var(--ink-soft); opacity:.75; }
+.pf-confirm{
+  display:none;
+  align-items:center; gap:14px;
+  background:var(--leaf-dark); color:var(--paper);
+  padding:16px 18px; border-radius:4px; margin-top:18px;
+  font-size:.92rem;
+}
+.pf-confirm.is-visible{ display:flex; }
+.pf-confirm.is-error{ background:var(--red-dark); }
+.pf-confirm.is-error .stamp-ok{ background:var(--paper); color:var(--red-dark); }
+.pf-confirm .stamp-ok{
+  width:34px; height:34px; border-radius:50%; flex-shrink:0;
+  background:var(--neon); color:var(--neon-ink);
+  display:flex; align-items:center; justify-content:center; font-weight:700;
+}
+
+/* principle strip */
+.principle{
+  background:var(--leaf-dark);
+  color:var(--paper);
+  padding:44px 0;
+  text-align:center;
+}
+.principle p{
+  font-family:var(--font-script);
+  font-size:clamp(1.15rem,3.4vw,1.7rem);
+  max-width:46ch;
+  margin:0 auto;
+  color:var(--paper);
+}
+.principle .eyebrow{ color:var(--marigold); justify-content:center; margin-bottom:14px; }
+.principle .eyebrow::before{ background:var(--marigold); }
+
+/* featured strip on home */
+.section{ padding:56px 0; }
+.section-head{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
+  margin-bottom:30px; flex-wrap:wrap;
+}
+.section-head h2{ font-size:clamp(1.6rem,4vw,2.2rem); margin-top:8px; }
+
+/* -----------------------------------------------------------
+   Postcard (signature component) — used in gallery grid and
+   featured strips. Every table arrives like a mailed photo:
+   a white print border, an airmail stripe, a postmark stamp
+   for the profession, and a handwritten caption. Cards sit at
+   a slight alternating tilt and straighten on hover, like
+   photos being picked up off a desk.
+----------------------------------------------------------- */
+.card-grid{
+  display:grid; gap:26px 22px;
+  grid-template-columns:repeat(2,1fr);
+}
+@media (min-width:620px){ .card-grid{ grid-template-columns:repeat(3,1fr); } }
+@media (min-width:980px){ .card-grid{ grid-template-columns:repeat(4,1fr); } }
+
+.postcard{
+  background:var(--paper);
+  border-radius:3px;
+  overflow:visible;
+  display:flex; flex-direction:column;
+  padding:8px 8px 12px;
+  box-shadow:0 3px 0 rgba(34,26,20,.05), 0 10px 18px -12px rgba(34,26,20,.45);
+  position:relative;
+  transform:rotate(var(--tilt,-1.2deg));
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.postcard:nth-child(3n+1){ --tilt:-1.6deg; }
+.postcard:nth-child(3n+2){ --tilt:1.1deg; }
+.postcard:nth-child(3n+3){ --tilt:-0.6deg; }
+.postcard:hover{
+  transform:rotate(0deg) translateY(-5px);
+  box-shadow:0 4px 0 rgba(34,26,20,.06), 0 22px 30px -16px rgba(34,26,20,.5);
+  z-index:2;
+}
+
+.postcard-airmail{
+  height:6px; border-radius:2px 2px 0 0; margin-bottom:7px;
+  background:repeating-linear-gradient(
+    -45deg,
+    var(--red) 0 7px,
+    var(--paper) 7px 10px,
+    var(--neon-ink) 10px 17px,
+    var(--paper) 17px 20px
+  );
+}
+.postcard-photo{
+  aspect-ratio:4/3;
+  overflow:hidden;
+  background:var(--ink);
+  position:relative;
+  border-radius:2px;
+}
+.postcard-photo img{
+  width:100%; height:100%; object-fit:cover;
+  filter:saturate(1.05);
+  transition:transform .4s ease;
+}
+.postcard:hover .postcard-photo img{ transform:scale(1.08); }
+
+.postcard-stamp{
+  position:absolute; top:16px; right:16px;
+  width:46px; height:46px;
+  border-radius:50%;
+  background:rgba(var(--paper-rgb),.92);
+  border:1.5px dashed var(--red);
+  color:var(--red-dark);
+  display:flex; align-items:center; justify-content:center;
+  text-align:center;
+  font-family:var(--font-mono);
+  font-size:.5rem; line-height:1.15;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  transform:rotate(-10deg);
+  padding:3px;
+}
+
+.postcard-body{ padding:11px 6px 2px; flex:1; display:flex; flex-direction:column; gap:4px; }
+.postcard-name{ font-family:var(--font-script); font-size:1.28rem; line-height:1.1; color:var(--ink); }
+.postcard-meta{
+  font-family:var(--font-mono);
+  font-size:.68rem; letter-spacing:.03em; text-transform:uppercase;
+  color:var(--ink-soft);
+  display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+}
+.postcard-meta .dot{ opacity:.5; }
+
+/* -----------------------------------------------------------
+   EXPLORE page
+----------------------------------------------------------- */
+.page-hero{
+  background:var(--ink); color:var(--paper);
+  padding:44px 0 30px;
+}
+.page-hero h1{ font-size:clamp(2rem,6vw,3rem); margin-top:10px; }
+.page-hero p{ max-width:56ch; color:rgba(244,235,216,.72); margin-top:10px; }
+
+.filter-bar{
+  background:var(--paper-shade);
+  border-bottom:1px solid rgba(36,28,23,.08);
+  position:sticky; top:64px; z-index:40;
+}
+.filter-row{
+  display:flex; gap:10px; overflow-x:auto;
+  padding:14px 0;
+  scrollbar-width:none;
+}
+.filter-row::-webkit-scrollbar{ display:none; }
+.filter-toggle{
+  display:flex; gap:0; background:var(--ink); border-radius:20px; padding:3px; flex-shrink:0;
+}
+.filter-toggle button{
+  border:none; background:transparent; color:var(--paper);
+  padding:8px 16px; border-radius:18px;
+  font-size:.78rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em;
+}
+.filter-toggle button.is-active{ background:var(--marigold); color:var(--ink); }
+
+.pills-inline{ display:flex; gap:10px; flex-shrink:0; }
+
+.pill{
+  flex-shrink:0;
+  border:1.5px solid var(--ink);
+  background:transparent;
+  color:var(--ink);
+  padding:8px 16px;
+  border-radius:20px;
+  font-size:.8rem; font-weight:600;
+  white-space:nowrap;
+  transition:background .15s ease,color .15s ease;
+}
+.pill.is-active, .pill:hover{ background:var(--red); border-color:var(--red); color:var(--paper); }
+.pill .count{ opacity:.65; font-family:var(--font-mono); font-size:.68rem; margin-left:5px; }
+
+.results-strip{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:22px 0 6px;
+  font-family:var(--font-mono); font-size:.75rem; letter-spacing:.04em;
+  color:var(--ink-soft); text-transform:uppercase;
+}
+.empty-state{
+  padding:70px 20px; text-align:center; color:var(--ink-soft);
+}
+.empty-state h3{ font-family:var(--font-display); font-size:1.4rem; margin-bottom:8px; color:var(--ink); }
+
+/* -----------------------------------------------------------
+   GALLERY hero strip (masonry-ish)
+----------------------------------------------------------- */
+.masonry{
+  columns:2 220px;
+  column-gap:18px;
+}
+@media (min-width:760px){ .masonry{ columns:3 260px; } }
+@media (min-width:1080px){ .masonry{ columns:4 260px; } }
+.masonry .postcard{ break-inside:avoid; margin-bottom:20px; }
+
+/* -----------------------------------------------------------
+   STORY page
+----------------------------------------------------------- */
+.story-hero{
+  position:relative;
+  background:var(--ink);
+  color:var(--paper);
+}
+.story-hero-photo{
+  aspect-ratio:16/9;
+  max-height:66vh;
+  overflow:hidden;
+  position:relative;
+}
+.story-hero-photo img{ width:100%; height:100%; object-fit:cover; }
+.story-hero-photo::after{
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(0deg, rgba(36,28,23,.92) 0%, rgba(36,28,23,.15) 45%, transparent 70%);
+}
+.story-id{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:26px 0 22px;
+}
+.story-id .wrap{ display:flex; flex-direction:column; gap:6px; }
+.story-name{ font-size:clamp(2rem,6vw,3.4rem); }
+.story-meta{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  font-family:var(--font-mono); font-size:.78rem; letter-spacing:.05em; text-transform:uppercase; color:var(--marigold);
+}
+.story-meta .dot{ color:rgba(244,235,216,.4); }
+
+.story-body{
+  display:grid; gap:40px;
+  grid-template-columns:1fr;
+  padding:40px 0 70px;
+}
+@media (min-width:860px){ .story-body{ grid-template-columns:220px 1fr; } }
+
+.story-portrait{
+  order:-1;
+}
+@media (min-width:860px){ .story-portrait{ order:0; } }
+.portrait-frame{
+  border-radius:var(--radius);
+  overflow:hidden;
+  aspect-ratio:3/4;
+  background:var(--paper-shade);
+  box-shadow:0 10px 0 -4px var(--red), 0 10px 20px rgba(36,28,23,.15);
+  margin-bottom:14px;
+}
+.portrait-frame img{ width:100%; height:100%; object-fit:cover; }
+.portrait-cap{ font-family:var(--font-mono); font-size:.72rem; color:var(--ink-soft); text-align:center; }
+
+.story-intro{
+  font-size:1.15rem;
+  line-height:1.6;
+  color:var(--ink);
+  border-left:3px solid var(--red);
+  padding-left:18px;
+  margin:0 0 30px;
+}
+
+.story-section{ margin-bottom:30px; }
+.story-section h3{
+  font-size:.75rem; letter-spacing:.14em; text-transform:uppercase;
+  font-family:var(--font-mono); font-weight:500;
+  color:var(--red);
+  margin-bottom:10px;
+  display:flex; align-items:center; gap:10px;
+}
+.story-section h3::after{ content:''; height:1px; flex:1; background:rgba(36,28,23,.15); }
+.story-section p{ margin:0; color:var(--ink-soft); font-size:1rem; }
+
+.story-quote{
+  background:var(--paper-shade);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  margin:34px 0;
+  position:relative;
+}
+.story-quote::before{
+  content:'\201C';
+  font-family:var(--font-display);
+  font-size:3.4rem;
+  color:var(--red);
+  line-height:0;
+  display:block;
+  margin-bottom:6px;
+}
+.story-quote p{
+  font-family:var(--font-script);
+  font-size:1.3rem;
+  color:var(--ink);
+  margin:0;
+}
+
+.object-card{
+  display:flex; gap:16px; align-items:center;
+  background:var(--leaf-dark);
+  color:var(--paper);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  margin-top:8px;
+}
+.object-card .obj-icon{
+  width:40px; height:40px; flex-shrink:0;
+  border-radius:50%;
+  background:var(--marigold);
+  color:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:1.1rem;
+}
+.object-card b{ display:block; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; font-family:var(--font-mono); color:var(--marigold); margin-bottom:3px; }
+.object-card p{ margin:0; font-size:.92rem; color:rgba(244,235,216,.85); }
+
+.story-nav{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:26px 0 60px;
+  border-top:1px solid rgba(36,28,23,.1);
+  margin-top:10px;
+}
+
+/* -----------------------------------------------------------
+   Footer
+----------------------------------------------------------- */
+.site-footer{
+  background:var(--ink);
+  color:rgba(244,235,216,.6);
+  padding:44px 0 30px;
+}
+.footer-top{
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px;
+  padding-bottom:26px; margin-bottom:20px;
+  border-bottom:1px solid rgba(244,235,216,.12);
+}
+.footer-top .brand{ color:var(--paper); }
+.footer-links{ display:flex; gap:22px; flex-wrap:wrap; }
+.footer-links a{ font-size:.85rem; opacity:.8; }
+.footer-links a:hover{ opacity:1; color:var(--marigold); }
+.footer-bottom{
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  font-family:var(--font-mono); font-size:.7rem; letter-spacing:.04em; opacity:.55;
+}
+
+/* utility */
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+.skip-link{
+  position:absolute; left:12px; top:-60px;
+  background:var(--marigold); color:var(--ink);
+  padding:10px 16px; border-radius:3px; font-weight:600; font-size:.85rem;
+  transition:top .15s ease; z-index:999;
+}
+.skip-link:focus{ top:12px; }
+/* ===== 2026 EDITORIAL ARCHIVE THEME ===== */
+:root{
+  --paper:#F5F1E8;
+  --paper-shade:#E8E0D2;
+  --ink:#243A46;
+  --ink-soft:#53605B;
+  --red:#C45A3A;
+  --red-dark:#963E2A;
+  --marigold:#D8C8A8;
+  --leaf:#61765B;
+  --leaf-dark:#44563F;
+  --neon:#A7B7A0;
+  --neon-ink:#243A46;
+  --paper-rgb:245,241,232;
+  --ink-rgb:36,58,70;
+}
+.site-header{background:var(--ink);color:var(--paper);border-bottom-color:var(--red)}
+.site-header .main-nav a.is-active::after{background:var(--red)}
+.btn--primary{background:var(--red);color:var(--paper);border-color:var(--red)}
+.btn--primary:hover{background:var(--red-dark);border-color:var(--red-dark)}
+.btn--ghost:hover{background:var(--ink);color:var(--paper)}
+.page-hero{background:var(--ink)}
+.filter-toggle{background:var(--ink)}
+.filter-toggle button.is-active{background:var(--marigold);color:var(--ink)}
+.pill.is-active,.pill:hover{background:var(--red);border-color:var(--red);color:var(--paper)}
+.story-meta{color:var(--marigold)}
+.object-card{background:var(--leaf-dark)}
+.site-footer{background:var(--ink)}
+.site-footer .brand,.site-footer .footer-links a{color:var(--paper)}
+.footer-links a:hover{color:var(--marigold)}
+.stamp-ok{background:var(--leaf-dark)}
+.pf-confirm{background:var(--leaf-dark)}
+</style>
+<noscript><style>body{opacity:1 !important;}</style></noscript>
+</head>
+<body>
+<a class="skip-link" href="#story-root">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">मेज़</span> The Great Indian Table
+    </a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="explore.html">Explore</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="add-your-desk.html">Add Your Desk</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span>
+    </button>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile">
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="add-your-desk.html">Add Your Desk</a>
+  </nav>
+</header>
+
+<main id="main">
+  <div id="story-root"><!-- populated by app.js:initStory() --></div>
+  <div class="wrap">
+    <div class="story-nav" id="story-nav"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">मेज़</span> The Great Indian Table
+      </a>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="explore.html">Explore</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="add-your-desk.html">Add Your Desk</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>A visual archive of where India works.</span>
+      <span>Built by IndiaFutureAI Innovators</span>
+    </div>
+  </div>
+</footer>
+
+<script>/* =========================================================
+   Sample dataset — 16 real-style tables across India.
+   Swap `photo` / `portrait` for real contributor photography
+   before launch. Images are placeholder documentary-style
+   photography (picsum.photos), not illustrations.
+   ========================================================= */
+
+window.TABLES = [
+  {
+    id: "meena-makeup-lucknow",
+    name: "Meena Devi",
+    profession: "Tailor",
+    city: "Lucknow",
+    state: "Uttar Pradesh",
+    photo: "https://great-indian-table.netlify.app/assets/img/makeup.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/makeup.png",
+    intro: "Meena has stitched chikankari kurtas from the same corner shop for eighteen years. Her table is a foot of chalk marks, thread spools sorted by decade of use, and a radio that never turns off. Customers come for the fit; they stay for the gossip.",
+    workday: "Opens the shutter at 9, sips chai while threading the first needle by 9:20. Mornings are alterations, afternoons are new orders, and the last hour of daylight is reserved for hand embroidery — the part she refuses to rush.",
+    challenge: "Fabric costs have doubled in three years, but regular customers still expect old prices.",
+    dream: "To train her niece so the shop's chikankari technique doesn't end with her.",
+    quote: "A stitch you rush is a stitch you redo. I have time for exactly one of those.",
+    object: { label: "On the table", text: "A tin of brass thimbles inherited from her mother, each one worn smooth on the inside." }
+  },
+  {
+    id: "irfan-mechanic-mumbai",
+    name: "Irfan Sheikh",
+    profession: "Auto Mechanic",
+    city: "Mumbai",
+    state: "Maharashtra",
+     photo: "https://great-indian-table.netlify.app/assets/img/mechanic.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/mechanic.png",
+    intro: "Irfan's workbench sits under a flyover in Dharavi, wrenches hung by size on a rusted grille. He can diagnose a scooter's cough by ear alone — a skill his father taught him before he could reach the pedals.",
+    workday: "First customer arrives before he's finished his tea. Most days it's twelve to fifteen bikes, a couple of autos, and one argument about pricing he wins by simply showing the worn part.",
+    challenge: "Newer electric scooters need diagnostic tools he can't yet afford.",
+    dream: "A proper roof over the workbench before the next monsoon.",
+    quote: "Every engine tells you what's wrong. You just have to stop talking and listen.",
+    object: { label: "Interesting object", text: "A spark plug from his father's first customer, kept as a paperweight." }
+  },
+  {
+    id: "lakshmi-salon-jaipur",
+    name: "Lakshmi Kumhar",
+    profession: "Potter",
+    city: "Jaipur",
+    state: "Rajasthan",
+   photo: "https://great-indian-table.netlify.app/assets/img/salon.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/salon.png",
+    intro: "Lakshmi throws blue pottery on a wheel her grandfather built. The workshop smells of wet clay and cobalt oxide. She still marks each piece's base with a thumbprint instead of a signature.",
+    workday: "Clay prep before sunrise, wheel work through the cool morning, glazing in the afternoon shade, and firing the kiln only when there's enough for a full batch.",
+    challenge: "Machine-made imitations sell for a third of her price in tourist markets.",
+    dream: "A small storefront so buyers can watch a piece being thrown before they buy it.",
+    quote: "The wheel doesn't lie. If your hand shakes, the pot shows it.",
+    object: { label: "On the table", text: "A cracked test tile from her first year at the wheel, kept as a reminder." }
+  },
+  {
+    id: "rahul-dev-bengaluru",
+    name: "Rahul Nair",
+    profession: "Software Developer",
+    city: "Bengaluru",
+    state: "Karnataka",
+     photo: "https://great-indian-table.netlify.app/assets/img/corporate.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/corporate.png",
+    intro: "Rahul builds backend systems for a fintech startup from a desk crowded with sticky notes and an ergonomic keyboard he saved three months for. Two monitors, one plant he's failed to kill yet.",
+    workday: "Standup at 10, deep work till lunch, reviews in the afternoon, and at least one hour spent explaining to product why a 'quick fix' isn't quick.",
+    challenge: "On-call weeks blur into each other; sleep is the first casualty.",
+    dream: "To ship something that outlasts the company that built it.",
+    quote: "Good code is a letter to the next person who has to fix your mistakes.",
+    object: { label: "On the table", text: "A rubber duck, for debugging — and for company on long nights." }
+  },
+  {
+    id: "farida-flower-varanasi",
+    name: "Farida Ansari",
+    profession: "Banarasi Weaver",
+    city: "Varanasi",
+    state: "Uttar Pradesh",
+    photo: "https://great-indian-table.netlify.app/assets/img/flower.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/flower.png",
+    intro: "Farida weaves Banarasi silk on a pit loom that's older than her father. A single zari sari can take her three weeks; she knows the pattern by the rhythm of the shuttle, not by looking.",
+    workday: "Loom work starts after the household is fed, breaks for the afternoon call to prayer, resumes till the light goes and her eyes ask her to stop.",
+    challenge: "Power looms churn out imitation Banarasi in a day; hers takes weeks and costs more.",
+    dream: "For her daughter to weave as art, not just as inheritance.",
+    quote: "A power loom copies the pattern. My hands copy my grandmother.",
+    object: { label: "Interesting object", text: "A punch-card design sheet, hand-drawn, that guides the motif." }
+  },
+  {
+    id: "suresh-fisherman-kochi",
+    name: "Suresh Poduval",
+    profession: "Fisherman",
+    city: "Kochi",
+    state: "Kerala",
+     photo: "https://great-indian-table.netlify.app/assets/img/fish.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/fish.png",
+    intro: "Suresh's 'table' is the deck of a wooden boat and the Chinese fishing nets his crew still hauls by hand. He reads the backwaters the way others read a map — by current, not by chart.",
+    workday: "Out before dawn, nets down at first light, back by mid-morning to sell straight off the boat before the fish market opens.",
+    challenge: "Diesel prices eat into a catch that's already shrinking year on year.",
+    dream: "A cold storage box on the boat so the day's catch doesn't have to sell in a rush.",
+    quote: "The sea gives you exactly what it wants to, not what you need.",
+    object: { label: "On the deck", text: "A hand-carved wooden float, older than the boat itself." }
+  },
+  {
+    id: "ganesh-technician-madurai",
+    name: "Ganesh Achari",
+    profession: "Goldsmith",
+    city: "Madurai",
+    state: "Tamil Nadu",
+   photo: "https://great-indian-table.netlify.app/assets/img/technician.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/technician.png",
+    intro: "Ganesh works at a low wooden bench with a small gas flame, a set of tools polished by his grandfather's hands before his. Temple jewellery is his specialty — fine filigree that takes days per piece.",
+    workday: "Weighing gold at opening, sketching designs mid-morning, and hours of soldering under a magnifying lamp that has left a permanent squint.",
+    challenge: "Rising gold prices mean fewer commissions and more anxious customers watching him weigh.",
+    dream: "To revive a temple-jewellery design his grandfather never finished teaching him.",
+    quote: "Gold forgives almost nothing. That's why I still work slowly.",
+    object: { label: "On the table", text: "A tiny anvil worn into a curve from three generations of hammering." }
+  },
+  {
+    id: "babulal-chaiwala-jodhpur",
+    name: "Babulal Soni",
+    profession: "Chai Stall Owner",
+    city: "Jodhpur",
+    state: "Rajasthan",
+     photo: "https://great-indian-table.netlify.app/assets/img/tea.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/tea.png",
+    intro: "Babulal's stall is four feet wide and has outlived two shops that opened and closed beside it. He knows regulars by their sugar level, not their name, and remembers both anyway.",
+    workday: "Fires the coal by 6am, first batch of masala chai by 6:30, and a steady churn of glasses until well past midnight.",
+    challenge: "Rent for the pavement spot keeps climbing even though it isn't technically his to rent.",
+    dream: "To open a second stall for his son near the railway station.",
+    quote: "People don't come back for the tea. They come back for five minutes of being asked how they are.",
+    object: { label: "On the counter", text: "A blackened kettle that's never been replaced, only patched." }
+  },
+  {
+    id: "noor-vegetable-hyderabad",
+    name: "Noor Fatima",
+    profession: "Bangle Maker",
+    city: "Hyderabad",
+    state: "Telangana",
+    photo: "https://great-indian-table.netlify.app/assets/img/vegetable.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/vegetable.png",
+    intro: "In the lanes of Laad Bazaar, Noor melts lac over a small flame and shapes it around glass bangles by hand, pressing in stones one at a time. Her table is a rainbow of half-finished sets.",
+    workday: "Starts with sorting stones by colour, spends the day fusing lac and setting kundan, and finishes by threading finished bangles onto string for the shop counter.",
+    challenge: "Younger buyers want machine-finished bangles that look identical, not handmade ones with tiny variations.",
+    dream: "To design one signature bangle set that carries her name, not just the shop's.",
+    quote: "No two of my bangles are the same, even when the customer asks for that.",
+    object: { label: "Interesting object", text: "A small flame lamp, always lit, that she's used since she was twelve." }
+  },
+  {
+    id: "das-writer-guwahati",
+    name: "Bipul Das",
+    profession: "Boat Builder",
+    city: "Guwahati",
+    state: "Assam",
+      photo: "https://great-indian-table.netlify.app/assets/img/writer.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/writer.png",
+    intro: "Bipul builds wooden country boats on the banks of the Brahmaputra, using no blueprint — just measurements passed down and adjusted by eye. A single boat takes about three weeks from log to launch.",
+    workday: "Selects and seasons timber in the early hours, spends the day shaping planks and fitting ribs, and ends by checking yesterday's joints for warping.",
+    challenge: "Good quality timber is harder to source each year as local forests shrink.",
+    dream: "To build one boat entirely with his son, start to finish, before handing the craft over.",
+    quote: "A boat has to trust the water before anyone else does.",
+    object: { label: "On the table", text: "A wooden mallet passed down through three boat builders." }
+  },
+  {
+    id: "kiran-dental-punjab",
+    name: "Kiran Singh",
+    profession: "Farmer",
+    city: "Amritsar",
+    state: "Punjab",
+      photo: "https://great-indian-table.netlify.app/assets/img/dental.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/dental.png",
+    intro: "Kiran's 'table' is a charpai under a neem tree at the edge of his wheat field, where he does his real planning — sowing schedules, water turns, and prices — long before any office would call it work.",
+    workday: "Fields by sunrise, home for a heavy breakfast, back out to check irrigation and machinery, and evenings spent on the charpai settling the next day's plan.",
+    challenge: "Unpredictable weather has made a decades-old sowing calendar unreliable.",
+    dream: "To convince his son that farming, done well, is still a good life.",
+    quote: "The land doesn't care about your plans. It only cares about your patience.",
+    object: { label: "Under the tree", text: "A tin trunk holding twenty years of handwritten sowing records." }
+  },
+  {
+    id: "arjun-rickshaw-artist-delhi",
+    name: "Arjun Vishwakarma",
+    profession: "Truck & Rickshaw Painter",
+    city: "Delhi",
+    state: "Delhi",
+     photo: "https://great-indian-table.netlify.app/assets/img/tea.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/tea.png",
+    intro: "Arjun paints slogans, gods, and 'horn ok please' lettering on trucks and autos from a roadside stall stacked with enamel tins. No stencils — every curve is freehand, done from muscle memory.",
+    workday: "Mixes colours at dawn before the heat thickens the enamel, paints through the day standing on a stool, and touches up lettering by torchlight if a truck needs to leave that night.",
+    challenge: "Vinyl stickers are faster and cheaper, and slowly replacing hand-painted work.",
+    dream: "To paint one mural-sized piece that isn't on a vehicle, just to see it stay in one place.",
+    quote: "A sticker peels off in a year. My paint fades with the truck.",
+    object: { label: "On the table", text: "A row of hand-cut brushes, each one for a single letter style." }
+  },
+  {
+    id: "manisha-bookbinder-kolkata",
+    name: "Manisha Bose",
+    profession: "Bookbinder",
+    city: "Kolkata",
+    state: "West Bengal",
+    photo: "https://great-indian-table.netlify.app/assets/img/tea.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/tea.png",
+    intro: "Manisha repairs and rebinds old books on College Street, her table buried under thread, glue pots, and marbled endpapers. Some of the volumes she restores are older than the shop itself.",
+    workday: "Mornings for stitching signatures, afternoons for press work and glueing, and the last hour reserved for one book she's restoring purely because she loves it.",
+    challenge: "Fewer people repair old books now — most replace them instead.",
+    dream: "To rebind her late father's own handwritten notebooks before they fall apart further.",
+    quote: "A repaired book still remembers being broken. That's what makes it honest.",
+    object: { label: "On the table", text: "A bone folder worn shiny from forty years of use." }
+  },
+  {
+    id: "devika-puppeteer-udaipur",
+    name: "Devika Bhat",
+    profession: "Puppeteer",
+    city: "Udaipur",
+    state: "Rajasthan",
+   photo: "https://great-indian-table.netlify.app/assets/img/dental.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/dental.png",
+    intro: "Devika carves and strings Kathputli puppets on a low table crowded with wood shavings and scraps of brocade. Her family has performed the same stories for five generations, adapting them slightly each time.",
+    workday: "Mornings for carving new puppet heads, afternoons for costuming, and evenings for performances in the old city squares.",
+    challenge: "Fewer venues book traditional puppet shows over newer forms of street entertainment.",
+    dream: "To record every family story on film before the oldest performers are gone.",
+    quote: "The puppet doesn't move. My hand does. People just forget that on purpose.",
+    object: { label: "Interesting object", text: "A puppet head carved by her great-grandfather, never strung, kept as a relic." }
+  },
+  {
+    id: "thomas-carpenter-kochi",
+    name: "Thomas Varghese",
+    profession: "Carpenter",
+    city: "Kochi",
+    state: "Kerala",
+  photo: "https://great-indian-table.netlify.app/assets/img/fish.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/fish.png",
+    intro: "Thomas builds furniture in a workshop that smells permanently of teak sawdust. He measures twice, cuts once, and still keeps a wooden ruler his teacher gave him fifty years ago, though he owns a laser one now.",
+    workday: "Sketch and measure in the morning, cutting and joinery through midday, and finishing — sanding, oiling, waxing — in the calmer evening light.",
+    challenge: "Good teak has become expensive enough that clients now ask for cheaper substitutes he doesn't trust.",
+    dream: "To build one piece entirely without a single nail, joinery only, before he retires.",
+    quote: "Furniture should outlive the person who ordered it. That's the whole job.",
+    object: { label: "On the table", text: "A wooden ruler from his first teacher, still more trusted than the laser one." }
+  },
+  {
+    id: "priya-government-pune",
+    name: "Priya Deshmukh",
+    profession: "Graphic Designer",
+    city: "Pune",
+    state: "Maharashtra",
+      photo: "https://great-indian-table.netlify.app/assets/img/gov.png",
+    portrait: "https://great-indian-table.netlify.app/assets/img/gov.png",
+    intro: "Priya freelances from a sunlit desk in her apartment, tablet in one hand and cold coffee in the other. Moodboards and half-approved logo drafts cover a second monitor she calls her 'graveyard'.",
+    workday: "Client calls in the morning, focused design work by afternoon, and revisions in the evening once feedback trickles in from three time zones.",
+    challenge: "Clients confuse 'quick edit' with a five-minute job, when it's rarely either.",
+    dream: "To design one project entirely on her own terms, brief-free, just for herself.",
+    quote: "Everyone has an opinion on design. Not everyone has a reason for it.",
+    object: { label: "On the desk", text: "A stack of Pantone swatch books she still reaches for before any screen." }
+  }
+];
+</script>
+<script>/* =========================================================
+   THE GREAT INDIAN TABLE — shared app logic
+   Vanilla JS. No build step, no framework — keeps the site
+   fast and simple to host anywhere.
+   ========================================================= */
+
+/* -----------------------------------------------------------
+   GA4 / analytics stubs
+   -----------------------------------------------------------
+   window.dataLayer is the standard GA4 (gtag.js) queue.
+   In production, drop the gtag.js snippet in <head> on every
+   page and these calls will flow straight into GA4 — no other
+   code changes needed. Until then, events are logged to the
+   console so the click-tracking wiring can be verified.
+----------------------------------------------------------- */
+window.dataLayer = window.dataLayer || [];
+
+function trackEvent(eventName, params) {
+  const payload = Object.assign({ event: eventName }, params || {});
+  window.dataLayer.push(payload);
+  if (window.location.hostname === "localhost" || window.location.search.includes("debug=1")) {
+    console.log("[GA4 event]", payload);
+  }
+}
+
+// Fires on every "table explored" open — main metric from the brief.
+function trackTableOpen(table, source) {
+  trackEvent("table_explored", {
+    table_id: table.id,
+    table_name: table.name,
+    profession: table.profession,
+    city: table.city,
+    source: source || "unknown"
+  });
+}
+
+function trackFilterUse(filterType, value) {
+  trackEvent("filter_used", { filter_type: filterType, filter_value: value });
+}
+
+/* Attach GA4 click tracking to any element carrying
+   data-ga-event, data-ga-table-id etc. Called once per page
+   after cards are rendered. */
+function wireGaClickTracking(root) {
+  (root || document).querySelectorAll("[data-ga-event]").forEach((el) => {
+    el.addEventListener("click", () => {
+      trackEvent(el.dataset.gaEvent, {
+        table_id: el.dataset.gaTableId || undefined,
+        table_name: el.dataset.gaTableName || undefined,
+        profession: el.dataset.gaProfession || undefined,
+        city: el.dataset.gaCity || undefined,
+        source: el.dataset.gaSource || "gallery"
+      });
+    }, { passive: true });
+  });
+}
+
+/* -----------------------------------------------------------
+   Nav
+----------------------------------------------------------- */
+function initNav() {
+  const toggle = document.querySelector(".nav-toggle");
+  const mobileNav = document.querySelector(".mobile-nav");
+  if (!toggle || !mobileNav) return;
+  toggle.addEventListener("click", () => {
+    const open = mobileNav.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+}
+
+/* -----------------------------------------------------------
+   Card rendering (used on Home / Explore / Gallery)
+----------------------------------------------------------- */
+function stampInitials(profession) {
+  const words = profession.split(" ").filter(Boolean);
+  return words.slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+}
+
+/** "City, State" — or just "City" if state is blank (e.g. a submission
+ *  that didn't use a comma/slash and couldn't be split). Never leaves a
+ *  stray trailing comma. */
+function cityState(t) {
+  return t.state ? `${t.city}, ${t.state}` : t.city;
+}
+
+function tableCardHTML(t, source) {
+  return `
+    <a class="postcard" href="story.html?id=${encodeURIComponent(t.id)}"
+       data-ga-event="table_explored"
+       data-ga-table-id="${t.id}"
+       data-ga-table-name="${t.name}"
+       data-ga-profession="${t.profession}"
+       data-ga-city="${t.city}"
+       data-ga-source="${source || "gallery"}">
+      <div class="postcard-airmail" aria-hidden="true"></div>
+      <div class="postcard-photo">
+        <img src="${t.photo}" alt="${t.name}'s workspace in ${t.city}" loading="lazy" width="900" height="600">
+        <div class="postcard-stamp" aria-hidden="true">${stampInitials(t.profession)}<br>${t.city.slice(0, 10)}</div>
+      </div>
+      <div class="postcard-body">
+        <span class="postcard-name">${t.name}</span>
+        <span class="postcard-meta">${t.profession}<span class="dot">&middot;</span>${cityState(t)}</span>
+      </div>
+    </a>`;
+}
+
+function renderCards(container, tables, source) {
+  if (!container) return;
+  if (!tables.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>No tables here yet</h3>
+        <p>Try a different profession or city — new workspaces are added as they're collected.</p>
+      </div>`;
+    return;
+  }
+  container.innerHTML = tables.map((t) => tableCardHTML(t, source)).join("");
+  wireGaClickTracking(container);
+}
+
+/* -----------------------------------------------------------
+   Explore / filtering
+----------------------------------------------------------- */
+function uniqueSorted(list) {
+  return Array.from(new Set(list)).sort((a, b) => a.localeCompare(b));
+}
+
+function initExplore() {
+  const grid = document.getElementById("explore-grid");
+  const pillRow = document.getElementById("filter-pills");
+  const modeButtons = document.querySelectorAll("[data-filter-mode]");
+  const resultsCount = document.getElementById("results-count");
+  const resultsLabel = document.getElementById("results-label");
+  if (!grid || !pillRow) return;
+
+  const tables = window.TABLES || [];
+  let mode = "profession"; // or "city"
+  let active = "all";
+
+  function optionsForMode() {
+    return mode === "profession"
+      ? uniqueSorted(tables.map((t) => t.profession))
+      : uniqueSorted(tables.map((t) => t.city));
+  }
+
+  function countFor(value) {
+    if (value === "all") return tables.length;
+    return tables.filter((t) => (mode === "profession" ? t.profession : t.city) === value).length;
+  }
+
+  function renderPills() {
+    const options = optionsForMode();
+    const pills = ["all", ...options];
+    pillRow.innerHTML = pills.map((val) => {
+      const label = val === "all" ? "All" : val;
+      const isActive = val === active ? " is-active" : "";
+      return `<button class="pill${isActive}" data-value="${val}" type="button">${label}<span class="count">${countFor(val)}</span></button>`;
+    }).join("");
+
+    pillRow.querySelectorAll(".pill").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        active = btn.dataset.value;
+        trackFilterUse(mode, active);
+        renderPills();
+        renderResults();
+      });
+    });
+  }
+
+  function renderResults() {
+    const filtered = active === "all"
+      ? tables
+      : tables.filter((t) => (mode === "profession" ? t.profession : t.city) === active);
+
+    resultsLabel.textContent = active === "all" ? "All tables" : active;
+    resultsCount.textContent = `${filtered.length} table${filtered.length === 1 ? "" : "s"}`;
+    renderCards(grid, filtered, "explore");
+  }
+
+  modeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      mode = btn.dataset.filterMode;
+      active = "all";
+      modeButtons.forEach((b) => b.classList.toggle("is-active", b === btn));
+      renderPills();
+      renderResults();
+    });
+  });
+
+  renderPills();
+  renderResults();
+}
+
+/* -----------------------------------------------------------
+   Gallery (simple, no filter chrome — pure grid)
+----------------------------------------------------------- */
+function initGallery() {
+  const grid = document.getElementById("gallery-grid");
+  if (!grid) return;
+  renderCards(grid, window.TABLES || [], "gallery");
+}
+
+/* -----------------------------------------------------------
+   Home — featured strip + live stats
+----------------------------------------------------------- */
+function initHomeFeatured() {
+  const tables = window.TABLES || [];
+
+  const statTables = document.getElementById("stat-tables");
+  const statCities = document.getElementById("stat-cities");
+  if (statTables) statTables.textContent = tables.length;
+  if (statCities) statCities.textContent = uniqueSorted(tables.map((t) => t.city)).length;
+
+  const grid = document.getElementById("home-featured");
+  if (!grid) return;
+  renderCards(grid, tables.slice(0, 8), "home_featured");
+}
+
+/* -----------------------------------------------------------
+   Story page
+----------------------------------------------------------- */
+function initStory() {
+  const root = document.getElementById("story-root");
+  if (!root) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const tables = window.TABLES || [];
+  const table = tables.find((t) => t.id === id) || tables[0];
+
+  if (!table) {
+    root.innerHTML = `<div class="wrap"><div class="empty-state"><h3>Table not found</h3><p>This workspace may have been moved or hasn't been added yet.</p></div></div>`;
+    return;
+  }
+
+  document.title = `${table.name} — ${table.profession}, ${table.city} — The Great Indian Table`;
+
+  trackTableOpen(table, "story_page");
+
+  const objectBlock = table.object ? `
+    <div class="object-card">
+      <div class="obj-icon" aria-hidden="true">&#9733;</div>
+      <div>
+        <b>${table.object.label}</b>
+        <p>${table.object.text}</p>
+      </div>
+    </div>` : "";
+
+  root.innerHTML = `
+    <section class="story-hero">
+      <div class="story-hero-photo">
+        <img src="${table.photo}" alt="${table.name}'s workspace, a ${table.profession.toLowerCase()} in ${table.city}">
+      </div>
+      <div class="story-id">
+        <div class="wrap">
+          <span class="eyebrow" style="color:var(--marigold)">${table.profession}</span>
+          <h1 class="story-name">${table.name}</h1>
+          <div class="story-meta">
+            <span>${cityState(table)}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap story-body">
+      <aside class="story-portrait">
+        <div class="portrait-frame">
+          <img src="${table.portrait}" alt="Portrait of ${table.name}">
+        </div>
+        <p class="portrait-cap">${table.name}, ${table.city}</p>
+      </aside>
+
+      <div class="story-main">
+        <p class="story-intro">${table.intro}</p>
+
+        <div class="story-section">
+          <h3>A normal workday</h3>
+          <p>${table.workday}</p>
+        </div>
+
+        <div class="story-section">
+          <h3>One challenge</h3>
+          <p>${table.challenge}</p>
+        </div>
+
+        <div class="story-section">
+          <h3>One dream</h3>
+          <p>${table.dream}</p>
+        </div>
+
+        <div class="story-quote">
+          <p>${table.quote}</p>
+        </div>
+
+        ${objectBlock}
+      </div>
+    </div>
+  `;
+
+  renderStoryNav(table, tables);
+}
+
+function renderStoryNav(current, tables) {
+  const nav = document.getElementById("story-nav");
+  if (!nav) return;
+  const idx = tables.findIndex((t) => t.id === current.id);
+  const next = tables[(idx + 1) % tables.length];
+  nav.innerHTML = `
+    <a class="btn btn--ghost" href="explore.html">&larr; All tables</a>
+    <a class="btn btn--solid" href="story.html?id=${encodeURIComponent(next.id)}"
+       data-ga-event="table_explored"
+       data-ga-table-id="${next.id}"
+       data-ga-table-name="${next.name}"
+       data-ga-profession="${next.profession}"
+       data-ga-city="${next.city}"
+       data-ga-source="story_next">
+      Next table &rarr;
+    </a>`;
+  wireGaClickTracking(nav);
+}
+
+/* -----------------------------------------------------------
+   "Show your desk to the world" — submission postcard
+   -----------------------------------------------------------
+   Static demo: no backend is wired up yet. On submit we track
+   the event (so the funnel is measurable from day one, per the
+   brief) and show a confirmation. Point the <form> at a real
+   endpoint (Google Form, Sheet, or API route) before launch.
+----------------------------------------------------------- */
+/** Reads an image file, downsizes it, and returns a JPEG Base64 data URL.
+ *  Resolves to null if no file was given. Keeps payloads small enough for
+ *  a single Apps Script POST and fast to upload on a mobile connection. */
+function readAndCompressImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    if (!file) { resolve(null); return; }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Could not read file"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Could not decode image"));
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const scale = maxDim / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function initDeskForm() {
+  const form = document.getElementById("desk-form");
+  if (!form) return;
+
+  const intro = document.getElementById("desk-intro");
+  const counter = document.getElementById("desk-intro-count");
+  if (intro && counter) {
+    const updateCount = () => {
+      const words = intro.value.trim().split(/\s+/).filter(Boolean).length;
+      counter.textContent = `${words} word${words === 1 ? "" : "s"} (aim for 40–60)`;
+    };
+    intro.addEventListener("input", updateCount);
+    updateCount();
+  }
+
+  form.querySelectorAll(".pf-upload input[type='file']").forEach((input) => {
+    input.addEventListener("change", () => {
+      const labelEl = input.closest(".pf-upload").querySelector(".pf-upload-label");
+      if (labelEl) labelEl.textContent = input.files[0] ? input.files[0].name : labelEl.dataset.default;
+    });
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const submitBtn = form.querySelector("button[type='submit']");
+    const name = document.getElementById("desk-name");
+    const endpointIsPlaceholder = form.action.includes("YOUR_FORM_ID") || form.action.includes("YOUR_DEPLOYMENT_ID");
+    // Apps Script's cross-origin response often can't be read by fetch()
+    // even when the submission succeeds — see backend/README.md. In that
+    // case we send the request but don't wait to confirm it landed.
+    const isAppsScript = form.action.includes("script.google.com");
+
+    function showConfirmation() {
+      const confirmEl = document.getElementById("pf-confirm");
+      if (confirmEl) {
+        confirmEl.classList.remove("is-error");
+        confirmEl.classList.add("is-visible");
+        confirmEl.querySelector(".pf-confirm-text").textContent =
+          `Thanks${name && name.value ? ", " + name.value.split(" ")[0] : ""} — your desk is in the queue. Our field team will follow up before it goes live.`;
+        confirmEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      form.reset();
+      if (counter) counter.textContent = "0 words (aim for 40–60)";
+      form.querySelectorAll(".pf-upload-label").forEach((el) => { el.textContent = el.dataset.default; });
+    }
+
+    function showError(message) {
+      const confirmEl = document.getElementById("pf-confirm");
+      if (confirmEl) {
+        confirmEl.classList.add("is-visible", "is-error");
+        confirmEl.querySelector(".pf-confirm-text").textContent = message;
+        confirmEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+
+    function resetSubmitBtn() {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Mail your desk in"; }
+    }
+
+    function setHiddenField(fieldName, value) {
+      let input = form.querySelector(`input[type="hidden"][name="${fieldName}"]`);
+      if (!input) {
+        input = document.createElement("input");
+        input.type = "hidden";
+        input.name = fieldName;
+        form.appendChild(input);
+      }
+      input.value = value || "";
+    }
+
+    // No real endpoint wired up yet — fall back to the local-only demo
+    // confirmation so the form is still testable before launch.
+    if (endpointIsPlaceholder) {
+      console.warn("desk-form: form.action is still the placeholder — wire it to a real endpoint before launch.");
+      trackEvent("desk_submitted", {
+        profession: (document.getElementById("desk-profession") || {}).value || "",
+        city: (document.getElementById("desk-city") || {}).value || ""
+      });
+      showConfirmation();
+      return;
+    }
+
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Preparing photos…"; }
+
+    // Photos travel as compressed Base64 text fields, not raw files —
+    // Apps Script can't reliably pull file bytes out of a cross-origin
+    // multipart post, but it reads text fields fine. See
+    // backend/README.md and apps-script.gs's saveImage_().
+    const workspaceInput = document.getElementById("desk-workspace-photo");
+    const portraitInput = document.getElementById("desk-portrait-photo");
+    let workspaceB64 = null;
+    let portraitB64 = null;
+    try {
+      [workspaceB64, portraitB64] = await Promise.all([
+        readAndCompressImage(workspaceInput && workspaceInput.files[0], 1600, 0.82),
+        readAndCompressImage(portraitInput && portraitInput.files[0], 1200, 0.85)
+      ]);
+    } catch (err) {
+      showError("One of those photos couldn't be processed — try a different file, or leave it out for now.");
+      resetSubmitBtn();
+      return;
+    }
+
+    trackEvent("desk_submitted", {
+      profession: (document.getElementById("desk-profession") || {}).value || "",
+      city: (document.getElementById("desk-city") || {}).value || "",
+      has_workspace_photo: !!workspaceB64,
+      has_portrait_photo: !!portraitB64
+    });
+
+    if (submitBtn) submitBtn.textContent = "Mailing it in…";
+
+    if (isAppsScript) {
+      // Real browser form submission into a hidden iframe — deliberately
+      // NOT fetch(). fetch()+mode:"no-cors" always reports "success" the
+      // moment the request is sent, even if it never actually executes
+      // server-side (wrong deployment access setting, a script error,
+      // Apps Script asking for a login it can't show you) — which made
+      // real failures completely invisible. A genuine <form> submission
+      // is exactly what Apps Script's own docs assume you're doing, and
+      // is the reliable way to get large multipart bodies (base64
+      // photos) there intact. See backend/README.md if rows still don't
+      // land — that's a deployment/permissions issue, not this code.
+      setHiddenField("workspace_photo_base64", workspaceB64);
+      setHiddenField("portrait_photo_base64", portraitB64);
+      // Drop the raw file inputs from the submission — Apps Script can't
+      // use them, and leaving the name on just uploads the bytes for
+      // nothing. Restored further down so the form behaves normally
+      // afterwards.
+      if (workspaceInput) workspaceInput.name = "";
+      if (portraitInput) portraitInput.name = "";
+
+      form.submit();
+
+      // Can't read the iframe's (cross-origin) response, so this is an
+      // optimistic confirmation once the request has had a moment to go
+      // out — not proof it landed. Check the Sheet, or use
+      // backend/test-submit.html, if you need to confirm it actually did.
+      window.setTimeout(() => {
+        if (workspaceInput) workspaceInput.name = "workspace_photo";
+        if (portraitInput) portraitInput.name = "portrait_photo";
+        showConfirmation();
+        resetSubmitBtn();
+      }, 1200);
+      return;
+    }
+
+    const formData = new FormData(form);
+    formData.delete("workspace_photo");
+    formData.delete("portrait_photo");
+    if (workspaceB64) formData.set("workspace_photo_base64", workspaceB64);
+    if (portraitB64) formData.set("portrait_photo_base64", portraitB64);
+
+    fetch(form.action, {
+      method: form.method || "POST",
+      body: formData,
+      headers: { Accept: "application/json" }
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Submission failed");
+        showConfirmation();
+      })
+      .catch(() => {
+        showError("That didn't go through — check your connection and try again, or email the field team directly.");
+      })
+      .finally(resetSubmitBtn);
+  });
+}
+
+/* -----------------------------------------------------------
+   Page transitions
+   -----------------------------------------------------------
+   Fades the page in on load, fades it out before any internal
+   link navigates away, and turns same-page anchor links (e.g.
+   nav → #show-your-desk) into a smooth scroll instead of a
+   hard jump. Cross-page anchors (nav on Explore linking to
+   index.html#show-your-desk) fade-navigate as usual, then
+   glide to the section once the new page has faded in.
+----------------------------------------------------------- */
+function initPageTransitions() {
+  const FADE_MS = 280;
+
+  requestAnimationFrame(() => document.body.classList.add("is-ready"));
+
+  // Arrived with a #hash in the URL (e.g. from a cross-page link) —
+  // start at the top and glide down to the section once faded in.
+  if (window.location.hash) {
+    const target = document.querySelector(window.location.hash);
+    if (target) {
+      window.scrollTo(0, 0);
+      window.setTimeout(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, FADE_MS + 120);
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const link = e.target.closest("a[href]");
+    if (!link || link.target === "_blank" || link.hasAttribute("download")) return;
+
+    let url;
+    try { url = new URL(link.href, window.location.href); } catch (err) { return; }
+    if (url.origin !== window.location.origin) return;
+
+    const samePage = url.pathname === window.location.pathname;
+
+    if (samePage && url.hash) {
+      const target = document.querySelector(url.hash);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.pushState(null, "", url.hash);
+      document.querySelector(".mobile-nav")?.classList.remove("is-open");
+      return;
+    }
+
+    if (samePage) return; // same file, no hash — nothing to do
+
+    e.preventDefault();
+    document.body.classList.add("is-leaving");
+    document.body.classList.remove("is-ready");
+    window.setTimeout(() => { window.location.href = link.href; }, FADE_MS);
+  }, false);
+
+  // Fade out on back/forward navigation too, where supported.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) {
+      document.body.classList.remove("is-leaving");
+      requestAnimationFrame(() => document.body.classList.add("is-ready"));
+    }
+  });
+}
+
+/* -----------------------------------------------------------
+   Live submissions
+   -----------------------------------------------------------
+   Fetches approved "Add Your Desk" tables from the Sheets/Apps
+   Script backend (see backend/README.md) and merges them into
+   window.TABLES — but never blocks the first paint on it.
+
+   Apps Script has real cold-start latency (and scans the whole
+   sheet on every doGet), so waiting on it before rendering made
+   every single page — Gallery, Explore, any table — feel slow.
+   Instead:
+     1. Render immediately with the static seed data (+ cached
+        live data, if we have a fresh copy from earlier this
+        session).
+     2. If there's no fresh cache, fetch in the background with
+        a timeout, cache the result, and re-render only if it
+        actually added something new.
+   Repeat navigations within LIVE_DATA_TTL_MS reuse the cache —
+   no network round trip at all.
+
+   Until LIVE_DATA_ENDPOINT is set, this is a silent no-op —
+   the site just runs on the static seed data in data.js.
+----------------------------------------------------------- */
+const LIVE_DATA_ENDPOINT = "https://script.google.com/macros/s/AKfycbzH3lsZbOfXM__5Bvlfx-9mpOtighO1RFt-iMFaBO4QGd-ARskMFF32XCYcRliAeW6-/exec";
+const LIVE_DATA_CACHE_KEY = "git_live_tables_v1";
+const LIVE_DATA_TTL_MS = 5 * 60 * 1000;   // treat cached data as fresh for 5 minutes
+const LIVE_DATA_TIMEOUT_MS = 6000;        // give Apps Script 6s before giving up
+
+function isLiveDataConfigured() {
+  return !LIVE_DATA_ENDPOINT.includes("YOUR_DEPLOYMENT_ID");
+}
+
+function readLiveCache() {
+  try {
+    const raw = sessionStorage.getItem(LIVE_DATA_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.data)) return null;
+    if (Date.now() - parsed.at > LIVE_DATA_TTL_MS) return null;
+    return parsed.data;
+  } catch (err) {
+    return null;
+  }
+}
+
+function writeLiveCache(data) {
+  try {
+    sessionStorage.setItem(LIVE_DATA_CACHE_KEY, JSON.stringify({ at: Date.now(), data }));
+  } catch (err) {
+    // storage disabled or full — fine, just means no caching this session
+  }
+}
+
+/** Merges live rows into window.TABLES. Returns true if anything new was added. */
+function mergeLiveTables(live) {
+  if (!Array.isArray(live) || !live.length) return false;
+  const existingIds = new Set((window.TABLES || []).map((t) => t.id));
+  const fresh = live.filter((t) => t && t.id && !existingIds.has(t.id));
+  if (!fresh.length) return false;
+  window.TABLES = [...fresh, ...(window.TABLES || [])]; // newest submissions first
+  return true;
+}
+
+function renderAllTables() {
+  initHomeFeatured();
+  initExplore();
+  initGallery();
+  initStory();
+}
+
+/**
+ * Loads a URL as JSONP instead of fetch() — a <script> tag whose src
+ * carries a ?callback=... param, and the response is JS that calls that
+ * function with the data. Not subject to CORS at all, unlike fetch(),
+ * which is why this is used instead: Apps Script's ContentService can't
+ * set an Access-Control-Allow-Origin header, so a plain fetch() to a
+ * doGet is CORS-blocked from pretty much any origin (including "null",
+ * i.e. an HTML file opened directly rather than served).
+ */
+function jsonp(url, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const callbackName = `__gitJsonp_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
+    const script = document.createElement("script");
+    let settled = false;
+
+    const cleanup = () => {
+      delete window[callbackName];
+      script.remove();
+      clearTimeout(timer);
+    };
+
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error("JSONP request timed out"));
+    }, timeoutMs);
+
+    window[callbackName] = (data) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error("JSONP script failed to load"));
+    };
+
+    const separator = url.includes("?") ? "&" : "?";
+    script.src = `${url}${separator}callback=${callbackName}`;
+    document.head.appendChild(script);
+  });
+}
+
+/** Background load + cache. Returns true if it changed window.TABLES. */
+async function fetchAndMergeLiveTables() {
+  if (!isLiveDataConfigured()) return false;
+
+  try {
+    const live = await jsonp(LIVE_DATA_ENDPOINT, LIVE_DATA_TIMEOUT_MS);
+    writeLiveCache(live);
+    return mergeLiveTables(live);
+  } catch (err) {
+    // Offline, misconfigured, slow (timed out), or the endpoint isn't
+    // returning valid JSONP yet — the static seed data (already
+    // rendered) stands on its own.
+    console.warn("loadLiveTables: falling back to static data —", err.message);
+    return false;
+  }
+}
+
+/* -----------------------------------------------------------
+   Boot
+----------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  initPageTransitions(); // fade in immediately — don't wait on the network
+  initNav();
+
+  // ?refresh=1 in the URL bypasses the cache entirely — handy right after
+  // approving a row in the Sheet, when you don't want to wait out
+  // LIVE_DATA_TTL_MS to see it. Also clears the stored cache so it
+  // doesn't keep getting reused by the next normal page load.
+  const forceRefresh = new URLSearchParams(window.location.search).get("refresh") === "1";
+  if (forceRefresh) { try { sessionStorage.removeItem(LIVE_DATA_CACHE_KEY); } catch (err) {} }
+
+  // Use a fresh cache synchronously, if we have one — instant, no fetch.
+  const cached = forceRefresh ? null : readLiveCache();
+  if (cached) mergeLiveTables(cached);
+
+  renderAllTables(); // first paint — never waits on the network
+  initDeskForm();
+  trackEvent("page_view", { page_path: window.location.pathname + window.location.search });
+
+  // No fresh cache — fetch in the background and re-render only if it
+  // actually found something new. The page is already usable either way.
+  if (!cached && isLiveDataConfigured()) {
+    fetchAndMergeLiveTables().then((changed) => { if (changed) renderAllTables(); });
+  }
+});
+</script>
+</body>
+</html>

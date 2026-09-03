@@ -862,3 +862,35 @@ nav.main-nav a:hover, nav.main-nav a.is-active{ opacity:1; border-color:var(--ma
   transition:top .15s ease; z-index:999;
 }
 .skip-link:focus{ top:12px; }
+/* ===== 2026 EDITORIAL ARCHIVE THEME ===== */
+:root{
+  --paper:#F5F1E8;
+  --paper-shade:#E8E0D2;
+  --ink:#243A46;
+  --ink-soft:#53605B;
+  --red:#C45A3A;
+  --red-dark:#963E2A;
+  --marigold:#D8C8A8;
+  --leaf:#61765B;
+  --leaf-dark:#44563F;
+  --neon:#A7B7A0;
+  --neon-ink:#243A46;
+  --paper-rgb:245,241,232;
+  --ink-rgb:36,58,70;
+}
+.site-header{background:var(--ink);color:var(--paper);border-bottom-color:var(--red)}
+.site-header .main-nav a.is-active::after{background:var(--red)}
+.btn--primary{background:var(--red);color:var(--paper);border-color:var(--red)}
+.btn--primary:hover{background:var(--red-dark);border-color:var(--red-dark)}
+.btn--ghost:hover{background:var(--ink);color:var(--paper)}
+.page-hero{background:var(--ink)}
+.filter-toggle{background:var(--ink)}
+.filter-toggle button.is-active{background:var(--marigold);color:var(--ink)}
+.pill.is-active,.pill:hover{background:var(--red);border-color:var(--red);color:var(--paper)}
+.story-meta{color:var(--marigold)}
+.object-card{background:var(--leaf-dark)}
+.site-footer{background:var(--ink)}
+.site-footer .brand,.site-footer .footer-links a{color:var(--paper)}
+.footer-links a:hover{color:var(--marigold)}
+.stamp-ok{background:var(--leaf-dark)}
+.pf-confirm{background:var(--leaf-dark)}

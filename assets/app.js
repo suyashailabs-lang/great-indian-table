@@ -615,7 +615,7 @@ function initPageTransitions() {
    Until LIVE_DATA_ENDPOINT is set, this is a silent no-op —
    the site just runs on the static seed data in data.js.
 ----------------------------------------------------------- */
-const LIVE_DATA_ENDPOINT = "https://script.google.com/macros/s/AKfycbzip5XBln2PgScuo7XRVIKUiRvvJK-_Rzzkgr7l9WiQ5hQAYekuYOD74IO4ePfumuvQ/exec";
+const LIVE_DATA_ENDPOINT = "https://script.google.com/macros/s/AKfycbzH3lsZbOfXM__5Bvlfx-9mpOtighO1RFt-iMFaBO4QGd-ARskMFF32XCYcRliAeW6-/exec";
 const LIVE_DATA_CACHE_KEY = "git_live_tables_v1";
 const LIVE_DATA_TTL_MS = 5 * 60 * 1000;   // treat cached data as fresh for 5 minutes
 const LIVE_DATA_TIMEOUT_MS = 6000;        // give Apps Script 6s before giving up
