@@ -1,7 +1,13 @@
 (function(){
   function init(){
     document.querySelectorAll('.table-hero').forEach(function(el){el.remove();});
+    fixCopy();
     initStoriesThread();
+  }
+
+  function fixCopy(){
+    var hero=document.querySelector('#map h1');
+    if(hero)hero.innerHTML='Every table tells a <em>tale.</em>';
   }
 
   function initStoriesThread(){
@@ -23,8 +29,7 @@
       '<filter id="rope-shadow" x="-20%" y="-20%" width="140%" height="150%"><feGaussianBlur stdDeviation="3"/><feOffset dy="5"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
       '<filter id="rope-knot-shadow" x="-100%" y="-100%" width="300%" height="300%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity=".3"/></filter>'+
       '<filter id="rope-knot-active" x="-100%" y="-100%" width="300%" height="300%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#b95537" flood-opacity=".35"/></filter>'+
-      '</defs>'+
-      '<path class="thread-rope-shadow"></path><path class="thread-rope-body"></path><path class="thread-rope-mid"></path><path class="thread-rope-light"></path>';
+      '</defs><path class="thread-rope-shadow"></path><path class="thread-rope-body"></path><path class="thread-rope-mid"></path><path class="thread-rope-light"></path>';
     stage.insertBefore(svg,grid);
 
     var knots=[];
@@ -36,7 +41,7 @@
       knot.className='story-knot-access';
       knot.setAttribute('aria-label','Go to story '+(i+1));
       knot.textContent=String(i+1).padStart(2,'0');
-      knot.style.cssText='position:absolute;opacity:0;pointer-events:auto;width:44px;height:44px;border:0;background:transparent;cursor:pointer;z-index:20;';
+      knot.style.cssText='position:absolute;opacity:0;pointer-events:auto;width:44px;height:44px;border:0;background:transparent;cursor:pointer;z-index:1;';
       knot.addEventListener('click',function(){card.scrollIntoView({behavior:'smooth',block:'center'});});
       stage.appendChild(knot);
       knots.push(knot);
@@ -52,11 +57,9 @@
       points.forEach(function(p,i){
         var prev=i?points[i-1]:{x:w/2,y:p.y-170};
         var bend=(i%2===0?1:-1)*Math.min(92,w*.09);
-        var mid=(prev.y+p.y)/2;
         d+=' C '+(w/2+bend)+' '+(prev.y+70)+' '+(w/2-bend)+' '+(p.y-70)+' '+p.x+' '+p.y;
-        var k=knots[i];
-        k.style.left=(w/2-22)+'px';
-        k.style.top=(p.y-22)+'px';
+        knots[i].style.left=(w/2-22)+'px';
+        knots[i].style.top=(p.y-22)+'px';
       });
       d+=' C '+(w/2-70)+' '+(points[points.length-1].y+95)+' '+(w/2+75)+' '+(points[points.length-1].y+145)+' '+(w/2)+' '+(points[points.length-1].y+190);
       svg.querySelector('.thread-rope-shadow').setAttribute('d',d);
@@ -74,8 +77,31 @@
         g.appendChild(c);g.appendChild(core);svg.appendChild(g);
       });
     }
-    requestAnimationFrame(layoutRope);
-    window.addEventListener('resize',layoutRope);
+
+    function updatePerspective(){
+      if(window.innerWidth<=800)return;
+      var rect=stage.getBoundingClientRect();
+      var viewport=window.innerHeight;
+      var progress=Math.max(0,Math.min(1,(viewport-rect.top)/(viewport+Math.max(1,rect.height))));
+      var scale=(1.055-(progress*.075)).toFixed(3);
+      var tilt=(4+(progress*7)).toFixed(2)+'deg';
+      stage.style.setProperty('--thread-scale',scale);
+      stage.style.setProperty('--thread-tilt',tilt);
+
+      var center=viewport*.5;
+      cards.forEach(function(card){
+        var r=card.getBoundingClientRect();
+        var distance=(r.top+r.height/2-center)/Math.max(viewport*.8,1);
+        var z=Math.max(-34,Math.min(18,-distance*28));
+        var y=Math.max(-8,Math.min(12,distance*7));
+        card.style.setProperty('--depth-z',z.toFixed(1)+'px');
+        card.style.setProperty('--depth-y',y.toFixed(1)+'px');
+      });
+    }
+
+    requestAnimationFrame(function(){layoutRope();updatePerspective();});
+    window.addEventListener('resize',function(){layoutRope();updatePerspective();});
+    window.addEventListener('scroll',updatePerspective,{passive:true});
 
     var observer=new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
