@@ -1,35 +1,48 @@
 /* The map stays as the landing chapter. Stories become a tactile, continuous rope journey. */
 .table-hero{display:none!important}
 
+/* MAP — deliberately framed like an India field map, not a world map */
 #map.map-section{display:block;position:relative;overflow:visible}
 #map .map-layout{grid-template-columns:minmax(0,1fr)!important;max-width:1180px!important;gap:34px!important;justify-items:center!important}
 #map .map-copy{width:min(760px,100%);text-align:center;transform:none!important}
 #map .map-copy .lead{margin-left:auto;margin-right:auto;max-width:620px}
 #map .map-note{justify-content:center}
 #map .map-share{margin-top:20px}
-#map .map-panel{justify-self:center!important;width:min(100%,920px)!important;min-height:560px!important;transform:none!important}
+#map .map-panel{justify-self:center!important;width:min(100%,760px)!important;min-height:620px!important;transform:none!important}
 #map .map-panel:hover{transform:translateY(-3px)!important}
-#map #india-map{height:560px!important}
+#map #india-map{height:620px!important}
 #map.map-section:after{content:"";position:absolute;z-index:20;left:50%;bottom:-80px;width:2px;height:80px;background:linear-gradient(to bottom,var(--rust),rgba(185,85,55,.12));transform:translateX(-50%);pointer-events:none}
 
 #explore.motion-reveal{opacity:1!important;visibility:visible!important;transform:none!important;position:relative}
 #explore:before{content:"";position:absolute;z-index:0;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,rgba(185,85,55,.08),rgba(185,85,55,.16),rgba(185,85,55,.06));transform:translateX(-50%);pointer-events:none}
 #explore>.section-heading,#explore>.stories-stage{position:relative;z-index:2}
 
-.stories-stage.thread-stories{--thread-x:50%;position:relative!important;height:auto!important;min-height:0!important;margin:48px 0 0!important;overflow:visible!important;opacity:1!important;visibility:visible!important;transform:none!important;perspective:none!important}
-.thread-rope-svg{position:absolute;z-index:5;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.thread-rope-shadow{fill:none;stroke:rgba(40,23,12,.25);stroke-width:17;stroke-linecap:round;stroke-linejoin:round;filter:url(#rope-shadow);}
-.thread-rope-body{fill:none;stroke:#8b542f;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;filter:url(#rope-texture);}
-.thread-rope-mid{fill:none;stroke:#b87849;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;}
-.thread-rope-light{fill:none;stroke:rgba(236,190,139,.72);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 8;}
-.thread-rope-knot{fill:url(#rope-knot);stroke:#744323;stroke-width:2;filter:url(#rope-knot-shadow);}
-.thread-rope-knot-core{fill:none;stroke:rgba(238,194,144,.72);stroke-width:2;}
-.thread-rope-knot.is-active{stroke:#b95537;filter:url(#rope-knot-active);}
+/* DESKTOP THREAD — a receding physical thread, with a subtle camera/perspective shift on scroll */
+@media(min-width:801px){
+  .stories-stage.thread-stories{--thread-x:50%;--thread-scale:1;--thread-tilt:4deg;position:relative!important;height:auto!important;min-height:0!important;margin:48px 0 0!important;overflow:visible!important;opacity:1!important;visibility:visible!important;transform:none!important;perspective:1500px!important;transform-style:preserve-3d!important}
+  .thread-stories .table-grid{transform-style:preserve-3d!important;perspective:1500px!important}
+  .thread-rope-svg{position:absolute;z-index:0;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;transform-origin:50% 0;transform:perspective(1300px) rotateX(var(--thread-tilt)) scale(var(--thread-scale));transition:transform .18s ease-out}
+}
+
+/* MOBILE THREAD — the rope lives in the gutter and never sits on top of story content */
+@media(max-width:800px){
+  .stories-stage.thread-stories{--thread-x:18px;position:relative!important;height:auto!important;min-height:0!important;margin:48px 0 0!important;overflow:visible!important;opacity:1!important;visibility:visible!important;transform:none!important;perspective:none!important}
+  .thread-rope-svg{position:absolute;z-index:0!important;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;transform:none!important}
+}
+
+.thread-rope-shadow{fill:none;stroke:rgba(40,23,12,.28);stroke-width:19;stroke-linecap:round;stroke-linejoin:round;filter:url(#rope-shadow)}
+.thread-rope-body{fill:none;stroke:#8b542f;stroke-width:13;stroke-linecap:round;stroke-linejoin:round;filter:url(#rope-texture)}
+.thread-rope-mid{fill:none;stroke:#b87849;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+.thread-rope-light{fill:none;stroke:rgba(236,190,139,.72);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 8}
+.thread-rope-knot{fill:url(#rope-knot);stroke:#744323;stroke-width:2;filter:url(#rope-knot-shadow)}
+.thread-rope-knot-core{fill:none;stroke:rgba(238,194,144,.72);stroke-width:2}
+.thread-rope-knot.is-active{stroke:#b95537;filter:url(#rope-knot-active)}
 
 .thread-stories .table-grid{position:relative!important;z-index:2!important;display:block!important;height:auto!important;overflow:visible!important;margin:0!important;padding:70px 0 100px!important}
-.thread-stories .table-card{position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;width:calc(50% - 78px)!important;min-height:430px!important;margin:0 0 118px!important;opacity:.72!important;visibility:visible!important;pointer-events:auto!important;overflow:hidden!important;border:1px solid rgba(32,51,58,.13)!important;border-radius:4px!important;background:#fffaf0!important;box-shadow:0 12px 30px rgba(32,51,58,.07)!important;transform:none!important;transition:opacity .45s ease,box-shadow .45s ease,border-color .45s ease,filter .45s ease,transform .45s ease!important;filter:saturate(.82)!important}
-.thread-stories .table-card:nth-child(even){margin-left:auto!important}
-.thread-stories .table-card.is-lit{opacity:1!important;filter:saturate(1)!important;border-color:rgba(185,85,55,.38)!important;box-shadow:0 24px 55px rgba(32,51,58,.14),0 0 0 1px rgba(185,85,55,.05)!important;transform:translateY(-4px)!important}
+.thread-stories .table-card{position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;width:calc(50% - 78px)!important;min-height:430px!important;margin:0 0 118px!important;opacity:.72!important;visibility:visible!important;pointer-events:auto!important;overflow:hidden!important;border:1px solid rgba(32,51,58,.13)!important;border-radius:4px!important;background:#fffaf0!important;box-shadow:0 12px 30px rgba(32,51,58,.07)!important;transform:translate3d(0,var(--depth-y,0px),var(--depth-z,0px)) rotateZ(var(--card-angle,0deg))!important;transition:opacity .45s ease,box-shadow .45s ease,border-color .45s ease,filter .45s ease,transform .55s ease!important;filter:saturate(.82)!important}
+.thread-stories .table-card:nth-child(even){margin-left:auto!important;--card-angle:1deg}
+.thread-stories .table-card:nth-child(odd){--card-angle:-1deg}
+.thread-stories .table-card.is-lit{opacity:1!important;filter:saturate(1)!important;border-color:rgba(185,85,55,.38)!important;box-shadow:0 24px 55px rgba(32,51,58,.14),0 0 0 1px rgba(185,85,55,.05)!important;transform:translate3d(0,var(--depth-y,-4px),var(--depth-z,18px)) rotateZ(var(--card-angle,0deg))!important}
 .thread-stories .table-card:before,.thread-stories .table-card:after{display:none!important}
 .thread-stories .table-card img{display:block!important;width:100%!important;height:100%!important;min-height:430px!important;aspect-ratio:auto!important;object-fit:cover!important;transform:none!important;transition:filter .45s ease!important}
 .thread-stories .table-card.is-lit img{filter:saturate(1.03)!important}
@@ -44,17 +57,18 @@
 #contribute:after{content:"";position:absolute;z-index:0;left:50%;bottom:-70px;height:70px;width:1px;background:linear-gradient(to bottom,rgba(185,85,55,.18),rgba(185,85,55,0));transform:translateX(-50%);pointer-events:none}
 
 @media(max-width:800px){
-  #map .map-panel,#map #india-map{height:480px!important;min-height:480px!important}
+  #map .map-panel,#map #india-map{height:480px!important;min-height:480px!important;width:100%!important}
+  #map .map-panel{max-width:620px!important}
   #map.map-section:after{bottom:-60px;height:60px}
   #explore:before{left:18px}
-  .stories-stage.thread-stories{--thread-x:18px}
   .thread-stories .table-grid{padding:35px 0 60px 48px!important}
-  .thread-stories .table-card,.thread-stories .table-card:nth-child(even){display:block!important;width:100%!important;min-height:0!important;margin:0 0 54px!important}
+  .thread-stories .table-card,.thread-stories .table-card:nth-child(even){display:block!important;width:100%!important;min-height:0!important;margin:0 0 54px!important;transform:none!important}
+  .thread-stories .table-card.is-lit{transform:translateY(-3px)!important}
   .thread-stories .table-card img{height:52vw!important;min-height:240px!important;max-height:390px!important}
   .thread-stories .table-card-copy{padding:24px!important}
   .thread-stories .table-card-copy h3{font-size:clamp(1.7rem,8vw,2.6rem)!important}
-  .thread-rope-svg{left:0;width:100%}
+  .thread-rope-knot{r:15}
   #gallery:before,#contribute:before{left:18px;top:-50px;height:50px}
   #gallery:after,#contribute:after{left:18px;bottom:-50px;height:50px}
 }
-@media(prefers-reduced-motion:reduce){.thread-stories .table-card,.thread-rope-body,.thread-rope-mid,.thread-rope-light{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.thread-stories .table-card,.thread-rope-body,.thread-rope-mid,.thread-rope-light,.thread-rope-svg{transition:none!important}}
