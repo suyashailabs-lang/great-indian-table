@@ -23,7 +23,7 @@ jobs:
           rm -rf site-mirror
           mkdir site-mirror
           wget --recursive --level=2 --no-parent --page-requisites --convert-links --adjust-extension --no-host-directories --directory-prefix=site-mirror https://great-indian-table.netlify.app/
-          cp -a site-mirror/great-indian-table.netlify.app/. ./
+          cp -a site-mirror/. ./
           rm -rf site-mirror
           rm -f .github/workflows/sync-site.yml
 
