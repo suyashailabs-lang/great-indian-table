@@ -1,94 +1,101 @@
 (function(){
   function init(){
-    // The table landing experiment is intentionally removed. The original map remains the home/landing view.
-    document.querySelectorAll('.table-hero').forEach(function(el){ el.remove(); });
+    document.querySelectorAll('.table-hero').forEach(function(el){el.remove();});
     initStoriesThread();
   }
 
   function initStoriesThread(){
     var stage=document.querySelector('.stories-stage');
     var grid=document.getElementById('stories-grid');
-    if(!stage || !grid) return;
-
+    if(!stage||!grid)return;
     var cards=Array.prototype.slice.call(grid.querySelectorAll('.table-card'));
-    if(!cards.length) return;
-    if(stage.dataset.threadReady==='1') return;
+    if(!cards.length||stage.dataset.threadReady==='1')return;
     stage.dataset.threadReady='1';
-
     stage.classList.remove('immersive','vertical-stories','has-navigation');
     stage.classList.add('thread-stories');
 
-    var old=stage.querySelector('.story-navigation');
-    if(old) old.remove();
-    var oldCounter=stage.querySelector('.story-counter');
-    if(oldCounter) oldCounter.remove();
+    var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.classList.add('thread-rope-svg');
+    svg.setAttribute('aria-hidden','true');
+    svg.innerHTML='<defs>'+
+      '<linearGradient id="rope-knot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d49a68"/><stop offset=".45" stop-color="#9a5e35"/><stop offset="1" stop-color="#6f3d22"/></linearGradient>'+
+      '<filter id="rope-texture" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="2" seed="8" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1.7"/><feDropShadow dx="0" dy="2" stdDeviation="1.8" flood-opacity=".25"/></filter>'+
+      '<filter id="rope-shadow" x="-20%" y="-20%" width="140%" height="150%"><feGaussianBlur stdDeviation="3"/><feOffset dy="5"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+      '<filter id="rope-knot-shadow" x="-100%" y="-100%" width="300%" height="300%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity=".3"/></filter>'+
+      '<filter id="rope-knot-active" x="-100%" y="-100%" width="300%" height="300%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#b95537" flood-opacity=".35"/></filter>'+
+      '</defs>'+
+      '<path class="thread-rope-shadow"></path><path class="thread-rope-body"></path><path class="thread-rope-mid"></path><path class="thread-rope-light"></path>';
+    stage.insertBefore(svg,grid);
 
-    var thread=document.createElement('div');
-    thread.className='story-thread';
-    thread.setAttribute('aria-hidden','true');
-    thread.innerHTML='<div class="story-thread-line"><span class="story-thread-progress"></span></div>';
-
-    var knots=document.createElement('div');
-    knots.className='story-knots';
-
+    var knots=[];
     cards.forEach(function(card,i){
-      var name=(card.querySelector('h3') ? card.querySelector('h3').textContent : 'Story '+(i+1)).trim();
-      var city=(card.querySelector('p') ? card.querySelector('p').textContent : '').trim();
+      card.dataset.storyIndex=i;
+      card.classList.add(i%2===0?'thread-left':'thread-right');
       var knot=document.createElement('button');
       knot.type='button';
-      knot.className='story-knot';
-      knot.setAttribute('aria-label','Go to story '+(i+1)+': '+name);
-      knot.innerHTML='<span class="knot-number">'+String(i+1).padStart(2,'0')+'</span>';
-      knot.addEventListener('click',function(){
-        card.scrollIntoView({behavior:'smooth',block:'center'});
-      });
-      knots.appendChild(knot);
-      card.dataset.storyIndex=i;
-      card.dataset.storyName=name;
-      card.dataset.storyCity=city;
-      card.classList.add(i%2===0?'thread-left':'thread-right');
+      knot.className='story-knot-access';
+      knot.setAttribute('aria-label','Go to story '+(i+1));
+      knot.textContent=String(i+1).padStart(2,'0');
+      knot.style.cssText='position:absolute;opacity:0;pointer-events:auto;width:44px;height:44px;border:0;background:transparent;cursor:pointer;z-index:20;';
+      knot.addEventListener('click',function(){card.scrollIntoView({behavior:'smooth',block:'center'});});
+      stage.appendChild(knot);
+      knots.push(knot);
     });
 
-    thread.appendChild(knots);
-    stage.insertBefore(thread,grid);
-
-    var buttons=Array.prototype.slice.call(knots.querySelectorAll('.story-knot'));
-    var progress=thread.querySelector('.story-thread-progress');
-
-    function select(index){
-      if(index<0 || index>=cards.length) return;
-      cards.forEach(function(card,j){ card.classList.toggle('is-lit',j===index); });
-      buttons.forEach(function(button,j){
-        button.classList.toggle('is-active',j===index);
+    function layoutRope(){
+      var w=stage.clientWidth,h=stage.scrollHeight||stage.clientHeight;
+      svg.setAttribute('viewBox','0 0 '+w+' '+Math.max(h,1));
+      svg.setAttribute('height',Math.max(h,1));
+      var points=cards.map(function(card){return {x:w/2,y:card.offsetTop+card.offsetHeight/2};});
+      if(!points.length)return;
+      var d='M '+(w/2)+' '+Math.max(18,points[0].y-170);
+      points.forEach(function(p,i){
+        var prev=i?points[i-1]:{x:w/2,y:p.y-170};
+        var bend=(i%2===0?1:-1)*Math.min(92,w*.09);
+        var mid=(prev.y+p.y)/2;
+        d+=' C '+(w/2+bend)+' '+(prev.y+70)+' '+(w/2-bend)+' '+(p.y-70)+' '+p.x+' '+p.y;
+        var k=knots[i];
+        k.style.left=(w/2-22)+'px';
+        k.style.top=(p.y-22)+'px';
       });
-      if(progress){
-        var ratio=cards.length===1 ? 1 : index/(cards.length-1);
-        progress.style.height=(ratio*100)+'%';
-      }
-      stage.style.setProperty('--active-story',index);
+      d+=' C '+(w/2-70)+' '+(points[points.length-1].y+95)+' '+(w/2+75)+' '+(points[points.length-1].y+145)+' '+(w/2)+' '+(points[points.length-1].y+190);
+      svg.querySelector('.thread-rope-shadow').setAttribute('d',d);
+      svg.querySelector('.thread-rope-body').setAttribute('d',d);
+      svg.querySelector('.thread-rope-mid').setAttribute('d',d);
+      svg.querySelector('.thread-rope-light').setAttribute('d',d);
+
+      Array.prototype.slice.call(svg.querySelectorAll('.thread-rope-knot,.thread-rope-knot-core')).forEach(function(el){el.remove();});
+      points.forEach(function(p,i){
+        var g=document.createElementNS('http://www.w3.org/2000/svg','g');
+        var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r','18');c.setAttribute('class','thread-rope-knot');c.dataset.index=i;
+        var core=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+        core.setAttribute('cx',p.x);core.setAttribute('cy',p.y);core.setAttribute('rx','10');core.setAttribute('ry','5');core.setAttribute('transform','rotate(-18 '+p.x+' '+p.y+')');core.setAttribute('class','thread-rope-knot-core');
+        g.appendChild(c);g.appendChild(core);svg.appendChild(g);
+      });
     }
+    requestAnimationFrame(layoutRope);
+    window.addEventListener('resize',layoutRope);
 
     var observer=new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        if(entry.isIntersecting){ select(Number(entry.target.dataset.storyIndex)||0); }
+        if(entry.isIntersecting)select(Number(entry.target.dataset.storyIndex)||0);
       });
     },{root:null,rootMargin:'-42% 0px -42% 0px',threshold:0});
-    cards.forEach(function(card){ observer.observe(card); });
+    function select(index){
+      if(index<0||index>=cards.length)return;
+      cards.forEach(function(card,j){card.classList.toggle('is-lit',j===index);});
+      Array.prototype.slice.call(svg.querySelectorAll('.thread-rope-knot')).forEach(function(k){k.classList.toggle('is-active',Number(k.dataset.index)===index);});
+    }
+    cards.forEach(function(card){observer.observe(card);});
     select(0);
 
-    // Keep the story sequence easy to travel with the keyboard too.
     window.addEventListener('keydown',function(e){
-      if(e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
-      var active=buttons.findIndex(function(b){return b.classList.contains('is-active');});
-      if(e.key==='ArrowDown' || e.key==='j'){
-        e.preventDefault();
-        cards[Math.min(cards.length-1,active+1)].scrollIntoView({behavior:'smooth',block:'center'});
-      }else if(e.key==='ArrowUp' || e.key==='k'){
-        e.preventDefault();
-        cards[Math.max(0,active-1)].scrollIntoView({behavior:'smooth',block:'center'});
-      }
+      if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+      var active=cards.findIndex(function(c){return c.classList.contains('is-lit');});
+      if(e.key==='ArrowDown'||e.key==='j'){e.preventDefault();cards[Math.min(cards.length-1,active+1)].scrollIntoView({behavior:'smooth',block:'center'});}
+      if(e.key==='ArrowUp'||e.key==='k'){e.preventDefault();cards[Math.max(0,active-1)].scrollIntoView({behavior:'smooth',block:'center'});}
     },{passive:false});
   }
-
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
