@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The Great Indian Table | Where India Works</title>
+  <meta name="description" content="A visual archive of real tables, desks, and workspaces across India.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root { --paper:#f3eee2; --paper-deep:#e8dfcc; --ink:#20333a; --muted:#63716a; --rust:#b95537; --rust-dark:#8f3e28; --leaf:#536a59; --night:#1d3535; --line:rgba(32,51,58,.14); --display:'Yeseva One', Georgia, serif; --body:'Work Sans', Arial, sans-serif; --script:'Kalam', cursive; }
+    * { box-sizing:border-box; } html { scroll-behavior:smooth; } body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); } a { color:inherit; text-decoration:none; }
+    .skip-link { position:absolute; left:12px; top:-50px; z-index:1000; background:var(--ink); color:#fff; padding:10px 14px; }.skip-link:focus { top:12px; }
+    .site-header { position:sticky; top:0; z-index:800; min-height:68px; background:rgba(243,238,226,.93); border-bottom:1px solid var(--line); backdrop-filter:blur(14px); }
+    .header-inner { max-width:1500px; min-height:68px; padding:0 clamp(20px,4vw,64px); margin:auto; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .brand { display:flex; align-items:center; gap:10px; font:1rem var(--display); white-space:nowrap; }.brand-mark { font:1.2rem var(--script); color:var(--rust); }
+    .main-nav { display:flex; align-items:center; gap:5px; }.main-nav a { position:relative; display:inline-flex; align-items:center; min-height:38px; padding:0 13px; border:1px solid transparent; border-radius:6px; color:#52605b; font-size:.72rem; font-weight:600; letter-spacing:.04em; transition:color .2s ease,background-color .2s ease,border-color .2s ease,transform .2s ease; }
+    .main-nav a::after { content:""; position:absolute; right:13px; bottom:7px; left:13px; height:2px; transform:scaleX(0); transform-origin:left; background:var(--rust); transition:transform .2s ease; }.main-nav a:hover { color:var(--rust-dark); background:rgba(185,85,55,.07); transform:translateY(-1px); }.main-nav a:hover::after,.main-nav a.is-active::after { transform:scaleX(1); }.main-nav a.is-active { color:var(--rust-dark); background:#f7dfd3; border-color:rgba(185,85,55,.22); }
+    .nav-toggle { display:none; width:40px; height:40px; border:1px solid var(--line); border-radius:6px; background:transparent; color:var(--ink); font-size:.72rem; font-weight:700; }.mobile-nav { display:none; }
+    .map-section { min-height:calc(100vh - 68px); padding:clamp(26px,5vw,70px) clamp(20px,4vw,64px) 38px; background:linear-gradient(135deg,#f7f2e7 0%,var(--paper) 55%,#e4ebdf 100%); }
+    .map-layout { max-width:1500px; min-height:calc(100vh - 176px); margin:auto; display:grid; grid-template-columns:minmax(260px,.55fr) minmax(520px,1.45fr); gap:clamp(28px,5vw,80px); align-items:center; }.eyebrow { margin:0 0 18px; color:var(--rust); font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }.eyebrow::before { content:""; display:inline-block; width:25px; height:2px; margin:0 9px 4px 0; background:currentColor; }
+    h1 { max-width:560px; margin:0; font:clamp(3.3rem,6vw,6.2rem)/.92 var(--display); }h1 em { color:var(--rust); font-family:var(--script); font-style:normal; }.lead { max-width:390px; margin:24px 0; color:#53625c; font-size:1rem; line-height:1.7; }.map-note { display:flex; align-items:center; gap:9px; color:var(--leaf); font:1rem var(--script); }.map-note span { width:12px; height:12px; border:2px solid var(--rust); border-radius:50%; box-shadow:0 0 0 5px rgba(185,85,55,.1); }
+    .map-share { display:inline-flex; align-items:center; min-height:44px; margin-top:25px; padding:0 16px; border:0; border-radius:5px; background:var(--rust); color:#fffaf0; cursor:pointer; font:700 .76rem var(--body); letter-spacing:.04em; transition:background .2s ease,transform .2s ease; }.map-share:hover { background:var(--rust-dark); transform:translateY(-2px); }
+    .map-panel { position:relative; justify-self:end; width:min(100%,640px); min-height:660px; border:1px solid rgba(32,51,58,.26); border-radius:8px; overflow:hidden; box-shadow:18px 24px 0 rgba(83,106,89,.18),0 25px 52px rgba(32,51,58,.18); background:#aab9a9; }.map-panel::before { content:""; position:absolute; z-index:450; inset:0; pointer-events:none; border:14px solid rgba(255,250,240,.18); box-shadow:inset 0 0 80px rgba(20,45,42,.24); }.map-panel::after { content:"INDIA / WORKING LANDSCAPES"; position:absolute; z-index:500; top:15px; left:16px; padding:7px 9px; background:rgba(25,49,48,.82); color:#f5eee1; font-size:.61rem; font-weight:700; letter-spacing:.11em; }.leaflet-container { background:#b5c3b3; }.leaflet-tile-pane { filter:saturate(.7) contrast(1.1) brightness(.96); }#india-map { width:100%; height:660px; }.map-caption { position:absolute; z-index:500; right:12px; bottom:12px; padding:8px 10px; border-radius:4px; background:rgba(247,242,232,.93); color:#54615b; font-size:.68rem; }
+    .table-marker { width:18px; height:18px; border:3px solid #fffaf0; border-radius:50%; background:var(--rust); box-shadow:0 2px 8px rgba(32,51,58,.38),0 0 0 5px rgba(185,85,55,.15); transition:transform .15s ease,background .15s ease; }.table-marker:hover { transform:scale(1.25); background:var(--rust-dark); }.marker-preview { display:grid; grid-template-columns:64px 1fr; gap:9px; width:190px; padding:5px; }.marker-preview img { width:64px; height:64px; object-fit:cover; border-radius:3px; }.marker-preview strong { display:block; margin-top:4px; color:var(--ink); font:1rem var(--display); }.marker-preview span { display:block; margin-top:3px; color:var(--muted); font-size:.7rem; }.leaflet-tooltip { border:0; border-radius:5px; background:#fffaf0; box-shadow:0 10px 25px rgba(32,51,58,.22); }.leaflet-tooltip-top::before { border-top-color:#fffaf0; }.leaflet-popup-content-wrapper { border-radius:7px; background:var(--night); color:#f7f1e5; box-shadow:0 14px 34px rgba(20,38,37,.28); }.leaflet-popup-tip { background:var(--night); }.leaflet-popup-content { width:240px!important; margin:14px 16px; }.popup-city { color:#ef9a7e; font-size:.65rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }.popup-name { margin:5px 0 2px; font:1.3rem var(--display); }.popup-profession { margin:0 0 13px; color:#c9d2c8; font-size:.8rem; }.popup-link { padding:0; border:0; border-bottom:1px solid currentColor; background:transparent; color:#f3a082; cursor:pointer; font:700 .72rem var(--body); letter-spacing:.06em; text-transform:uppercase; }
+    .section { max-width:1500px; margin:auto; padding:80px clamp(20px,4vw,64px); scroll-margin-top:68px; }.section-heading { display:flex; justify-content:space-between; align-items:end; gap:24px; padding-bottom:27px; border-bottom:1px solid var(--line); }.section-heading h2 { margin:0; font:clamp(2.1rem,4vw,3.6rem)/1 var(--display); }.section-heading p { max-width:420px; margin:0; color:var(--muted); line-height:1.6; }
+    .table-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin-top:30px; }.table-card { display:block; overflow:hidden; border:1px solid var(--line); border-radius:7px; background:#fffaf0; transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease; }.table-card:hover { border-color:rgba(185,85,55,.4); box-shadow:0 14px 28px rgba(32,51,58,.12); transform:translateY(-4px); }.table-card img { display:block; width:100%; aspect-ratio:1.18; object-fit:cover; background:var(--paper-deep); }.table-card-copy { padding:16px; }.table-card-copy small { display:block; color:var(--rust); font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }.table-card-copy h3 { margin:7px 0 3px; font:1.35rem var(--display); }.table-card-copy p { margin:0; color:var(--muted); font-size:.82rem; }
+    .gallery-section { background:#e8eee4; }.gallery-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:30px; }.gallery-grid a { display:block; overflow:hidden; border-radius:5px; aspect-ratio:1; background:var(--paper-deep); }.gallery-grid img { width:100%; height:100%; object-fit:cover; transition:transform .25s ease; }.gallery-grid a:hover img { transform:scale(1.07); }
+    .contribute { padding:64px clamp(20px,4vw,64px); background:var(--night); color:#f8f2e7; scroll-margin-top:68px; }.contribute-inner { display:grid; grid-template-columns:minmax(220px,.65fr) minmax(420px,1.35fr); gap:clamp(32px,7vw,100px); max-width:1280px; margin:auto; align-items:start; }.contribute h2 { margin:0 0 10px; font:clamp(2rem,4vw,3.5rem)/1 var(--display); }.contribute > .contribute-inner > div > p { max-width:440px; margin:0; color:#cbd4ca; line-height:1.6; }.desk-form { display:grid; grid-template-columns:1fr 1fr; gap:14px; }.desk-form .wide { grid-column:1 / -1; }.desk-form label { display:grid; gap:6px; color:#dce5da; font-size:.76rem; font-weight:600; }.desk-form input,.desk-form textarea { width:100%; border:1px solid rgba(242,237,223,.22); border-radius:4px; background:#294445; color:#fffaf0; font:inherit; padding:11px 12px; }.desk-form textarea { min-height:88px; resize:vertical; }.desk-form input:focus,.desk-form textarea:focus { outline:2px solid #ef9a7e; outline-offset:1px; }.desk-form button { justify-self:start; min-height:45px; padding:0 19px; border:0; border-radius:5px; background:#eea083; color:#292f2c; cursor:pointer; font-size:.78rem; font-weight:700; letter-spacing:.04em; transition:background .2s ease,transform .2s ease; }.desk-form button:hover { background:#ffc2a9; transform:translateY(-2px); }.desk-form button:disabled { cursor:wait; opacity:.7; transform:none; }.desk-status { display:none; grid-column:1 / -1; margin:0; padding:12px 14px; border-left:3px solid #96d9bf; background:rgba(150,217,191,.12); color:#e4f5eb; line-height:1.5; font-size:.86rem; }.desk-status.is-visible { display:block; }.desk-status.is-error { border-color:#ef9a7e; background:rgba(239,154,126,.12); color:#ffdacf; }.desk-disclaimer { grid-column:1 / -1; margin:0; color:#aebdb4; font-size:.7rem; line-height:1.5; }
+    .story-overlay { position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(16,31,31,.64); backdrop-filter:blur(6px); }.story-overlay.is-open { display:flex; }.story-dialog { position:relative; width:min(980px,100%); max-height:calc(100vh - 40px); overflow:auto; border-radius:8px; background:var(--paper); box-shadow:0 24px 70px rgba(0,0,0,.32); }.story-close { position:sticky; top:12px; float:right; z-index:2; display:grid; width:38px; height:38px; margin:12px 12px 0 0; place-items:center; border:1px solid var(--line); border-radius:50%; background:rgba(255,250,240,.95); color:var(--ink); cursor:pointer; font-size:1.35rem; }.story-hero { display:grid; grid-template-columns:minmax(260px,.85fr) 1.15fr; min-height:380px; }.story-hero img { width:100%; height:100%; min-height:380px; object-fit:cover; background:var(--paper-deep); }.story-intro { padding:clamp(35px,6vw,68px) clamp(28px,6vw,62px); }.story-intro small { display:block; color:var(--rust); font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }.story-intro h2 { margin:13px 0 8px; font:clamp(2.6rem,5vw,4.8rem)/.95 var(--display); }.story-intro p { margin:0; color:var(--leaf); font:1.25rem var(--script); }.story-content { display:grid; grid-template-columns:1fr 1fr; gap:24px; padding:42px clamp(28px,6vw,62px) 60px; }.story-content section { border-top:1px solid var(--line); padding-top:16px; }.story-content h3 { margin:0 0 8px; color:var(--rust); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; }.story-content p { margin:0; color:#4f5e58; line-height:1.65; }.story-quote,.story-object { grid-column:1 / -1; }.story-quote p { font:clamp(1.35rem,2.5vw,2rem)/1.3 var(--display); color:var(--ink); }.story-object { padding:20px; background:var(--night); }.story-object h3 { color:#f3a082; }.story-object p { color:#edf1ea; }body.modal-open { overflow:hidden; }.contribute .desk-form { display:none; }#desk-overlay .story-dialog { width:min(860px,100%); background:var(--night); color:#f8f2e7; }#desk-overlay .desk-form { padding:52px 38px 38px; }#desk-overlay .desk-status { grid-column:1/-1; }
+    @media (max-width:960px) { .map-layout { grid-template-columns:1fr; }.map-copy { max-width:650px; }.map-panel { justify-self:stretch; width:100%; min-height:520px; }.map-panel,#india-map { height:520px; }.table-grid { grid-template-columns:repeat(3,1fr); }.gallery-grid { grid-template-columns:repeat(4,1fr); } }
+    @media (max-width:700px) { .header-inner { min-height:62px; }.site-header { min-height:62px; }.main-nav { display:none; }.nav-toggle { display:block; }.mobile-nav.is-open { display:grid; padding:10px 20px 18px; gap:6px; border-top:1px solid var(--line); }.mobile-nav a { padding:11px 12px; border-radius:5px; color:#53605b; font-size:.82rem; font-weight:600; }.mobile-nav a.is-active { background:#f7dfd3; color:var(--rust-dark); }.map-section { padding-top:38px; }.map-layout { min-height:0; gap:32px; }h1 { font-size:3.35rem; }.map-panel { min-height:420px; }.map-panel,#india-map { height:420px; }.section { padding-top:58px; padding-bottom:58px; }.section-heading { display:block; }.section-heading p { margin-top:14px; }.table-grid { grid-template-columns:repeat(2,1fr); gap:12px; }.table-card-copy { padding:12px; }.table-card-copy h3 { font-size:1.12rem; }.gallery-grid { grid-template-columns:repeat(3,1fr); }.contribute { padding-top:40px; padding-bottom:40px; }.contribute-inner,.desk-form { grid-template-columns:1fr; }.desk-form .wide,.desk-status,.desk-disclaimer { grid-column:auto; }.story-overlay { padding:10px; }.story-dialog { max-height:calc(100vh - 20px); }.story-hero { grid-template-columns:1fr; }.story-hero img { min-height:240px; height:240px; }.story-content { grid-template-columns:1fr; padding:28px; }.story-quote,.story-object { grid-column:auto; } }
+    .desk-form label:has(input[type="checkbox"]) { display:inline-flex; width:max-content; max-width:100%; align-items:center; gap:8px; }.desk-form label:has(input[type="checkbox"]) input { width:auto; padding:0; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#map">Skip to map</a>
+  <header class="site-header"><div class="header-inner"><a class="brand" href="#map" aria-label="The Great Indian Table home"><span class="brand-mark">Table</span>The Great Indian Table</a><nav class="main-nav" aria-label="Primary navigation"><a class="is-active" href="#map">Home</a><a href="#explore">Explore</a><a href="#gallery">Gallery</a><a href="#contribute">Add Your Desk</a></nav><button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">Menu</button></div><nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation"><a class="is-active" href="#map">Home</a><a href="#explore">Explore</a><a href="#gallery">Gallery</a><a href="#contribute">Add Your Desk</a></nav></header>
+  <main>
+    <section class="map-section" id="map"><div class="map-layout"><div class="map-copy"><p class="eyebrow">A visual archive of where India works</p><h1>Every table tells a <em>trade.</em></h1><p class="lead">Real tables, desks, and workspaces across India. Pan the map, zoom into a city, and open a marker to meet the person behind it.</p><p class="map-note"><span></span>Hover a marker for a preview, then open its story</p><button class="map-share" type="button" data-desk-dialog>Share a workspace</button></div><div class="map-panel"><div id="india-map" aria-label="Interactive map of table stories across India"></div><div class="map-caption">Map data &copy; OpenStreetMap contributors</div></div></div></section>
+    <section class="section" id="explore"><div class="section-heading"><div><p class="eyebrow">All the stories</p><h2>Explore the tables</h2></div><p>Browse every workspace in the archive. Each card opens a complete story, including the workday, challenge, dream, and meaningful object on the table.</p></div><div class="table-grid" id="table-grid" aria-live="polite"></div></section>
+    <section class="gallery-section" id="gallery"><div class="section"><div class="section-heading"><div><p class="eyebrow">A closer look</p><h2>Gallery</h2></div><p>A visual index of the people and places represented in the collection.</p></div><div class="gallery-grid" id="gallery-grid"></div></div></section>
+    <section class="contribute" id="contribute"><div class="contribute-inner"><div><p class="eyebrow">Add to the archive</p><h2>Add your desk</h2><p>Know a workspace with a story worth preserving? Send the details below. New submissions are reviewed before joining the archive.</p><button class="map-share" type="button" data-desk-dialog>Open submission form</button></div><form class="desk-form" id="desk-form" action="https://script.google.com/macros/s/AKfycbzH3lsZbOfXM__5Bvlfx-9mpOtighO1RFt-iMFaBO4QGd-ARskMFF32XCYcRliAeW6-/exec" method="post" target="desk-submit-target"><label>Name<input name="name" required autocomplete="name"></label><label>Profession<input name="profession" required></label><label>City<input id="desk-city" required autocomplete="address-level2"></label><label>State<input id="desk-state" required autocomplete="address-level1"></label><label>Latitude<input name="latitude" type="number" step="any" min="-90" max="90" placeholder="22.5726"></label><label>Longitude<input name="longitude" type="number" step="any" min="-180" max="180" placeholder="88.3639"></label><input type="hidden" name="city_state" id="desk-city-state"><label class="wide">Tell us about the table<textarea name="intro" required placeholder="What does the workspace look and feel like?"></textarea></label><label>Typical workday<textarea name="workday" required></textarea></label><label>The challenge<textarea name="challenge" required></textarea></label><label>The dream<textarea name="dream" required></textarea></label><label>Quote<textarea name="quote" required></textarea></label><label>Interesting object<textarea name="interesting_object"></textarea></label><label class="wide"><span><input type="checkbox" name="consent" required> I have permission to share this story.</span></label><button type="submit">Submit your desk</button><p class="desk-status" id="desk-status" role="status"></p><p class="desk-disclaimer">Your story is saved as a pending submission and reviewed before publication.</p></form></div></section>
+  </main>
+  <div class="story-overlay" id="story-overlay" aria-hidden="true">
+    <article class="story-dialog" role="dialog" aria-modal="true" aria-labelledby="story-title">
+      <button class="story-close" id="story-close" type="button" aria-label="Close story">x</button>
+      <div id="story-modal-content"></div>
+    </article>
+  </div>
+  <div class="story-overlay" id="desk-overlay" aria-hidden="true"><article class="story-dialog" role="dialog" aria-modal="true" aria-label="Add your desk"><button class="story-close" id="desk-close" type="button" aria-label="Close submission form">x</button><div id="desk-dialog-content"></div></article></div>
+  <iframe name="desk-submit-target" title="Submission response" hidden></iframe>
+  <footer>Built by IndiaFutureAI Innovators</footer>
+  <script src="assets/data.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function () {
+      const cityCoordinates = { Amritsar:[31.634,74.8723], Delhi:[28.6139,77.209], Jodhpur:[26.2389,73.0243], Jaipur:[26.9124,75.7873], Udaipur:[24.5854,73.7125], Mumbai:[19.076,72.8777], Pune:[18.5204,73.8567], Lucknow:[26.8467,80.9462], Varanasi:[25.3176,82.9739], Kolkata:[22.5726,88.3639], Guwahati:[26.1445,91.7362], Hyderabad:[17.385,78.4867], Bengaluru:[12.9716,77.5946], Kochi:[9.9312,76.2673], Madurai:[9.9252,78.1198] };
+      const tables = Array.isArray(window.TABLES) ? window.TABLES : [];
+      const esc = value => String(value || "").replace(/[&<>'"]/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[char]));
+      const indiaBounds = L.latLngBounds([[7, 68], [37.5, 97.5]]);
+      const map = L.map("india-map", { scrollWheelZoom:true, minZoom:4.75, maxZoom:11, zoomControl:true, attributionControl:false, maxBounds:indiaBounds.pad(.05), maxBoundsViscosity:1, worldCopyJump:false, zoomSnap:.25 });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:19, noWrap:true }).addTo(map);
+      map.fitBounds(indiaBounds, { padding:[28,28] });
+      window.addEventListener("load", () => { map.invalidateSize(); map.fitBounds(indiaBounds, { padding:[28,28] }); }, { once:true });
+      const icon = L.divIcon({ className:"", html:'<div class="table-marker" aria-hidden="true"></div>', iconSize:[18,18], iconAnchor:[9,9], popupAnchor:[0,-12] });
+      const tablesByCity = tables.reduce((groups, table) => { (groups[table.city] ||= []).push(table); return groups; }, {});
+      Object.values(tablesByCity).forEach(cityTables => cityTables.forEach((table, index) => {
+        const coordinates = cityCoordinates[table.city];
+        if (!coordinates) return;
+        const offset = index - (cityTables.length - 1) / 2;
+        const position = [coordinates[0] + offset * .025, coordinates[1] + offset * .04];
+        const popup = '<div class="popup-city">' + esc(table.city) + ', ' + esc(table.state) + '</div><div class="popup-name">' + esc(table.name) + '</div><p class="popup-profession">' + esc(table.profession) + '</p><button class="popup-link" type="button" data-story-id="' + esc(table.id) + '">Read full story</button>';
+        const preview = '<div class="marker-preview"><img src="' + esc(table.photo) + '" alt=""><div><strong>' + esc(table.name) + '</strong><span>' + esc(table.profession) + '<br>' + esc(table.city) + '</span></div></div>';
+        L.marker(position, { icon, title:table.name + " - " + table.profession, alt:table.name + " workspace" }).bindTooltip(preview, { direction:"top", offset:[0,-10], opacity:1 }).bindPopup(popup, { closeButton:true }).addTo(map);
+      }));
+      const tableGrid = document.getElementById("table-grid"), galleryGrid = document.getElementById("gallery-grid");
+      tableGrid.innerHTML = tables.map(table => '<a class="table-card" href="#story" data-story-id="' + esc(table.id) + '"><img src="' + esc(table.photo) + '" alt="' + esc(table.name) + ' workspace" loading="lazy"><div class="table-card-copy"><small>' + esc(table.city) + ', ' + esc(table.state) + '</small><h3>' + esc(table.name) + '</h3><p>' + esc(table.profession) + '</p></div></a>').join("");
+      galleryGrid.innerHTML = tables.map(table => '<a href="#story" data-story-id="' + esc(table.id) + '" aria-label="Read ' + esc(table.name) + '&#39;s story"><img src="' + esc(table.photo) + '" alt="' + esc(table.name) + ' workspace" loading="lazy"></a>').join("");
+      const overlay = document.getElementById("story-overlay"), modalContent = document.getElementById("story-modal-content"), closeStory = document.getElementById("story-close");
+      let previousFocus = null;
+      function openStory(id) {
+        const table = tables.find(item => item.id === id);
+        if (!table) return;
+        previousFocus = document.activeElement;
+        const object = table.object || {};
+        modalContent.innerHTML = '<div class="story-hero"><img src="' + esc(table.photo) + '" alt="' + esc(table.name) + ' workspace"><div class="story-intro"><small>' + esc(table.city) + ', ' + esc(table.state) + '</small><h2 id="story-title">' + esc(table.name) + '</h2><p>' + esc(table.profession) + '</p></div></div><div class="story-content"><section><h3>The table</h3><p>' + esc(table.intro) + '</p></section><section><h3>A workday</h3><p>' + esc(table.workday) + '</p></section><section><h3>The challenge</h3><p>' + esc(table.challenge) + '</p></section><section><h3>The dream</h3><p>' + esc(table.dream) + '</p></section><section class="story-quote"><h3>In their words</h3><p>&ldquo;' + esc(table.quote) + '&rdquo;</p></section><section class="story-object"><h3>' + esc(object.label || "On the table") + '</h3><p>' + esc(object.text || "") + '</p></section></div>';
+        overlay.classList.add("is-open");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+        closeStory.focus();
+      }
+      function dismissStory() {
+        overlay.classList.remove("is-open");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+        if (previousFocus) previousFocus.focus();
+      }
+      document.addEventListener("click", event => { const trigger = event.target.closest("[data-story-id]"); if (!trigger) return; event.preventDefault(); openStory(trigger.dataset.storyId); });
+      closeStory.addEventListener("click", dismissStory);
+      overlay.addEventListener("click", event => { if (event.target === overlay) dismissStory(); });
+      document.addEventListener("keydown", event => { if (event.key === "Escape" && overlay.classList.contains("is-open")) dismissStory(); });
+      const deskForm = document.getElementById("desk-form");
+      const deskStatus = document.getElementById("desk-status");
+      const deskOverlay = document.getElementById("desk-overlay");
+      const deskClose = document.getElementById("desk-close");
+      const deskDialogContent = document.getElementById("desk-dialog-content");
+      const deskFrame = document.querySelector('iframe[name="desk-submit-target"]');
+      let deskTrigger = null;
+      let submittingDesk = false;
+      if (deskForm) {
+        deskDialogContent.appendChild(deskForm);
+        function openDeskDialog(trigger) {
+          deskTrigger = trigger || document.activeElement;
+          deskOverlay.classList.add("is-open");
+          deskOverlay.setAttribute("aria-hidden", "false");
+          document.body.classList.add("modal-open");
+          deskClose.focus();
+        }
+        function closeDeskDialog() {
+          deskOverlay.classList.remove("is-open");
+          deskOverlay.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("modal-open");
+          if (deskTrigger) deskTrigger.focus();
+        }
+        document.querySelectorAll("[data-desk-dialog]").forEach(button => button.addEventListener("click", () => openDeskDialog(button)));
+        deskClose.addEventListener("click", closeDeskDialog);
+        deskOverlay.addEventListener("click", event => { if (event.target === deskOverlay) closeDeskDialog(); });
+        document.addEventListener("keydown", event => { if (event.key === "Escape" && deskOverlay.classList.contains("is-open")) closeDeskDialog(); });
+        deskFrame.addEventListener("load", () => {
+          if (!submittingDesk) return;
+          submittingDesk = false;
+          const submitButton = deskForm.querySelector("button[type='submit']");
+          deskStatus.textContent = "Submission received. It is now pending review and will appear in the archive after approval.";
+          deskStatus.className = "desk-status is-visible";
+          deskForm.reset();
+          submitButton.disabled = false;
+          submitButton.textContent = "Submit your desk";
+        });
+        deskForm.addEventListener("submit", event => {
+          event.preventDefault();
+          const city = document.getElementById("desk-city").value.trim();
+          const state = document.getElementById("desk-state").value.trim();
+          document.getElementById("desk-city-state").value = city + ", " + state;
+          const submitButton = deskForm.querySelector("button[type='submit']");
+          deskStatus.className = "desk-status";
+          submitButton.disabled = true;
+          submitButton.textContent = "Submitting...";
+          submittingDesk = true;
+          HTMLFormElement.prototype.submit.call(deskForm);
+        });
+      }
+      const navLinks = Array.from(document.querySelectorAll(".main-nav a, .mobile-nav a")), sections = navLinks.map(link => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+      const setActive = id => navLinks.forEach(link => link.classList.toggle("is-active", link.getAttribute("href") === "#" + id));
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); }), { rootMargin:"-45% 0px -45% 0px", threshold:0 }); sections.forEach(section => observer.observe(section));
+      const toggle = document.querySelector(".nav-toggle"), mobileNav = document.getElementById("mobile-nav"); toggle.addEventListener("click", () => { const open = mobileNav.classList.toggle("is-open"); toggle.setAttribute("aria-expanded", String(open)); }); mobileNav.addEventListener("click", () => { mobileNav.classList.remove("is-open"); toggle.setAttribute("aria-expanded", "false"); });
+    }());
+  </script>
+</body>
+</html>
