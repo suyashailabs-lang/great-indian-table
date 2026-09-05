@@ -1,6 +1,9 @@
 /* The Great Indian Table — immersive entry + Dimension story wall */
 .git-entry-lock { overflow:hidden; }
 
+/* Motion-style scroll zoom hero: the section is tall, the hero stays sticky, and
+   scroll progress drives scale / blur / opacity continuously. */
+.git-entry-spacer { height:180vh; position:relative; }
 .git-entry {
   position:fixed;
   inset:0;
@@ -11,20 +14,21 @@
   background:#172a2b;
   color:#f6f0e5;
   isolation:isolate;
-  transition:opacity .9s cubic-bezier(.2,.7,.2,1),visibility .9s;
+  pointer-events:auto;
+  transition:opacity .45s ease, visibility .45s ease;
 }
 .git-entry::before {
   content:"";
   position:absolute;
-  inset:-8%;
+  inset:-10%;
   z-index:-2;
   background:
     radial-gradient(circle at 50% 45%, rgba(185,85,55,.24), transparent 25%),
     radial-gradient(circle at 70% 70%, rgba(83,106,89,.28), transparent 34%),
     linear-gradient(135deg,#172a2b 0%,#213d3d 52%,#122425 100%);
-  transform:scale(calc(1 + var(--entry-progress,0) * .16));
-  filter:blur(calc(var(--entry-progress,0) * 7px));
-  transition:transform .08s linear,filter .08s linear;
+  transform:scale(calc(1 + var(--entry-progress,0) * .22));
+  filter:blur(calc(var(--entry-progress,0) * 9px));
+  will-change:transform,filter;
 }
 .git-entry::after {
   content:"";
@@ -32,49 +36,36 @@
   inset:0;
   z-index:-1;
   background:radial-gradient(circle at center, transparent 0 30%, rgba(0,0,0,.36) 100%);
-  opacity:.8;
 }
 .git-entry-inner {
   width:min(92vw,1180px);
   text-align:center;
-  transform:translateY(calc(var(--entry-progress,0) * -13vh)) scale(calc(1 - var(--entry-progress,0) * .18));
-  opacity:calc(1 - var(--entry-progress,0) * 1.15);
-  transition:transform .08s linear,opacity .08s linear;
+  transform:
+    translateY(calc(var(--entry-progress,0) * -8vh))
+    scale(calc(1 + var(--entry-progress,0) * 5.2));
+  opacity:calc(1 - var(--entry-progress,0) * 1.08);
+  filter:blur(calc(var(--entry-progress,0) * 9px));
+  will-change:transform,opacity,filter;
 }
-.git-entry-kicker { margin:0 0 24px; font:700 .68rem/1 var(--body,Arial,sans-serif); letter-spacing:.22em; text-transform:uppercase; color:#ef9a7e; }
-.git-entry-title { margin:0; font:clamp(4rem,10vw,10rem)/.86 var(--display,Georgia,serif); letter-spacing:-.045em; text-wrap:balance; }
+.git-entry-title {
+  margin:0;
+  font:clamp(4rem,10vw,10rem)/.86 var(--display,Georgia,serif);
+  letter-spacing:-.045em;
+  text-wrap:balance;
+}
 .git-entry-title em { color:#e99578; font-family:var(--script,cursive); font-style:normal; }
-.git-entry-sub { max-width:500px; margin:30px auto 0; color:rgba(246,240,229,.7); font:400 .95rem/1.7 var(--body,Arial,sans-serif); }
-.git-entry-hint { position:absolute; left:50%; bottom:34px; transform:translateX(-50%); display:flex; align-items:center; gap:12px; color:rgba(246,240,229,.62); font:700 .62rem var(--body,Arial,sans-serif); letter-spacing:.15em; text-transform:uppercase; }
-.git-entry-hint::before { content:""; width:34px; height:1px; background:currentColor; }
 .git-entry.is-complete { opacity:0; visibility:hidden; pointer-events:none; }
-.git-entry-spacer { height:100vh; }
 
 /* Map becomes the visual destination of the opening sequence. */
 .map-section.git-map-centered { min-height:calc(100vh - 68px); }
 .map-section.git-map-centered .map-layout { display:flex; justify-content:center; align-items:center; min-height:calc(100vh - 176px); }
 .map-section.git-map-centered .map-panel { width:min(82vw,820px); justify-self:auto; }
-
-/* The title belongs to the opening sequence. Once the map arrives, it stands alone. */
 .map-section.git-map-centered .map-copy,
 .map-section.git-map-centered .map-panel::after,
 .map-section.git-map-centered .map-caption { display:none; }
 
-.git-dimension {
-  position:relative;
-  margin-top:34px;
-  min-height:clamp(650px,78vh,900px);
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  border:1px solid rgba(32,51,58,.12);
-  border-radius:28px;
-  background:radial-gradient(circle at 50% 42%, rgba(185,85,55,.10), transparent 28%),linear-gradient(145deg,#e9e0ce,#f5f0e6 50%,#dfe8df);
-  perspective:1400px;
-  cursor:grab;
-  touch-action:pan-y;
-  user-select:none;
-}
+/* Dimension-style story wall */
+.git-dimension { position:relative; margin-top:34px; min-height:clamp(650px,78vh,900px); display:grid; place-items:center; overflow:hidden; border:1px solid rgba(32,51,58,.12); border-radius:28px; background:radial-gradient(circle at 50% 42%, rgba(185,85,55,.10), transparent 28%),linear-gradient(145deg,#e9e0ce,#f5f0e6 50%,#dfe8df); perspective:1400px; cursor:grab; touch-action:pan-y; user-select:none; }
 .git-dimension.is-dragging { cursor:grabbing; }
 .git-dimension::before { content:""; position:absolute; width:62%; aspect-ratio:1; border-radius:50%; border:1px solid rgba(32,51,58,.11); box-shadow:0 0 0 90px rgba(255,250,240,.18),0 0 0 180px rgba(83,106,89,.06); }
 .git-dimension-label { position:absolute; left:28px; top:26px; z-index:20; color:var(--muted,#63716a); font:700 .62rem var(--body,Arial,sans-serif); letter-spacing:.16em; text-transform:uppercase; }
@@ -101,10 +92,8 @@
 .git-dimension-core { position:absolute; z-index:2; width:clamp(100px,12vw,150px); aspect-ratio:1; border-radius:50%; display:grid; place-items:center; text-align:center; background:rgba(29,53,53,.94); color:#f5eee2; box-shadow:0 24px 50px rgba(29,53,53,.25),inset 0 0 0 1px rgba(255,255,255,.1); pointer-events:none; }
 .git-dimension-core span { display:block; max-width:90px; font:1rem/1.05 var(--display,Georgia,serif); }
 .git-dimension-core small { display:block; margin-top:7px; color:#ef9a7e; font:700 .5rem var(--body,Arial,sans-serif); letter-spacing:.1em; text-transform:uppercase; }
-
 @media (max-width:760px) {
   .git-entry-title { font-size:clamp(3.2rem,17vw,6rem); }
-  .git-entry-sub { padding:0 20px; }
   .map-section.git-map-centered .map-layout { min-height:calc(100vh - 130px); }
   .map-section.git-map-centered .map-panel { width:94vw; min-height:580px; }
   .map-section.git-map-centered #india-map { height:580px; }
