@@ -1,4 +1,4 @@
-/* The Great Indian Table — immersive entry + Dimension-style story wall */
+/* The Great Indian Table — Motion-style scroll zoom + Dimension story wall */
 (function () {
   "use strict";
 
@@ -15,9 +15,6 @@
     if (document.body.dataset.gitEntryReady === "1") return;
     document.body.dataset.gitEntryReady = "1";
 
-    // Always enter the homepage at the beginning of the opening sequence.
-    // This prevents browsers restoring the previous scroll position and
-    // skipping the title when the visitor simply opens the URL.
     if (!window.location.hash) {
       try { history.scrollRestoration = "manual"; } catch (err) {}
       window.scrollTo(0, 0);
@@ -43,10 +40,12 @@
     let completed = false;
     const update = () => {
       raf = 0;
-      const progress = Math.min(1, Math.max(0, window.scrollY / Math.max(1, window.innerHeight * 0.9)));
+      // Match the Motion scroll-zoom pattern: a tall scroll range drives a
+      // continuously pinned hero instead of a simple enter/exit transition.
+      const progress = Math.min(1, Math.max(0, window.scrollY / Math.max(1, window.innerHeight * 1.55)));
       document.documentElement.style.setProperty("--entry-progress", progress.toFixed(4));
       entry.style.setProperty("--entry-progress", progress.toFixed(4));
-      if (progress >= 0.96) {
+      if (progress >= 0.985) {
         entry.classList.add("is-complete");
         completed = true;
       } else {
@@ -62,12 +61,12 @@
     update();
 
     entry.addEventListener("click", () => {
-      window.scrollTo({ top: window.innerHeight * 0.92, behavior: "smooth" });
+      window.scrollTo({ top: window.innerHeight * 1.55, behavior: "smooth" });
     });
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !completed) {
-        window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+        window.scrollTo({ top: window.innerHeight * 1.55, behavior: "smooth" });
       }
     });
   }
@@ -89,13 +88,12 @@
     if (!cards.length) return;
 
     grid.dataset.gitDimensionBuilt = "1";
-
     const stage = document.createElement("div");
     stage.className = "git-dimension";
     stage.setAttribute("aria-label", "Stories from tables across India. Drag to rotate; click a card to flip it.");
     stage.innerHTML = `
       <div class="git-dimension-label"><strong>Stories</strong> / A living table of India</div>
-      <div class="git-dimension-hint">Drag to rotate · Click to turn a card</div>
+      <div class="git-dimension-hint">Drag to rotate · Click a card to turn</div>
       <div class="git-dimension-ring" aria-live="polite"></div>
       <div class="git-dimension-core"><div><span>See the work.</span><small>Turn a story</small></div></div>
     `;
@@ -119,30 +117,21 @@
       const card = document.createElement("article");
       card.className = "git-dimension-card";
       card.dataset.index = String(index);
-      const angle = (index / total) * 360;
-      card.style.setProperty("--ry", `${angle}deg`);
+      card.style.setProperty("--ry", `${(index / total) * 360}deg`);
       card.style.setProperty("--tz", `${radius}px`);
       card.innerHTML = `
         <div class="git-dimension-card-inner">
           <div class="git-dimension-face git-dimension-front">
             <img src="${escapeAttr(data.img)}" alt="${escapeAttr(data.alt)}" loading="lazy">
             <div class="git-dimension-front-copy">
-              <small>${escapeHTML(data.city)}</small>
-              <h3>${escapeHTML(data.name)}</h3>
-              <p>${escapeHTML(data.profession)}</p>
+              <small>${escapeHTML(data.city)}</small><h3>${escapeHTML(data.name)}</h3><p>${escapeHTML(data.profession)}</p>
             </div>
           </div>
           <div class="git-dimension-face git-dimension-back">
-            <div>
-              <small>${escapeHTML(data.profession)}</small>
-              <h3>${escapeHTML(data.name)}</h3>
-              <p>${escapeHTML(data.city)}</p>
-            </div>
+            <div><small>${escapeHTML(data.profession)}</small><h3>${escapeHTML(data.name)}</h3><p>${escapeHTML(data.city)}</p></div>
             <button class="git-dimension-open" type="button">Open story ↗</button>
           </div>
-        </div>
-      `;
-
+        </div>`;
       card.addEventListener("click", (event) => {
         if (event.target.closest("button")) return;
         card.classList.toggle("is-flipped");
@@ -169,69 +158,40 @@
       if (value > 180) value -= 360;
       return value;
     }
-
     function render() {
       rotation += velocity;
       velocity *= 0.94;
       ring.style.transform = `rotateX(-7deg) rotateY(${rotation}deg)`;
       cardNodes.forEach((card, index) => {
-        const base = (index / total) * 360;
-        const facing = normalizeAngle(base + rotation);
+        const facing = normalizeAngle((index / total) * 360 + rotation);
         card.classList.toggle("is-near", Math.abs(facing) < 58);
         card.classList.toggle("is-far", Math.abs(facing) > 118);
       });
       animationFrame = requestAnimationFrame(render);
     }
-
     stage.addEventListener("pointerdown", (event) => {
-      dragging = true;
-      stage.classList.add("is-dragging");
-      lastX = event.clientX;
-      lastTime = performance.now();
-      stage.setPointerCapture?.(event.pointerId);
+      dragging = true; stage.classList.add("is-dragging"); lastX = event.clientX; lastTime = performance.now(); stage.setPointerCapture?.(event.pointerId);
     });
     stage.addEventListener("pointermove", (event) => {
       if (!dragging) return;
-      const now = performance.now();
-      const dx = event.clientX - lastX;
-      const dt = Math.max(8, now - lastTime);
-      rotation += dx * 0.22;
-      velocity = (dx / dt) * 2.8;
-      lastX = event.clientX;
-      lastTime = now;
+      const now = performance.now(); const dx = event.clientX - lastX; const dt = Math.max(8, now - lastTime);
+      rotation += dx * 0.22; velocity = (dx / dt) * 2.8; lastX = event.clientX; lastTime = now;
     });
-    const stopDrag = () => {
-      dragging = false;
-      stage.classList.remove("is-dragging");
-    };
-    stage.addEventListener("pointerup", stopDrag);
-    stage.addEventListener("pointercancel", stopDrag);
+    const stopDrag = () => { dragging = false; stage.classList.remove("is-dragging"); };
+    stage.addEventListener("pointerup", stopDrag); stage.addEventListener("pointercancel", stopDrag);
     stage.addEventListener("pointerleave", () => { if (dragging) stopDrag(); });
-
-    stage.addEventListener("wheel", (event) => {
-      event.preventDefault();
-      velocity += event.deltaY * -0.0022;
-    }, { passive: false });
-
+    stage.addEventListener("wheel", (event) => { event.preventDefault(); velocity += event.deltaY * -0.0022; }, { passive:false });
     render();
-    window.addEventListener("beforeunload", () => cancelAnimationFrame(animationFrame), { once: true });
+    window.addEventListener("beforeunload", () => cancelAnimationFrame(animationFrame), { once:true });
   }
 
-  function escapeHTML(value) {
-    return String(value).replace(/[&<>\"]/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[char]));
-  }
+  function escapeHTML(value) { return String(value).replace(/[&<>\"]/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[char])); }
   function escapeAttr(value) { return escapeHTML(value).replace(/'/g, "&#39;"); }
 
   function init() {
-    loadStyles();
-    initEntry();
-    centerMapChapter();
+    loadStyles(); initEntry(); centerMapChapter();
     requestAnimationFrame(() => requestAnimationFrame(buildDimensionWall));
   }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init, { once: true });
-  } else {
-    init();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once:true });
+  else init();
 })();
