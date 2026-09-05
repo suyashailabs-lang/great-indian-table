@@ -1,0 +1,76 @@
+name: Fix immersive homepage wiring
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch homepage and restore app.js
+        shell: bash
+        run: |
+          set -euo pipefail
+          changed=0
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8-sig')
+          changed = False
+
+          css = '  <link rel="stylesheet" href="assets/immersive-entry.css">'
+          if 'assets/immersive-entry.css' not in s:
+              marker = '  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">'
+              if marker not in s:
+                  raise SystemExit('Could not find Leaflet stylesheet marker in index.html')
+              s = s.replace(marker, marker + '\n' + css, 1)
+              changed = True
+
+          js = '  <script src="assets/immersive-entry.js"></script>'
+          if 'assets/immersive-entry.js' not in s:
+              marker = '</body>'
+              if marker not in s:
+                  raise SystemExit('Could not find </body> in index.html')
+              s = s.replace(marker, js + '\n' + marker, 1)
+              changed = True
+
+          if changed:
+              p.write_text(s, encoding='utf-8')
+          PY
+
+          if [ ! -s assets/app.js ]; then
+            good=""
+            while read -r c; do
+              if git show "$c:assets/app.js" 2>/dev/null | grep -q '[^[:space:]]'; then
+                good="$c"
+                break
+              fi
+            done < <(git log --format=%H -- assets/app.js)
+            if [ -z "$good" ]; then
+              echo 'Could not find a previous non-empty assets/app.js in git history' >&2
+              exit 1
+            fi
+            git show "$good:assets/app.js" > assets/app.js
+            changed=1
+          fi
+
+          if git diff --quiet; then
+            echo 'Nothing to fix.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets/app.js
+          git commit -m 'Fix immersive homepage wiring and restore app logic'
+          git push
