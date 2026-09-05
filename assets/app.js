@@ -385,9 +385,6 @@ function initDeskForm() {
     const submitBtn = form.querySelector("button[type='submit']");
     const name = document.getElementById("desk-name");
     const endpointIsPlaceholder = form.action.includes("YOUR_FORM_ID") || form.action.includes("YOUR_DEPLOYMENT_ID");
-    // Apps Script's cross-origin response often can't be read by fetch()
-    // even when the submission succeeds — see backend/README.md. In that
-    // case we send the request but don't wait to confirm it landed.
     const isAppsScript = form.action.includes("script.google.com");
 
     function showConfirmation() {
@@ -428,8 +425,6 @@ function initDeskForm() {
       input.value = value || "";
     }
 
-    // No real endpoint wired up yet — fall back to the local-only demo
-    // confirmation so the form is still testable before launch.
     if (endpointIsPlaceholder) {
       console.warn("desk-form: form.action is still the placeholder — wire it to a real endpoint before launch.");
       trackEvent("desk_submitted", {
@@ -442,10 +437,6 @@ function initDeskForm() {
 
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Preparing photos…"; }
 
-    // Photos travel as compressed Base64 text fields, not raw files —
-    // Apps Script can't reliably pull file bytes out of a cross-origin
-    // multipart post, but it reads text fields fine. See
-    // backend/README.md and apps-script.gs's saveImage_().
     const workspaceInput = document.getElementById("desk-workspace-photo");
     const portraitInput = document.getElementById("desk-portrait-photo");
     let workspaceB64 = null;
@@ -471,31 +462,13 @@ function initDeskForm() {
     if (submitBtn) submitBtn.textContent = "Mailing it in…";
 
     if (isAppsScript) {
-      // Real browser form submission into a hidden iframe — deliberately
-      // NOT fetch(). fetch()+mode:"no-cors" always reports "success" the
-      // moment the request is sent, even if it never actually executes
-      // server-side (wrong deployment access setting, a script error,
-      // Apps Script asking for a login it can't show you) — which made
-      // real failures completely invisible. A genuine <form> submission
-      // is exactly what Apps Script's own docs assume you're doing, and
-      // is the reliable way to get large multipart bodies (base64
-      // photos) there intact. See backend/README.md if rows still don't
-      // land — that's a deployment/permissions issue, not this code.
       setHiddenField("workspace_photo_base64", workspaceB64);
       setHiddenField("portrait_photo_base64", portraitB64);
-      // Drop the raw file inputs from the submission — Apps Script can't
-      // use them, and leaving the name on just uploads the bytes for
-      // nothing. Restored further down so the form behaves normally
-      // afterwards.
       if (workspaceInput) workspaceInput.name = "";
       if (portraitInput) portraitInput.name = "";
 
       form.submit();
 
-      // Can't read the iframe's (cross-origin) response, so this is an
-      // optimistic confirmation once the request has had a moment to go
-      // out — not proof it landed. Check the Sheet, or use
-      // backend/test-submit.html, if you need to confirm it actually did.
       window.setTimeout(() => {
         if (workspaceInput) workspaceInput.name = "workspace_photo";
         if (portraitInput) portraitInput.name = "portrait_photo";
@@ -529,21 +502,12 @@ function initDeskForm() {
 
 /* -----------------------------------------------------------
    Page transitions
-   -----------------------------------------------------------
-   Fades the page in on load, fades it out before any internal
-   link navigates away, and turns same-page anchor links (e.g.
-   nav → #show-your-desk) into a smooth scroll instead of a
-   hard jump. Cross-page anchors (nav on Explore linking to
-   index.html#show-your-desk) fade-navigate as usual, then
-   glide to the section once the new page has faded in.
 ----------------------------------------------------------- */
 function initPageTransitions() {
   const FADE_MS = 280;
 
   requestAnimationFrame(() => document.body.classList.add("is-ready"));
 
-  // Arrived with a #hash in the URL (e.g. from a cross-page link) —
-  // start at the top and glide down to the section once faded in.
   if (window.location.hash) {
     const target = document.querySelector(window.location.hash);
     if (target) {
@@ -575,7 +539,7 @@ function initPageTransitions() {
       return;
     }
 
-    if (samePage) return; // same file, no hash — nothing to do
+    if (samePage) return;
 
     e.preventDefault();
     document.body.classList.add("is-leaving");
@@ -583,7 +547,6 @@ function initPageTransitions() {
     window.setTimeout(() => { window.location.href = link.href; }, FADE_MS);
   }, false);
 
-  // Fade out on back/forward navigation too, where supported.
   window.addEventListener("pageshow", (e) => {
     if (e.persisted) {
       document.body.classList.remove("is-leaving");
@@ -594,31 +557,11 @@ function initPageTransitions() {
 
 /* -----------------------------------------------------------
    Live submissions
-   -----------------------------------------------------------
-   Fetches approved "Add Your Desk" tables from the Sheets/Apps
-   Script backend (see backend/README.md) and merges them into
-   window.TABLES — but never blocks the first paint on it.
-
-   Apps Script has real cold-start latency (and scans the whole
-   sheet on every doGet), so waiting on it before rendering made
-   every single page — Gallery, Explore, any table — feel slow.
-   Instead:
-     1. Render immediately with the static seed data (+ cached
-        live data, if we have a fresh copy from earlier this
-        session).
-     2. If there's no fresh cache, fetch in the background with
-        a timeout, cache the result, and re-render only if it
-        actually added something new.
-   Repeat navigations within LIVE_DATA_TTL_MS reuse the cache —
-   no network round trip at all.
-
-   Until LIVE_DATA_ENDPOINT is set, this is a silent no-op —
-   the site just runs on the static seed data in data.js.
 ----------------------------------------------------------- */
 const LIVE_DATA_ENDPOINT = "https://script.google.com/macros/s/AKfycbzH3lsZbOfXM__5Bvlfx-9mpOtighO1RFt-iMFaBO4QGd-ARskMFF32XCYcRliAeW6-/exec";
 const LIVE_DATA_CACHE_KEY = "git_live_tables_v1";
-const LIVE_DATA_TTL_MS = 5 * 60 * 1000;   // treat cached data as fresh for 5 minutes
-const LIVE_DATA_TIMEOUT_MS = 6000;        // give Apps Script 6s before giving up
+const LIVE_DATA_TTL_MS = 5 * 60 * 1000;
+const LIVE_DATA_TIMEOUT_MS = 6000;
 
 function isLiveDataConfigured() {
   return !LIVE_DATA_ENDPOINT.includes("YOUR_DEPLOYMENT_ID");
@@ -640,18 +583,15 @@ function readLiveCache() {
 function writeLiveCache(data) {
   try {
     sessionStorage.setItem(LIVE_DATA_CACHE_KEY, JSON.stringify({ at: Date.now(), data }));
-  } catch (err) {
-    // storage disabled or full — fine, just means no caching this session
-  }
+  } catch (err) {}
 }
 
-/** Merges live rows into window.TABLES. Returns true if anything new was added. */
 function mergeLiveTables(live) {
   if (!Array.isArray(live) || !live.length) return false;
   const existingIds = new Set((window.TABLES || []).map((t) => t.id));
   const fresh = live.filter((t) => t && t.id && !existingIds.has(t.id));
   if (!fresh.length) return false;
-  window.TABLES = [...fresh, ...(window.TABLES || [])]; // newest submissions first
+  window.TABLES = [...fresh, ...(window.TABLES || [])];
   return true;
 }
 
@@ -662,15 +602,6 @@ function renderAllTables() {
   initStory();
 }
 
-/**
- * Loads a URL as JSONP instead of fetch() — a <script> tag whose src
- * carries a ?callback=... param, and the response is JS that calls that
- * function with the data. Not subject to CORS at all, unlike fetch(),
- * which is why this is used instead: Apps Script's ContentService can't
- * set an Access-Control-Allow-Origin header, so a plain fetch() to a
- * doGet is CORS-blocked from pretty much any origin (including "null",
- * i.e. an HTML file opened directly rather than served).
- */
 function jsonp(url, timeoutMs) {
   return new Promise((resolve, reject) => {
     const callbackName = `__gitJsonp_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
@@ -710,7 +641,6 @@ function jsonp(url, timeoutMs) {
   });
 }
 
-/** Background load + cache. Returns true if it changed window.TABLES. */
 async function fetchAndMergeLiveTables() {
   if (!isLiveDataConfigured()) return false;
 
@@ -719,9 +649,6 @@ async function fetchAndMergeLiveTables() {
     writeLiveCache(live);
     return mergeLiveTables(live);
   } catch (err) {
-    // Offline, misconfigured, slow (timed out), or the endpoint isn't
-    // returning valid JSONP yet — the static seed data (already
-    // rendered) stands on its own.
     console.warn("loadLiveTables: falling back to static data —", err.message);
     return false;
   }
@@ -731,27 +658,30 @@ async function fetchAndMergeLiveTables() {
    Boot
 ----------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  initPageTransitions(); // fade in immediately — don't wait on the network
+  initPageTransitions();
   initNav();
 
-  // ?refresh=1 in the URL bypasses the cache entirely — handy right after
-  // approving a row in the Sheet, when you don't want to wait out
-  // LIVE_DATA_TTL_MS to see it. Also clears the stored cache so it
-  // doesn't keep getting reused by the next normal page load.
   const forceRefresh = new URLSearchParams(window.location.search).get("refresh") === "1";
   if (forceRefresh) { try { sessionStorage.removeItem(LIVE_DATA_CACHE_KEY); } catch (err) {} }
 
-  // Use a fresh cache synchronously, if we have one — instant, no fetch.
   const cached = forceRefresh ? null : readLiveCache();
   if (cached) mergeLiveTables(cached);
 
-  renderAllTables(); // first paint — never waits on the network
+  renderAllTables();
   initDeskForm();
   trackEvent("page_view", { page_path: window.location.pathname + window.location.search });
 
-  // No fresh cache — fetch in the background and re-render only if it
-  // actually found something new. The page is already usable either way.
   if (!cached && isLiveDataConfigured()) {
     fetchAndMergeLiveTables().then((changed) => { if (changed) renderAllTables(); });
+  }
+
+  // Presentation enhancements are isolated in their own file so the core
+  // archive logic above remains easy to maintain and the current GitHub
+  // baseline stays intact. The module is loaded after cards are rendered.
+  if (window.location.pathname.endsWith("/index.html") || window.location.pathname === "/" || window.location.pathname === "") {
+    const script = document.createElement("script");
+    script.src = "assets/immersive-entry.js";
+    script.defer = true;
+    document.body.appendChild(script);
   }
 });
