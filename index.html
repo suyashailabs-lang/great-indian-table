@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Work+Sans:wght@400;500;600;700&family=Yeseva+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="assets/immersive-entry.css">
   <style>
     :root { --paper:#f3eee2; --paper-deep:#e8dfcc; --ink:#20333a; --muted:#63716a; --rust:#b95537; --rust-dark:#8f3e28; --leaf:#536a59; --night:#1d3535; --line:rgba(32,51,58,.14); --display:'Yeseva One', Georgia, serif; --body:'Work Sans', Arial, sans-serif; --script:'Kalam', cursive; }
     * { box-sizing:border-box; } html { scroll-behavior:smooth; } body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); perspective:1600px; } a { color:inherit; text-decoration:none; }
@@ -295,5 +296,6 @@
       const toggle = document.querySelector(".nav-toggle"), mobileNav = document.getElementById("mobile-nav"); toggle.addEventListener("click", () => { const open = mobileNav.classList.toggle("is-open"); toggle.setAttribute("aria-expanded", String(open)); }); mobileNav.addEventListener("click", () => { mobileNav.classList.remove("is-open"); toggle.setAttribute("aria-expanded", "false"); });
     }());
   </script>
+  <script src="assets/immersive-entry.js"></script>
 </body>
 </html>
