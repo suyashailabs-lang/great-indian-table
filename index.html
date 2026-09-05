@@ -19,16 +19,16 @@
     .main-nav { display:flex; align-items:center; gap:5px; }.main-nav a { position:relative; display:inline-flex; align-items:center; min-height:38px; padding:0 13px; border:1px solid transparent; border-radius:6px; color:#52605b; font-size:.72rem; font-weight:600; letter-spacing:.04em; transition:color .2s ease,background-color .2s ease,border-color .2s ease,transform .2s ease; }
     .main-nav a::after { content:""; position:absolute; right:13px; bottom:7px; left:13px; height:2px; transform:scaleX(0); transform-origin:left; background:var(--rust); transition:transform .2s ease; }.main-nav a:hover { color:var(--rust-dark); background:rgba(185,85,55,.07); transform:translateY(-1px); }.main-nav a:hover::after,.main-nav a.is-active::after { transform:scaleX(1); }.main-nav a.is-active { color:var(--rust-dark); background:#f7dfd3; border-color:rgba(185,85,55,.22); }
     .nav-toggle { display:none; width:40px; height:40px; border:1px solid var(--line); border-radius:6px; background:transparent; color:var(--ink); font-size:.72rem; font-weight:700; }.mobile-nav { display:none; }
-    .map-section { position:relative; min-height:calc(100vh - 68px); padding:clamp(26px,5vw,70px) clamp(20px,4vw,64px) 38px; background:linear-gradient(135deg,#f7f2e7 0%,var(--paper) 55%,#e4ebdf 100%); overflow:hidden; }
+    .map-section { --scene-x:0px; --scene-y:0px; position:relative; min-height:calc(100vh - 68px); padding:clamp(26px,5vw,70px) clamp(20px,4vw,64px) 38px; background:linear-gradient(135deg,#f7f2e7 0%,var(--paper) 55%,#e4ebdf 100%); overflow:hidden; }
     .map-section::before, .map-section::after { content:""; position:absolute; border-radius:50%; filter:blur(18px); pointer-events:none; }
-    .map-section::before { width:420px; height:420px; right:-120px; top:-130px; background:rgba(185,85,55,.12); }
-    .map-section::after { width:520px; height:520px; left:-150px; bottom:-200px; background:rgba(83,106,89,.14); }
+    .map-section::before { width:420px; height:420px; right:-120px; top:-130px; background:rgba(185,85,55,.12); transform:translate3d(calc(var(--scene-x) * -1),calc(var(--scene-y) * -1),0); transition:transform .25s ease-out; }
+    .map-section::after { width:520px; height:520px; left:-150px; bottom:-200px; background:rgba(83,106,89,.14); transform:translate3d(var(--scene-x),var(--scene-y),0); transition:transform .35s ease-out; }
     .map-layout { position:relative; z-index:1; max-width:1500px; min-height:calc(100vh - 176px); margin:auto; display:grid; grid-template-columns:minmax(260px,.55fr) minmax(520px,1.45fr); gap:clamp(28px,5vw,80px); align-items:center; }
-    .map-copy { transform:translateZ(30px); }
+    .map-copy { transform:translate3d(calc(var(--scene-x) * -0.35),calc(var(--scene-y) * -0.35),30px); transition:transform .2s ease-out; }
     .eyebrow { margin:0 0 18px; color:var(--rust); font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }.eyebrow::before { content:""; display:inline-block; width:25px; height:2px; margin:0 9px 4px 0; background:currentColor; }
     h1 { max-width:560px; margin:0; font:clamp(3.3rem,6vw,6.2rem)/.92 var(--display); text-shadow:0 10px 25px rgba(32,51,58,.08); }h1 em { color:var(--rust); font-family:var(--script); font-style:normal; }.lead { max-width:390px; margin:24px 0; color:#53625c; font-size:1rem; line-height:1.7; }.map-note { display:flex; align-items:center; gap:9px; color:var(--leaf); font:1rem var(--script); }.map-note span { width:12px; height:12px; border:2px solid var(--rust); border-radius:50%; box-shadow:0 0 0 5px rgba(185,85,55,.1); }
     .map-share { display:inline-flex; align-items:center; min-height:44px; margin-top:25px; padding:0 16px; border:0; border-radius:5px; background:var(--rust); color:#fffaf0; cursor:pointer; font:700 .76rem var(--body); letter-spacing:.04em; transition:background .2s ease,transform .2s ease,box-shadow .2s ease; box-shadow:0 14px 24px rgba(185,85,55,.24); }.map-share:hover { background:var(--rust-dark); transform:translateY(-2px); box-shadow:0 18px 30px rgba(185,85,55,.28); }
-    .map-panel { position:relative; justify-self:end; width:min(100%,640px); min-height:660px; border:1px solid rgba(32,51,58,.26); border-radius:18px; overflow:hidden; box-shadow:18px 24px 0 rgba(83,106,89,.18),0 25px 52px rgba(32,51,58,.18); background:#aab9a9; transform:rotateX(6deg) rotateY(-6deg) translateZ(0); transform-style:preserve-3d; transition:transform .25s ease, box-shadow .25s ease; }
+    .map-panel { position:relative; justify-self:end; width:min(100%,640px); min-height:660px; border:1px solid rgba(32,51,58,.26); border-radius:18px; overflow:hidden; box-shadow:18px 24px 0 rgba(83,106,89,.18),0 25px 52px rgba(32,51,58,.18); background:#aab9a9; transform:rotateX(calc(6deg + var(--scene-y) * -0.12)) rotateY(calc(-6deg + var(--scene-x) * 0.12)) translateZ(0); transform-style:preserve-3d; transition:transform .25s ease, box-shadow .25s ease; }
     .map-panel:hover { transform:rotateX(3deg) rotateY(-2deg) translateY(-4px); box-shadow:18px 30px 0 rgba(83,106,89,.2),0 30px 65px rgba(32,51,58,.22); }
     .map-panel::before { content:""; position:absolute; z-index:450; inset:0; pointer-events:none; border:14px solid rgba(255,250,240,.18); box-shadow:inset 0 0 80px rgba(20,45,42,.24); }
     .map-panel::after { content:"INDIA / WORKING LANDSCAPES"; position:absolute; z-index:500; top:15px; left:16px; padding:7px 9px; background:rgba(25,49,48,.82); color:#f5eee1; font-size:.61rem; font-weight:700; letter-spacing:.11em; }
@@ -148,7 +148,21 @@
         });
       });
 
-      const tiltTargets = document.querySelectorAll('.map-panel, .gallery-grid a, .table-card');
+      const mapSection = document.querySelector('.map-section');
+      if (mapSection) {
+        mapSection.addEventListener('pointermove', event => {
+          const rect = mapSection.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width - .5) * 24;
+          const y = ((event.clientY - rect.top) / rect.height - .5) * 18;
+          mapSection.style.setProperty('--scene-x', `${x}px`);
+          mapSection.style.setProperty('--scene-y', `${y}px`);
+        });
+        mapSection.addEventListener('pointerleave', () => {
+          mapSection.style.setProperty('--scene-x', '0px');
+          mapSection.style.setProperty('--scene-y', '0px');
+        });
+      }
+      const tiltTargets = document.querySelectorAll('.gallery-grid a, .table-card');
       tiltTargets.forEach((target) => {
         target.addEventListener('pointermove', (event) => {
           const rect = target.getBoundingClientRect();
