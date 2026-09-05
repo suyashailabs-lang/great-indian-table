@@ -15,16 +15,21 @@
     if (document.body.dataset.gitEntryReady === "1") return;
     document.body.dataset.gitEntryReady = "1";
 
+    // Always enter the homepage at the beginning of the opening sequence.
+    // This prevents browsers restoring the previous scroll position and
+    // skipping the title when the visitor simply opens the URL.
+    if (!window.location.hash) {
+      try { history.scrollRestoration = "manual"; } catch (err) {}
+      window.scrollTo(0, 0);
+    }
+
     const entry = document.createElement("div");
     entry.className = "git-entry";
     entry.setAttribute("aria-label", "The Great Indian Table introduction");
     entry.innerHTML = `
       <div class="git-entry-inner">
-        <p class="git-entry-kicker">A visual archive of work across India</p>
         <h2 class="git-entry-title">The Great Indian <em>Table</em></h2>
-        <p class="git-entry-sub">Every table holds a life, a craft, a routine, a story.</p>
       </div>
-      <div class="git-entry-hint">Scroll to enter</div>
     `;
 
     const spacer = document.createElement("div");
@@ -56,12 +61,10 @@
 
     update();
 
-    // A gentle click/tap on the opening title advances to the map chapter.
     entry.addEventListener("click", () => {
       window.scrollTo({ top: window.innerHeight * 0.92, behavior: "smooth" });
     });
 
-    // Keep the intro accessible without trapping the visitor.
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && !completed) {
         window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
@@ -75,9 +78,6 @@
     const panel = mapSection && mapSection.querySelector(".map-panel");
     if (!mapSection || !layout || !panel) return;
     mapSection.classList.add("git-map-centered");
-
-    // The existing map remains untouched functionally; only the presentation
-    // becomes the visual destination of the opening sequence.
     const copy = mapSection.querySelector(".map-copy");
     if (copy) copy.setAttribute("data-git-map-copy", "1");
   }
@@ -111,8 +111,6 @@
       original: card
     }));
 
-    // The reference interaction uses a 3D ring. We keep the cards readable and
-    // use the existing table data, rather than replacing the site's stories.
     const total = Math.min(sourceCards.length, 12);
     const radius = window.innerWidth < 760 ? 390 : 560;
     const cardNodes = [];
@@ -166,11 +164,16 @@
     let lastTime = 0;
     let animationFrame = 0;
 
+    function normalizeAngle(angle) {
+      let value = ((angle % 360) + 360) % 360;
+      if (value > 180) value -= 360;
+      return value;
+    }
+
     function render() {
       rotation += velocity;
       velocity *= 0.94;
       ring.style.transform = `rotateX(-7deg) rotateY(${rotation}deg)`;
-
       cardNodes.forEach((card, index) => {
         const base = (index / total) * 360;
         const facing = normalizeAngle(base + rotation);
@@ -178,12 +181,6 @@
         card.classList.toggle("is-far", Math.abs(facing) > 118);
       });
       animationFrame = requestAnimationFrame(render);
-    }
-
-    function normalizeAngle(angle) {
-      let value = ((angle % 360) + 360) % 360;
-      if (value > 180) value -= 360;
-      return value;
     }
 
     stage.addEventListener("pointerdown", (event) => {
@@ -217,7 +214,6 @@
     }, { passive: false });
 
     render();
-
     window.addEventListener("beforeunload", () => cancelAnimationFrame(animationFrame), { once: true });
   }
 
@@ -230,9 +226,6 @@
     loadStyles();
     initEntry();
     centerMapChapter();
-
-    // app.js renders the story cards during DOMContentLoaded. Wait one frame
-    // so this enhancement wraps the real current cards/data, not placeholders.
     requestAnimationFrame(() => requestAnimationFrame(buildDimensionWall));
   }
 
