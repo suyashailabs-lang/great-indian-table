@@ -18,6 +18,8 @@
     button { font:inherit; }
     .topline { position:fixed; z-index:20; top:0; left:0; right:0; display:flex; justify-content:space-between; align-items:center; padding:22px clamp(20px,4vw,64px); color:#f8f3e9; mix-blend-mode:difference; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; pointer-events:none; }
     .topline strong { font:500 12px var(--mono); letter-spacing:.02em; }
+    .topline #counter { display:none; }
+    body.is-stories .topline #counter { display:inline; }
     .hero { position:relative; min-height:100svh; display:grid; place-items:center; overflow:hidden; background:var(--dark); color:#f8f3e9; }
     .hero-media { position:absolute; inset:0; background:#242b29 url('assets/img/Hero.JPEG') center/cover no-repeat; transform:scale(1.04); filter:saturate(.82); transition:transform 1.4s cubic-bezier(.2,.7,.2,1),filter 1.2s ease; }
     .hero::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(10,15,14,.2),rgba(10,15,14,.62)); }
@@ -27,10 +29,34 @@
     .hero h1 em { display:block; color:#e8b285; font-style:italic; }
     .hero-cta { display:inline-flex; align-items:center; gap:16px; margin-top:42px; padding:13px 0; border:0; border-bottom:1px solid rgba(248,243,233,.75); background:transparent; color:#f8f3e9; cursor:pointer; font:11px var(--mono); letter-spacing:.12em; text-transform:uppercase; transition:gap .25s ease,color .25s ease; }
     .hero-cta:hover { gap:24px; color:#e8b285; }
-    .archive { background:var(--paper); }
-    .archive-intro { display:flex; justify-content:space-between; gap:30px; align-items:baseline; max-width:1400px; margin:0 auto; padding:100px clamp(22px,5vw,78px) 34px; }
-    .archive-intro h2 { margin:0; font:400 clamp(1.7rem,3vw,3rem)/1.1 var(--display); }
-    .archive-intro p { max-width:370px; margin:0; color:var(--muted); font-size:.88rem; line-height:1.6; }
+    .archive { position:fixed; inset:0; z-index:15; display:none; min-height:100svh; overflow:hidden; background:var(--dark); color:#f8f3e9; }
+    body.is-stories .archive { display:block; }
+    body.is-stories .hero { display:none; }
+    .archive-intro { position:absolute; z-index:3; top:22px; left:clamp(20px,5vw,78px); right:clamp(20px,5vw,78px); display:flex; justify-content:space-between; gap:30px; align-items:baseline; }
+    .archive-intro h2 { margin:0; font:400 clamp(1.5rem,3vw,3rem)/1.1 var(--display); }
+    .archive-intro p { max-width:370px; margin:0; color:#aeb8b0; font-size:.78rem; line-height:1.5; text-align:right; }
+    .home-link { border:0; padding:0; background:transparent; color:#aeb8b0; cursor:pointer; font:11px var(--mono); letter-spacing:.1em; text-transform:uppercase; transition:color .2s ease; }
+    .home-link:hover { color:#f8f3e9; }
+    .story-viewer { position:absolute; inset:0; display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,360px); gap:clamp(24px,5vw,80px); align-items:center; padding:clamp(86px,10vh,130px) clamp(20px,7vw,110px) 150px; }
+    .viewer-media { position:relative; height:min(67svh,700px); overflow:hidden; background:#262f2d; }
+    .viewer-media img { width:100%; height:100%; display:block; object-fit:cover; transition:opacity .35s ease,transform .7s cubic-bezier(.2,.7,.2,1); }
+    .viewer-media.is-changing img { opacity:.2; transform:scale(1.035); }
+    .viewer-missing { display:grid; height:100%; place-items:center; color:#aeb8b0; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+    .viewer-info { opacity:1; transform:translateY(0); }
+    .viewer-number { margin:0 0 26px; color:#ef9a7e; font:11px var(--mono); letter-spacing:.1em; }
+    .viewer-quote { margin:0 0 32px; font:italic clamp(1.1rem,1.8vw,1.7rem)/1.55 var(--display); }
+    .viewer-name { margin:0 0 9px; font:500 .76rem var(--mono); letter-spacing:.1em; text-transform:uppercase; }
+    .viewer-location { margin:0; color:#aeb8b0; font:11px var(--mono); }
+    .viewer-nav { display:flex; align-items:center; gap:18px; margin-top:42px; }
+    .viewer-arrow { border:0; padding:4px 0; background:transparent; color:#f8f3e9; cursor:pointer; font-size:1.8rem; line-height:1; transition:color .2s ease,transform .2s ease; }
+    .viewer-arrow:hover { color:#ef9a7e; transform:translateX(3px); }
+    .viewer-close { border:0; padding:0; background:transparent; color:#aeb8b0; cursor:pointer; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+    .story-thumbs { position:absolute; z-index:4; right:clamp(20px,7vw,110px); bottom:34px; left:clamp(20px,7vw,110px); display:flex; gap:10px; overflow-x:auto; padding:6px 0 10px; scrollbar-width:none; }
+    .story-thumbs::-webkit-scrollbar { display:none; }
+    .story-thumb { flex:0 0 72px; height:48px; padding:0; overflow:hidden; border:1px solid rgba(248,243,233,.3); background:#293330; cursor:pointer; opacity:.52; transition:opacity .2s ease,transform .2s ease,border-color .2s ease; }
+    .story-thumb img { width:100%; height:100%; object-fit:cover; }
+    .story-thumb.is-active { border-color:#ef9a7e; opacity:1; transform:translateY(-4px); }
+    .story-thumb.is-missing { display:grid; place-items:center; color:#aeb8b0; font:8px var(--mono); }
     .story { position:relative; min-height:100svh; display:grid; grid-template-columns:repeat(12,1fr); gap:clamp(18px,4vw,72px); align-items:center; max-width:1500px; margin:0 auto; padding:clamp(60px,9vw,125px) clamp(22px,5vw,78px); scroll-margin-top:20px; }
     .story::before { content:attr(data-number); position:absolute; top:34px; left:clamp(22px,5vw,78px); color:rgba(29,33,30,.34); font:11px var(--mono); letter-spacing:.12em; }
     .story-media { position:relative; grid-column:1 / span 8; grid-row:1; min-height:clamp(440px,66vh,760px); overflow:hidden; background:#d7d0c4; transform:translateY(28px) scale(.98); opacity:.72; filter:saturate(.78); transition:transform 1s cubic-bezier(.2,.7,.2,1),opacity 1s ease,filter 1s ease; }
@@ -48,7 +74,7 @@
     .story:nth-of-type(4n) .story-media { grid-column:2 / span 9; min-height:clamp(480px,74vh,820px); }
     .story:nth-of-type(4n) .story-info { grid-column:10 / -1; grid-row:1; }
     .story.is-missing .story-media { display:grid; place-items:center; color:var(--muted); font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
-    .end { min-height:70svh; display:grid; place-items:center; padding:90px 22px; background:var(--dark); color:#f8f3e9; text-align:center; }
+    .end { display:none; }
     .end h2 { margin:0 0 18px; font:400 clamp(2.3rem,6vw,6rem)/1.05 var(--display); }
     .end p { margin:0 auto 30px; color:#bac0b8; font:italic 1rem var(--display); }
     .end button { border:0; border-bottom:1px solid #f8f3e9; padding:12px 0; background:none; color:#f8f3e9; cursor:pointer; font:11px var(--mono); letter-spacing:.12em; text-transform:uppercase; }
@@ -63,7 +89,7 @@
     .desk-form input,.desk-form textarea { width:100%; border:1px solid var(--line); border-radius:0; padding:11px; background:rgba(255,255,255,.35); color:var(--ink); font:inherit; }
     .desk-form textarea { min-height:80px; resize:vertical; }
     .desk-form button[type=submit] { grid-column:1 / -1; justify-self:start; border:0; padding:12px 18px; background:var(--ink); color:#f8f3e9; cursor:pointer; font:11px var(--mono); letter-spacing:.1em; text-transform:uppercase; }
-    @media (max-width:800px) { .topline { padding:16px 18px; } .archive-intro { display:block; padding-top:74px; } .archive-intro p { margin-top:14px; } .story { min-height:auto; display:flex; flex-direction:column; align-items:stretch; gap:24px; padding:75px 20px 90px; } .story-media,.story:nth-of-type(odd) .story-media,.story:nth-of-type(4n) .story-media { order:0; min-height:64svh; } .story-info,.story:nth-of-type(odd) .story-info,.story:nth-of-type(4n) .story-info { order:1; padding:0 8px; } .story-quote { font-size:1.1rem; } .desk-form { grid-template-columns:1fr; } .desk-form .wide { grid-column:auto; } }
+    @media (max-width:800px) { .topline { padding:16px 18px; } .archive-intro { top:18px; display:block; } .archive-intro p { display:none; } .story-viewer { display:flex; flex-direction:column; align-items:stretch; justify-content:center; gap:20px; padding:82px 20px 122px; } .viewer-media { height:54svh; min-height:300px; } .viewer-info { padding:0 4px; } .viewer-number { margin-bottom:12px; } .viewer-quote { margin-bottom:18px; font-size:1.08rem; } .viewer-nav { margin-top:22px; } .story-thumbs { right:20px; bottom:22px; left:20px; } .story-thumb { flex-basis:62px; height:42px; } .desk-form { grid-template-columns:1fr; } .desk-form .wide { grid-column:auto; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } .story-media,.story-info { opacity:1; transform:none; filter:none; } }
   </style>
 </head>
@@ -74,7 +100,7 @@
       <div class="hero-media" aria-hidden="true"></div>
       <div class="hero-copy"><p class="hero-kicker">A photographic archive of where India works</p><h1>The Great Indian <em>Table</em></h1><button class="hero-cta" type="button" data-explore>Explore tables <span>→</span></button></div>
     </section>
-    <section class="archive" id="stories" aria-label="Stories archive"><div class="archive-intro"><h2>The stories are in the details.</h2><p>Sixteen tables, desks, benches and workspaces. Each one holds a life in progress.</p></div><div id="story-list"></div></section>
+    <section class="archive" id="stories" aria-label="Stories slideshow"><div class="archive-intro"><button class="home-link" type="button" data-home>← Home</button><h2>The stories are in the details.</h2><p>Sixteen tables, desks, benches and workspaces.</p></div><div class="story-viewer"><div class="viewer-media" id="viewer-media"></div><div class="viewer-info"><p class="viewer-number" id="viewer-number">01 / 16</p><p class="viewer-quote" id="viewer-quote"></p><h2 class="viewer-name" id="viewer-name"></h2><p class="viewer-location" id="viewer-location"></p><div class="viewer-nav"><button class="viewer-arrow" type="button" data-slide="-1" aria-label="Previous story">←</button><button class="viewer-arrow" type="button" data-slide="1" aria-label="Next story">→</button><button class="viewer-close" type="button" data-home>Back to home</button></div></div></div><div class="story-thumbs" id="story-thumbs" aria-label="Choose a story"></div></section>
     <section class="end"><div><h2>The table goes on.</h2><p>Have a table worth remembering?</p><button type="button" data-form-open>Add your table <span>→</span></button></div></section>
   </main>
   <div class="form-layer" id="form-layer" aria-hidden="true"><div class="form-card" role="dialog" aria-modal="true" aria-labelledby="form-title"><button class="form-close" type="button" data-form-close aria-label="Close form">×</button><h2 id="form-title">Add your table.</h2><form class="desk-form" action="https://script.google.com/macros/s/AKfycbzH3lsZbOfXM__5Bvlfx-9mpOtighO1RFt-iMFaBO4QGd-ARskMFF32XCYcRliAeW6-/exec" method="post" target="desk-submit-target"><label>Name<input name="name" required></label><label>Profession<input name="profession" required></label><label>City<input name="city" required></label><label>State<input name="state" required></label><label class="wide">Tell us about the table<textarea name="intro" required></textarea></label><label>Typical workday<textarea name="workday" required></textarea></label><label>The challenge<textarea name="challenge" required></textarea></label><label>The dream<textarea name="dream" required></textarea></label><label>Quote<textarea name="quote" required></textarea></label><label>Interesting object<textarea name="interesting_object"></textarea></label><label class="wide"><span><input type="checkbox" name="consent" required> I have permission to share this story.</span></label><button type="submit">Submit your table</button></form></div></div>
@@ -83,20 +109,24 @@
   <script>
     (() => {
       const stories = Array.isArray(window.STORIES) ? window.STORIES : [];
-      const list = document.getElementById('story-list');
       const esc = value => String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
       document.getElementById('counter').textContent = `00 / ${String(stories.length).padStart(2,'0')}`;
-      list.innerHTML = stories.map((story,index) => `<article class="story${story.image ? '' : ' is-missing'}" data-number="${String(index + 1).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}" data-story-index="${index}"><div class="story-media">${story.image ? `<img src="${esc(story.image)}" alt="${esc(story.name)} workspace" loading="lazy">` : '<span>Image awaiting confirmed mapping</span>'}</div><div class="story-info"><p class="story-quote">“${esc(story.quote)}”</p><h3 class="story-name">${esc(story.name)}</h3><p class="story-location">${esc(story.location)}</p></div></article>`).join('');
-      const storiesObserver = new IntersectionObserver(entries => entries.forEach(entry => { if (!entry.isIntersecting) return; entry.target.classList.add('is-visible'); const index = Number(entry.target.dataset.storyIndex) + 1; document.getElementById('counter').textContent = `${String(index).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}`; }), { threshold:.35 });
-      document.querySelectorAll('.story').forEach(story => storiesObserver.observe(story));
-      document.querySelector('[data-explore]').addEventListener('click', () => { document.getElementById('stories').scrollIntoView({behavior:'smooth'}); document.querySelector('.hero-media').style.transform = 'scale(1.16)'; });
+      const media = document.getElementById('viewer-media');
+      const thumbs = document.getElementById('story-thumbs');
+      let activeIndex = 0;
+      const renderThumbs = () => { thumbs.innerHTML = stories.map((story,index) => story.image ? `<button class="story-thumb${index === activeIndex ? ' is-active' : ''}" type="button" data-thumb="${index}" aria-label="View ${esc(story.name)}"><img src="${esc(story.image)}" alt=""></button>` : `<button class="story-thumb is-missing${index === activeIndex ? ' is-active' : ''}" type="button" data-thumb="${index}" aria-label="View ${esc(story.name)}">${String(index + 1).padStart(2,'0')}</button>`).join(''); thumbs.querySelectorAll('[data-thumb]').forEach(button => button.addEventListener('click', () => showStory(Number(button.dataset.thumb)))); };
+      const showStory = index => { activeIndex = (index + stories.length) % stories.length; const story = stories[activeIndex]; document.getElementById('viewer-number').textContent = `${String(activeIndex + 1).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}`; document.getElementById('counter').textContent = `${String(activeIndex + 1).padStart(2,'0')} / ${String(stories.length).padStart(2,'0')}`; document.getElementById('viewer-quote').textContent = `“${story.quote}”`; document.getElementById('viewer-name').textContent = story.name; document.getElementById('viewer-location').textContent = story.location; media.classList.add('is-changing'); setTimeout(() => { media.innerHTML = story.image ? `<img src="${esc(story.image)}" alt="${esc(story.name)} workspace">` : '<div class="viewer-missing">Image awaiting confirmed mapping</div>'; media.classList.remove('is-changing'); }, 120); renderThumbs(); thumbs.querySelector(`[data-thumb="${activeIndex}"]`)?.scrollIntoView({block:'nearest',inline:'center'}); };
+      document.querySelector('[data-explore]').addEventListener('click', () => { document.body.classList.add('is-stories'); document.querySelector('.hero-media').style.transform = 'scale(1.16)'; showStory(0); });
+      document.querySelectorAll('[data-slide]').forEach(button => button.addEventListener('click', () => showStory(activeIndex + Number(button.dataset.slide))));
+      document.querySelector('[data-home]').addEventListener('click', () => document.body.classList.remove('is-stories'));
+      document.addEventListener('keydown', event => { if (!document.body.classList.contains('is-stories')) return; if (event.key === 'ArrowRight') showStory(activeIndex + 1); if (event.key === 'ArrowLeft') showStory(activeIndex - 1); if (event.key === 'Escape') document.body.classList.remove('is-stories'); });
       const formLayer = document.getElementById('form-layer');
       const setForm = open => { formLayer.classList.toggle('is-open',open); formLayer.setAttribute('aria-hidden',String(!open)); document.body.style.overflow = open ? 'hidden' : ''; if (open) formLayer.querySelector('input').focus(); };
       document.querySelector('[data-form-open]').addEventListener('click', () => setForm(true));
       document.querySelector('[data-form-close]').addEventListener('click', () => setForm(false));
       formLayer.addEventListener('click', event => { if (event.target === formLayer) setForm(false); });
       document.addEventListener('keydown', event => { if (event.key === 'Escape') setForm(false); });
-      document.querySelectorAll('img').forEach(image => image.addEventListener('error', () => { image.closest('.story-media')?.classList.add('is-missing'); image.replaceWith(Object.assign(document.createElement('span'), {textContent:'Image unavailable'})); }, {once:true}));
+      renderThumbs(); showStory(0);
     })();
   </script>
 </body>
