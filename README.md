@@ -25,7 +25,7 @@ To stop the server, press `Ctrl+C` in the terminal.
 
 ## Pages
 
-- `index.html` - interactive map and home page
+- `index.html` - immersive photographic archive homepage
 - `explore.html` - browse tables
 - `gallery.html` - visual gallery
 - `story.html` - individual table stories
@@ -38,6 +38,7 @@ To stop the server, press `Ctrl+C` in the terminal.
 assets/
   app.js       Shared frontend behaviour
   data.js      Table/story data
+  stories.js   Workbook-derived public story records
   style.css    Shared styling
   img/         Local image assets
 backend/
