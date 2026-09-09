@@ -12,7 +12,7 @@ window.STORIES = [
   { id: "kiran-singh", image: "assets/img/Farmer.PNG", quote: "The land doesn't care about your plans. It only cares about your patience.", name: "Kiran Singh", location: "Amritsar, Punjab" },
   { id: "arjun-vishwakarma", image: "assets/img/Truck & Rickshaw Painter.PNG", quote: "A sticker peels off in a year. My paint fades with the truck.", name: "Arjun Vishwakarma", location: "Delhi, Delhi" },
   { id: "manisha-bose", image: "assets/img/Bookbinder.PNG", quote: "A repaired book still remembers being broken. That's what makes it honest.", name: "Manisha Bose", location: "Kolkata, West Bengal" },
-  { id: "devika-bhat", image: null, quote: "The puppet doesn't move. My hand does. People just forget that on purpose.", name: "Devika Bhat", location: "Udaipur, Rajasthan" },
+  { id: "devika-bhat", image: "assets/img/Puppeteer.PNG", quote: "The puppet doesn't move. My hand does. People just forget that on purpose.", name: "Devika Bhat", location: "Udaipur, Rajasthan" },
   { id: "thomas-varghese", image: "assets/img/Carpenter.PNG", quote: "Furniture should outlive the person who ordered it. That's the whole job.", name: "Thomas Varghese", location: "Kochi, Kerala" },
   { id: "priya-deshmukh", image: "assets/img/Graphic Designer.PNG", quote: "Everyone has an opinion on design. Not everyone has a reason for it.", name: "Priya Deshmukh", location: "Pune, Maharashtra" }
 ];
