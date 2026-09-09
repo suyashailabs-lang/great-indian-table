@@ -4,7 +4,7 @@ window.STORIES = [
   { id: "lakshmi-kumhar", image: "assets/img/Potter.PNG", quote: "The wheel doesn't lie. If your hand shakes, the pot shows it.", name: "Lakshmi Kumhar", location: "Jaipur, Rajasthan" },
   { id: "rahul-nair", image: "assets/img/Software Developer.PNG", quote: "Good code is a letter to the next person who has to fix your mistakes.", name: "Rahul Nair", location: "Bengaluru, Karnataka" },
   { id: "farida-ansari", image: "assets/img/Banarasi Weaver.PNG", quote: "A power loom copies the pattern. My hands copy my grandmother.", name: "Farida Ansari", location: "Varanasi, Uttar Pradesh" },
-  { id: "suresh-poduval", image: "assets/img/Fisherman.PNG", quote: "The sea gives you exactly what it wants to, not what you need.", name: "Suresh Poduval", location: "Kochi, Kerala" },
+  { id: "suresh-poduval", image: "assets/img/fisherman.PNG", quote: "The sea gives you exactly what it wants to, not what you need.", name: "Suresh Poduval", location: "Kochi, Kerala" },
   { id: "ganesh-achari", image: "assets/img/Goldsmith.PNG", quote: "Gold forgives almost nothing. That's why I still work slowly.", name: "Ganesh Achari", location: "Madurai, Tamil Nadu" },
   { id: "babulal-soni", image: "assets/img/Chai Stall Owner.PNG", quote: "People don't come back for the tea. They come back for five minutes of being asked how they are.", name: "Babulal Soni", location: "Jodhpur, Rajasthan" },
   { id: "noor-fatima", image: "assets/img/Bangle Maker.PNG", quote: "No two of my bangles are the same, even when the customer asks for that.", name: "Noor Fatima", location: "Hyderabad, Telangana" },
