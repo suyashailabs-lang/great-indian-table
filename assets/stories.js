@@ -24,6 +24,23 @@ window.STORIES = [
   style.textContent=`
     .hero:after{background:linear-gradient(180deg,rgba(8,12,11,.08) 0%,rgba(8,12,11,.16) 48%,rgba(8,12,11,.38) 100%)}
     .hero-copy{text-shadow:0 3px 28px rgba(0,0,0,.58)}
+    @keyframes gitCinematicFlash{0%{opacity:0;transform:scale(1.02)}18%{opacity:.16}100%{opacity:0;transform:scale(1)}}
+    @keyframes gitCopyIn{0%{opacity:.2;transform:translate(-50%,-38%) translateY(10px)}100%{opacity:1;transform:translate(-50%,-42%) translateY(0)}}
+    #viewer-media.git-cinematic:before{content:"";position:absolute;inset:0;z-index:4;background:#050807;pointer-events:none;animation:gitCinematicFlash .72s cubic-bezier(.2,.7,.2,1) both}
+    #viewer-media.git-cinematic + .viewer-info{animation:gitCopyIn .72s cubic-bezier(.2,.7,.2,1) both}
+    .git-parallax-layer{will-change:transform;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+    #viewer-media.git-parallax .git-parallax-layer{transform:scale(1.035) translate3d(var(--git-px,0px),var(--git-py,0px),0)}
+    #viewer-media.git-parallax.git-cinematic .git-parallax-layer{transition:none}
+    .git-random{position:absolute;right:clamp(20px,5vw,78px);pointer-events:auto;color:#aeb8b0;font:11px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+    .git-random:hover{color:var(--cream)}
+    .git-music-enhanced{gap:8px}
+    .git-track-count{font:7px var(--mono);letter-spacing:.12em;opacity:.48;margin-left:7px;white-space:nowrap}
+    .git-eq{display:inline-flex;align-items:flex-end;gap:2px;height:12px;margin-left:6px;vertical-align:middle;opacity:.7}
+    .git-eq i{display:block;width:2px;height:5px;background:currentColor;border-radius:2px;animation:gitEq .75s ease-in-out infinite alternate}
+    .git-eq i:nth-child(2){height:9px;animation-delay:-.3s}.git-eq i:nth-child(3){height:6px;animation-delay:-.55s}
+    @keyframes gitEq{from{transform:scaleY(.45)}to{transform:scaleY(1)}}
+    .git-eq.is-paused i{animation-play-state:paused;transform:scaleY(.5)}
+    @media(prefers-reduced-motion:reduce){#viewer-media.git-cinematic:before,.git-eq i{animation:none}#viewer-media.git-parallax .git-parallax-layer{transform:scale(1.015)}#viewer-media.git-cinematic + .viewer-info{animation:none}}
     @media(max-width:800px){
       .hero-media{inset:-5%;transform:scale(1.02);background-position:center bottom}
       .hero-copy{width:calc(100vw - 28px);transform:translateY(-9vh)}
@@ -48,6 +65,8 @@ window.STORIES = [
       .story-thumbs{left:10px;right:10px;bottom:6px;gap:8px;padding:7px 3px 9px}
       .story-thumb{flex:0 0 76px;height:50px;border-radius:3px;opacity:.58}
       .story-thumb span{font-size:8px;left:6px;bottom:5px}.story-thumb.is-active{transform:translateY(-4px)}
+      .git-random{right:14px;font-size:9px}
+      .git-track-count{font-size:6px;margin-left:4px}
     }
     @media(max-width:420px){
       .viewer-info{top:41%;width:calc(100vw - 54px)}
@@ -60,4 +79,87 @@ window.STORIES = [
     }
   `;
   document.head.appendChild(style);
+})();
+
+/* Reversible enhancement layer: one commit, no changes to the story data or core viewer logic. */
+(function(){
+  window.GREAT_TABLE_ENHANCEMENTS = true;
+  if(!window.GREAT_TABLE_ENHANCEMENTS)return;
+  document.addEventListener('DOMContentLoaded',()=>{
+    const media=document.getElementById('viewer-media');
+    const intro=document.querySelector('.archive-intro');
+    const player=document.getElementById('music-player');
+    const musicTitle=document.getElementById('music-title');
+    const musicPlay=document.getElementById('music-play');
+    if(!media||!intro)return;
+
+    // 01 — cinematic transitions: a restrained light/dark wipe whenever the displayed photo changes.
+    let transitionTimer;
+    const triggerCinematic=()=>{
+      media.classList.remove('git-cinematic');
+      void media.offsetWidth;
+      media.classList.add('git-cinematic');
+      clearTimeout(transitionTimer);
+      transitionTimer=setTimeout(()=>media.classList.remove('git-cinematic'),760);
+      const info=document.querySelector('.viewer-info');
+      if(info){info.classList.remove('git-copy-transition');void info.offsetWidth;info.classList.add('git-copy-transition')}
+    };
+    const observer=new MutationObserver(mutations=>{
+      if(mutations.some(m=>m.type==='childList'&&m.addedNodes.length)){
+        const img=media.querySelector('img');
+        if(img){img.classList.add('git-parallax-layer');}
+        triggerCinematic();
+      }
+    });
+    observer.observe(media,{childList:true,subtree:true});
+
+    // 02 — subtle photo movement: mouse parallax on desktop, slow cinematic drift on touch devices.
+    media.classList.add('git-parallax');
+    let raf=0;
+    media.addEventListener('pointermove',e=>{
+      if(e.pointerType==='touch'||window.innerWidth<801)return;
+      cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(()=>{
+        const r=media.getBoundingClientRect();
+        const x=((e.clientX-r.left)/r.width-.5)*10;
+        const y=((e.clientY-r.top)/r.height-.5)*7;
+        media.style.setProperty('--git-px',`${x.toFixed(2)}px`);
+        media.style.setProperty('--git-py',`${y.toFixed(2)}px`);
+      });
+    });
+    media.addEventListener('pointerleave',()=>{media.style.setProperty('--git-px','0px');media.style.setProperty('--git-py','0px')});
+
+    // 04 — Random Table: intentionally uses the existing thumbnail click path, so all existing story logic stays intact.
+    const random=document.createElement('button');
+    random.type='button';random.className='git-random';random.textContent='Random Table ↗';
+    random.setAttribute('aria-label','Open a random table');
+    random.onclick=()=>{
+      const buttons=[...document.querySelectorAll('.story-thumb[data-thumb]')];
+      const active=document.querySelector('.story-thumb.is-active');
+      const choices=buttons.filter(b=>b!==active);
+      if(choices.length)choices[Math.floor(Math.random()*choices.length)].click();
+    };
+    intro.appendChild(random);
+
+    // 03 — music player polish: track position + restrained live equalizer, without changing playback behaviour.
+    if(player&&musicTitle&&musicPlay){
+      const kicker=player.querySelector('.music-kicker');
+      const count=document.createElement('span');count.className='git-track-count';
+      const eq=document.createElement('span');eq.className='git-eq is-paused';eq.setAttribute('aria-hidden','true');
+      eq.innerHTML='<i></i><i></i><i></i>';
+      if(kicker)kicker.append(count,eq);
+      const syncMusicUI=()=>{
+        const profession=(document.getElementById('viewer-profession')?.textContent||'').trim();
+        const list=(window.PROFESSION_MUSIC||{})[profession]||[];
+        const current=(musicTitle.textContent||'').trim();
+        const idx=list.findIndex(x=>x&&x.title===current);
+        count.textContent=list.length?`${String(Math.max(0,idx)+1).padStart(2,'0')} / ${String(list.length).padStart(2,'0')}`:'';
+        const playing=(musicPlay.textContent||'').includes('❚❚');
+        eq.classList.toggle('is-paused',!playing);
+      };
+      new MutationObserver(syncMusicUI).observe(musicTitle,{childList:true,subtree:true,characterData:true});
+      new MutationObserver(syncMusicUI).observe(musicPlay,{childList:true,subtree:true,characterData:true});
+      syncMusicUI();
+    }
+  });
 })();
