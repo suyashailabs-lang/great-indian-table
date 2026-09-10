@@ -18,5 +18,19 @@ window.PROFESSION_MUSIC = {
     {title:"Kombdi Palali", url:"https://www.youtube.com/embed/unfBlqT0ZPc"},
     {title:"Zindagi Ek Safar Hai Suhana", url:"https://www.youtube.com/embed/mzxHflxI-es"},
     {title:"Musafir Hoon Yaaro", url:"https://www.youtube.com/embed/WcsncpEWQZI"}
+  ],
+  "Banarasi Weaver": [
+    {title:"Banarasiya", url:"https://www.youtube.com/embed/LU29lSULUsk"},
+    {title:"Kashi Ki Galiya", url:"https://www.youtube.com/embed/9v0niHupv1g"},
+    {title:"Chalat Musafir", url:"https://www.youtube.com/embed/V5TtkSMzMek"},
+    {title:"Tu Kisi Rail Si", url:"https://www.youtube.com/embed/bKyhc18RCho"},
+    {title:"Ud Jayega Hans Akela", url:"https://www.youtube.com/embed/videoseries?list=RDX8n-G1ZJUSE"}
+  ],
+  "Fisherman": [
+    {title:"Kadalinnakkare", url:"https://www.youtube.com/embed/e2f5QwGuszY"},
+    {title:"Uyiril Thodarum", url:"https://www.youtube.com/embed/jrvCp45A-S0"},
+    {title:"Theerame", url:"https://www.youtube.com/embed/jMhB464Oo_w"},
+    {title:"Puthiyoru", url:"https://www.youtube.com/embed/XHAejXrUkRE"},
+    {title:"Poomuthole", url:"https://www.youtube.com/embed/ApU-soy-zGw"}
   ]
 };
