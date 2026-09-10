@@ -32,5 +32,12 @@ window.PROFESSION_MUSIC = {
     {title:"Theerame", url:"https://www.youtube.com/embed/jMhB464Oo_w"},
     {title:"Puthiyoru", url:"https://www.youtube.com/embed/XHAejXrUkRE"},
     {title:"Poomuthole", url:"https://www.youtube.com/embed/ApU-soy-zGw"}
+  ],
+  "Tailor": [
+    {title:"Chaava Laga", url:"https://www.youtube.com/embed/_KoZ8khWf18"},
+    {title:"Kajri Folk", url:"https://www.youtube.com/embed/FHCRyPMdBYA"},
+    {title:"Navrai Majhi", url:"https://www.youtube.com/embed/2Cy-j4Oxrqs"},
+    {title:"Jaayiye", url:"https://www.youtube.com/embed/MpawL4IZfKg"},
+    {title:"Nimiya Ke Daar", url:"https://www.youtube.com/embed/MJ4Sn-_Mkk0"}
   ]
 };
