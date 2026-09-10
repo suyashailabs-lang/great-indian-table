@@ -19,7 +19,6 @@ window.STORIES = [
   { id:"aditi-sharma", images:["assets/img/UPSC.PNG","assets/img/UPSC (2).PNG"], image:"assets/img/UPSC.PNG", profession:"UPSC Aspirant", quote:"Some tables hold books. Mine holds a future I am still trying to earn.", name:"Aditi Sharma", location:"Prayagraj, Uttar Pradesh" }
 ];
 
-/* Visual refinements: keep the hero photograph readable and make the archive controls genuinely touch-friendly on phones. */
 (function(){
   const style=document.createElement('style');
   style.textContent=`
@@ -31,7 +30,6 @@ window.STORIES = [
       .hero-kicker{font-size:10px;margin-bottom:18px;letter-spacing:.12em}
       .hero h1{font-size:clamp(2.8rem,14vw,5rem);line-height:.96}
       .hero-cta{margin-top:28px;padding:15px 0;font-size:10px}
-
       .archive-intro{top:max(14px,env(safe-area-inset-top));padding-top:4px}
       .archive-intro h2{font-size:8px;letter-spacing:.15em}
       .home-link{left:14px;font-size:10px}
@@ -43,24 +41,21 @@ window.STORIES = [
       .viewer-arrow{font-size:2rem;padding:24px;opacity:.8}
       .viewer-arrow:first-child{left:0}.viewer-arrow:last-of-type{right:0}
       .alt-view{top:max(48px,calc(env(safe-area-inset-top) + 34px));right:12px;padding:11px 14px;font-size:9px}
-
-      .music-player{left:12px;right:12px;bottom:76px;transform:none;width:auto;height:68px;border-radius:18px;padding:8px 10px;box-shadow:0 12px 35px rgba(0,0,0,.48);background:rgba(13,18,17,.9)}
-      .music-art{width:50px;height:50px;flex-basis:50px}
-      .music-copy{padding:0 12px}.music-kicker{font-size:8px;margin-bottom:4px}.music-title{font-size:12px}
-      .music-controls{gap:3px}.music-controls button{width:38px;height:38px;font-size:17px}.music-play{font-size:14px!important}.music-open{display:none!important}
-
-      .story-thumbs{left:10px;right:10px;bottom:7px;gap:8px;padding:7px 3px 9px}
+      .music-player{left:8px;right:8px;bottom:78px;transform:none;width:auto;height:78px;border-radius:20px;padding:9px 12px;box-shadow:0 14px 42px rgba(0,0,0,.52);background:rgba(13,18,17,.93)}
+      .music-art{width:58px;height:58px;flex-basis:58px}
+      .music-copy{padding:0 14px}.music-kicker{font-size:8px;margin-bottom:5px}.music-title{font-size:13px}
+      .music-controls{gap:5px}.music-controls button{width:44px;height:44px;font-size:19px}.music-play{font-size:16px!important}.music-open{display:none!important}
+      .story-thumbs{left:10px;right:10px;bottom:6px;gap:8px;padding:7px 3px 9px}
       .story-thumb{flex:0 0 76px;height:50px;border-radius:3px;opacity:.58}
-      .story-thumb span{font-size:8px;left:6px;bottom:5px}
-      .story-thumb.is-active{transform:translateY(-4px)}
+      .story-thumb span{font-size:8px;left:6px;bottom:5px}.story-thumb.is-active{transform:translateY(-4px)}
     }
     @media(max-width:420px){
       .viewer-info{top:41%;width:calc(100vw - 54px)}
       .viewer-quote{font-size:clamp(1.55rem,7.8vw,2.2rem)}
-      .music-player{bottom:74px;height:64px;left:9px;right:9px}
-      .music-art{width:46px;height:46px;flex-basis:46px}
-      .music-copy{padding:0 9px}.music-title{font-size:11px}
-      .music-controls button{width:35px;height:35px;font-size:16px}
+      .music-player{bottom:76px;height:74px;left:7px;right:7px;padding:8px 10px}
+      .music-art{width:54px;height:54px;flex-basis:54px}
+      .music-copy{padding:0 10px}.music-title{font-size:12px}
+      .music-controls{gap:3px}.music-controls button{width:41px;height:41px;font-size:18px}
       .story-thumb{flex-basis:70px;height:46px}
     }
   `;
