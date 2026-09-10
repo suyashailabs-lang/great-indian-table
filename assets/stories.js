@@ -1,3 +1,5 @@
+window.STORY_ANIMATIONS_ENABLED = true;
+
 window.STORIES = [
   { id:"meena-devi", images:["assets/img/Tailor.PNG","assets/img/Hero.JPEG"], image:"assets/img/Tailor.PNG", profession:"Tailor", quote:"A stitch you rush is a stitch you redo. I have time for exactly one of those.", name:"Meena Devi", location:"Lucknow, Uttar Pradesh" },
   { id:"irfan-sheikh", images:["assets/img/Auto Mechanic.PNG","assets/img/Auto Mechanic (2).PNG"], image:"assets/img/Auto Mechanic.PNG", profession:"Auto Mechanic", quote:"Every engine tells you what's wrong. You just have to stop talking and listen.", name:"Irfan Sheikh", location:"Mumbai, Maharashtra" },
@@ -61,3 +63,10 @@ window.STORIES = [
   `;
   document.head.appendChild(style);
 })();
+
+if(window.STORY_ANIMATIONS_ENABLED){
+  const script=document.createElement('script');
+  script.src='assets/story-animations.js?v=20260910-1';
+  script.defer=true;
+  document.head.appendChild(script);
+}
