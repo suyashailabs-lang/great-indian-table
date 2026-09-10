@@ -18,38 +18,3 @@ window.STORIES = [
   { id:"mahesh-yadav", images:["assets/img/Truck Driver.PNG","assets/img/Truck Driver (2).PNG"], image:"assets/img/Truck Driver.PNG", profession:"Truck Driver", quote:"You learn a country by the roads you keep taking after everyone else has gone home.", name:"Mahesh Yadav", location:"Indore, Madhya Pradesh" },
   { id:"aditi-sharma", images:["assets/img/UPSC.PNG","assets/img/UPSC (2).PNG"], image:"assets/img/UPSC.PNG", profession:"UPSC Aspirant", quote:"Some tables hold books. Mine holds a future I am still trying to earn.", name:"Aditi Sharma", location:"Prayagraj, Uttar Pradesh" }
 ];
-
-/* First micro-animation experiment: a nearly imperceptible water trace on the distant window in the Software Developer photograph. */
-(()=>{
-  const install=()=>{
-    if(document.getElementById('story-micro-motion-style'))return;
-    const style=document.createElement('style');
-    style.id='story-micro-motion-style';
-    style.textContent=`
-      .story-micro-motion{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .7s ease;overflow:hidden}
-      .story-micro-motion.software-rain{opacity:1}
-      .software-rain .drop{position:absolute;top:-8%;width:1.5px;height:38px;border-radius:999px;background:linear-gradient(to bottom,rgba(235,246,245,0),rgba(220,242,241,.28),rgba(255,255,255,.5),rgba(220,242,241,0));filter:blur(.25px);animation:windowDrip 4.8s linear infinite}
-      .software-rain .drop:nth-child(1){left:73%;animation-delay:-1.7s;height:34px}
-      .software-rain .drop:nth-child(2){left:77%;animation-delay:-3.4s;height:52px;opacity:.7}
-      .software-rain .drop:nth-child(3){left:81%;animation-delay:-.8s;height:29px;opacity:.52}
-      .software-rain .drop:nth-child(4){left:84%;animation-delay:-2.9s;height:44px;opacity:.62}
-      .software-rain .drop:nth-child(5){left:88%;animation-delay:-4.1s;height:32px;opacity:.48}
-      .software-rain .drop:nth-child(6){left:91%;animation-delay:-1.1s;height:48px;opacity:.55}
-      @keyframes windowDrip{0%{transform:translate3d(0,-18px,0);opacity:0}10%{opacity:.34}68%{opacity:.24}100%{transform:translate3d(2px,112vh,0);opacity:0}}
-      @media(prefers-reduced-motion:reduce){.story-micro-motion{display:none}}
-    `;
-    document.head.appendChild(style);
-    const media=document.getElementById('viewer-media');
-    if(!media)return;
-    const layer=document.createElement('div');
-    layer.id='story-micro-motion';
-    layer.className='story-micro-motion';
-    layer.innerHTML='<div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>';
-    media.appendChild(layer);
-    const profession=document.getElementById('viewer-profession');
-    const sync=()=>layer.classList.toggle('software-rain',profession?.textContent.trim()==='Software Developer');
-    new MutationObserver(sync).observe(profession,{childList:true,characterData:true,subtree:true});
-    sync();
-  };
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
-})();
