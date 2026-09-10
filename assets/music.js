@@ -74,5 +74,19 @@ window.PROFESSION_MUSIC = {
     {title:"Gajulu Tecchina", url:"https://www.youtube.com/embed/a8ruVdDXX-s"},
     {title:"Dil Se", url:"https://www.youtube.com/embed/sKw8_6BbB-g"},
     {title:"Vachinde", url:"https://www.youtube.com/embed/YFfEFbC9_XQ"}
+  ],
+  "Bookbinder": [
+    {title:"Purano Sei", url:"https://www.youtube.com/embed/6F0VIc6gG6Y"},
+    {title:"Ekla Chalo", url:"https://www.youtube.com/embed/NUGGTsrUnVM"},
+    {title:"Sei Tumi Keno", url:"https://www.youtube.com/embed/SYe-x9ZQF7o"},
+    {title:"Amake Amar", url:"https://www.youtube.com/embed/vYsfSlEBh5Y"},
+    {title:"Tumi Robe", url:"https://www.youtube.com/embed/qZbdZEFsT3U"}
+  ],
+  "Truck & Rickshaw Painter": [
+    {title:"Kesariya", url:"https://www.youtube.com/embed/I-2niXXz0KA"},
+    {title:"Neela Aasman", url:"https://www.youtube.com/embed/Z9tZU5MSvBQ"},
+    {title:"Rang De", url:"https://www.youtube.com/embed/T2xNPK3IQUU"},
+    {title:"Gulabi Aankhen", url:"https://www.youtube.com/embed/6Z3DO-OFIjQ"},
+    {title:"Mohe Rang Do", url:"https://www.youtube.com/embed/saNzE3HoGI0"}
   ]
 };
