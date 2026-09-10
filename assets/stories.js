@@ -16,3 +16,37 @@ window.STORIES = [
   { id: "thomas-varghese", image: "assets/img/Carpenter.PNG", profession: "Carpenter", quote: "Furniture should outlive the person who ordered it. That's the whole job.", name: "Thomas Varghese", location: "Kochi, Kerala", spotifyUrl: "https://open.spotify.com/embed/playlist/656d91JastxforR4ac4eIs?utm_source=generator&theme=0&si=8badbfd549984ae7", spotifyLabel: "Listen at Thomas's table" },
   { id: "priya-deshmukh", image: "assets/img/Graphic Designer.PNG", profession: "Graphic Designer", quote: "Everyone has an opinion on design. Not everyone has a reason for it.", name: "Priya Deshmukh", location: "Pune, Maharashtra", spotifyUrl: "https://open.spotify.com/embed/playlist/656d91JastxforR4ac4eIs?utm_source=generator&theme=0&si=8badbfd549984ae7", spotifyLabel: "Listen at Priya's table" }
 ];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const style = document.createElement('style');
+  style.textContent = `
+    .topline{display:none!important}
+    .viewer-info{left:clamp(24px,7vw,110px);top:auto;bottom:clamp(118px,12vh,150px);width:min(590px,48vw);transform:none;text-shadow:0 2px 24px rgba(0,0,0,.48)}
+    .viewer-number{display:none}
+    .viewer-profession{margin:0 0 10px;font-size:9px;letter-spacing:.2em;opacity:.82}
+    .viewer-name{margin:0 0 7px;font:500 clamp(1rem,1.45vw,1.35rem)/1.2 var(--body);letter-spacing:.01em;opacity:.9}
+    .viewer-quote{margin:0 0 12px;max-width:590px;font:italic clamp(1.65rem,3.05vw,3.35rem)/1.14 var(--display);letter-spacing:-.025em;color:#fff}
+    .viewer-location{font-size:9px;letter-spacing:.1em;opacity:.7}
+    .viewer-actions{margin-top:18px}
+    .viewer-listen{display:none!important}
+    .story-spotify{position:absolute;z-index:8;right:clamp(20px,4vw,64px);bottom:clamp(92px,8vh,112px);width:min(360px,32vw);height:152px;border:0;border-radius:12px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.28);background:#000}
+    .story-spotify iframe{display:block;width:100%;height:152px;border:0}
+    @media(max-width:800px){
+      .viewer-info{left:20px;right:20px;bottom:118px;width:auto}
+      .viewer-quote{font-size:clamp(1.5rem,7vw,2.25rem);line-height:1.16}
+      .viewer-name{font-size:.95rem}
+      .story-spotify{left:20px;right:20px;bottom:68px;width:auto;height:84px}
+      .story-spotify iframe{height:84px}
+      .viewer-actions{margin-top:14px}
+    }
+  `;
+  document.head.appendChild(style);
+
+  const media = document.getElementById('viewer-media');
+  if (!media || media.parentElement.querySelector('.story-spotify')) return;
+  const player = document.createElement('div');
+  player.className = 'story-spotify';
+  player.setAttribute('aria-label','Spotify playlist');
+  player.innerHTML = '<iframe data-testid="embed-iframe" src="https://open.spotify.com/embed/playlist/656d91JastxforR4ac4eIs?utm_source=generator&theme=0&si=8badbfd549984ae7" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Table soundtrack"></iframe>';
+  media.parentElement.appendChild(player);
+});
