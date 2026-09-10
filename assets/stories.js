@@ -18,3 +18,51 @@ window.STORIES = [
   { id:"mahesh-yadav", images:["assets/img/Truck Driver.PNG","assets/img/Truck Driver (2).PNG"], image:"assets/img/Truck Driver.PNG", profession:"Truck Driver", quote:"You learn a country by the roads you keep taking after everyone else has gone home.", name:"Mahesh Yadav", location:"Indore, Madhya Pradesh" },
   { id:"aditi-sharma", images:["assets/img/UPSC.PNG","assets/img/UPSC (2).PNG"], image:"assets/img/UPSC.PNG", profession:"UPSC Aspirant", quote:"Some tables hold books. Mine holds a future I am still trying to earn.", name:"Aditi Sharma", location:"Prayagraj, Uttar Pradesh" }
 ];
+
+/* Visual refinements: keep the hero photograph readable and make the archive controls genuinely touch-friendly on phones. */
+(function(){
+  const style=document.createElement('style');
+  style.textContent=`
+    .hero:after{background:linear-gradient(180deg,rgba(8,12,11,.08) 0%,rgba(8,12,11,.16) 48%,rgba(8,12,11,.38) 100%)}
+    .hero-copy{text-shadow:0 3px 28px rgba(0,0,0,.58)}
+    @media(max-width:800px){
+      .hero-media{inset:-5%;transform:scale(1.02);background-position:center bottom}
+      .hero-copy{width:calc(100vw - 28px);transform:translateY(-9vh)}
+      .hero-kicker{font-size:10px;margin-bottom:18px;letter-spacing:.12em}
+      .hero h1{font-size:clamp(2.8rem,14vw,5rem);line-height:.96}
+      .hero-cta{margin-top:28px;padding:15px 0;font-size:10px}
+
+      .archive-intro{top:max(14px,env(safe-area-inset-top));padding-top:4px}
+      .archive-intro h2{font-size:8px;letter-spacing:.15em}
+      .home-link{left:14px;font-size:10px}
+      .viewer-info{top:43%;width:calc(100vw - 58px);transform:translate(-50%,-40%)}
+      .viewer-profession{font-size:9px;margin-bottom:10px}
+      .viewer-name{font-size:1rem;margin-bottom:9px}
+      .viewer-quote{font-size:clamp(1.65rem,8.1vw,2.55rem);line-height:1.13;max-width:100%;text-shadow:0 3px 22px rgba(0,0,0,.72)}
+      .viewer-location{font-size:8px}
+      .viewer-arrow{font-size:2rem;padding:24px;opacity:.8}
+      .viewer-arrow:first-child{left:0}.viewer-arrow:last-of-type{right:0}
+      .alt-view{top:max(48px,calc(env(safe-area-inset-top) + 34px));right:12px;padding:11px 14px;font-size:9px}
+
+      .music-player{left:12px;right:12px;bottom:76px;transform:none;width:auto;height:68px;border-radius:18px;padding:8px 10px;box-shadow:0 12px 35px rgba(0,0,0,.48);background:rgba(13,18,17,.9)}
+      .music-art{width:50px;height:50px;flex-basis:50px}
+      .music-copy{padding:0 12px}.music-kicker{font-size:8px;margin-bottom:4px}.music-title{font-size:12px}
+      .music-controls{gap:3px}.music-controls button{width:38px;height:38px;font-size:17px}.music-play{font-size:14px!important}.music-open{display:none!important}
+
+      .story-thumbs{left:10px;right:10px;bottom:7px;gap:8px;padding:7px 3px 9px}
+      .story-thumb{flex:0 0 76px;height:50px;border-radius:3px;opacity:.58}
+      .story-thumb span{font-size:8px;left:6px;bottom:5px}
+      .story-thumb.is-active{transform:translateY(-4px)}
+    }
+    @media(max-width:420px){
+      .viewer-info{top:41%;width:calc(100vw - 54px)}
+      .viewer-quote{font-size:clamp(1.55rem,7.8vw,2.2rem)}
+      .music-player{bottom:74px;height:64px;left:9px;right:9px}
+      .music-art{width:46px;height:46px;flex-basis:46px}
+      .music-copy{padding:0 9px}.music-title{font-size:11px}
+      .music-controls button{width:35px;height:35px;font-size:16px}
+      .story-thumb{flex-basis:70px;height:46px}
+    }
+  `;
+  document.head.appendChild(style);
+})();
