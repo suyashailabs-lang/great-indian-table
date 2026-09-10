@@ -39,5 +39,40 @@ window.PROFESSION_MUSIC = {
     {title:"Navrai Majhi", url:"https://www.youtube.com/embed/2Cy-j4Oxrqs"},
     {title:"Jaayiye", url:"https://www.youtube.com/embed/MpawL4IZfKg"},
     {title:"Nimiya Ke Daar", url:"https://www.youtube.com/embed/MJ4Sn-_Mkk0"}
+  ],
+  "Boat Builder": [
+    {title:"Apna Desh", url:"https://www.youtube.com/embed/UkJBBWGtSYo"},
+    {title:"Manuhe Manuhor Babe", url:"https://www.youtube.com/embed/3TGi7iL4twI"},
+    {title:"Bhor Geet", url:"https://www.youtube.com/embed/FDzR_pdrbOc"},
+    {title:"Sagar Sangame", url:"https://www.youtube.com/embed/JzGAmLNwLjw"},
+    {title:"Bistirno Parore", url:"https://www.youtube.com/embed/bJePK6osjXQ"}
+  ],
+  "Farmer": [
+    {title:"Madhaniyan", url:"https://www.youtube.com/embed/UFYSJ5arOyE"},
+    {title:"Mitti", url:"https://www.youtube.com/embed/C3Z7jtqYVqA"},
+    {title:"Jugni", url:"https://www.youtube.com/embed/NYn50PDk2Ew"},
+    {title:"Heer", url:"https://www.youtube.com/embed/UJdOYhqY7wc"},
+    {title:"Apna Punjab Hove", url:"https://www.youtube.com/embed/I-2niXXz0KA"}
+  ],
+  "Goldsmith": [
+    {title:"Oru Deivam Thantha Poove", url:"https://www.youtube.com/embed/hU6ho9WliU8"},
+    {title:"Sundari Kannal Oru Sethi", url:"https://www.youtube.com/embed/njTC4d0vSXY"},
+    {title:"Vaseegara", url:"https://www.youtube.com/embed/tuFBT4bMCbo"},
+    {title:"Munbe Vaa", url:"https://www.youtube.com/embed/pWoKZKUtpWM"},
+    {title:"Aayiram Nilave", url:"https://www.youtube.com/embed/KLg2mWu2PbM"}
+  ],
+  "Chai Stall Owner": [
+    {title:"Yeh Shaam Mastani", url:"https://www.youtube.com/embed/lbfWsIpXsCA"},
+    {title:"Zindagi Ek Safar Hai Suhana", url:"https://www.youtube.com/embed/GjPGVVebVUc"},
+    {title:"Aane Wala Pal", url:"https://www.youtube.com/embed/VE3SaNOJPGI"},
+    {title:"Bheegi Bheegi", url:"https://www.youtube.com/embed/NkgLsX1Yeec"},
+    {title:"Aap Ki Aankhon Mein Kuch", url:"https://www.youtube.com/embed/qn3WEdLtp-g"}
+  ],
+  "Bangle Maker": [
+    {title:"Yamuna Theeram", url:"https://www.youtube.com/embed/1bqPlW5fKnE"},
+    {title:"Chandrulo Unde", url:"https://www.youtube.com/embed/D1SblK-FvQ0"},
+    {title:"Gajulu Tecchina", url:"https://www.youtube.com/embed/a8ruVdDXX-s"},
+    {title:"Dil Se", url:"https://www.youtube.com/embed/sKw8_6BbB-g"},
+    {title:"Vachinde", url:"https://www.youtube.com/embed/YFfEFbC9_XQ"}
   ]
 };
