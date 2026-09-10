@@ -99,7 +99,6 @@ window.PROFESSION_MUSIC = {
     const title=document.getElementById('music-title');
     if(!media||!player||!title)return;
 
-    /* Ensure every newly-rendered photo gets the movement layer, including Alt View / photo 02. */
     const applyPhotoMotion=()=>{
       media.querySelectorAll('img').forEach((img,i)=>{
         img.classList.add('git-parallax-layer');
@@ -109,7 +108,6 @@ window.PROFESSION_MUSIC = {
     applyPhotoMotion();
     new MutationObserver(applyPhotoMotion).observe(media,{childList:true,subtree:true});
 
-    /* Stronger but still restrained movement: the image always has a slow drift, and desktop adds cursor parallax. */
     media.classList.add('git-parallax');
     let raf=0;
     const move=(x,y)=>{
@@ -129,7 +127,6 @@ window.PROFESSION_MUSIC = {
     });
     media.addEventListener('pointerleave',()=>move(0,0));
 
-    /* Make the second-photo transition visibly cinematic too. */
     const flash=()=>{
       media.classList.remove('git-cinematic');void media.offsetWidth;media.classList.add('git-cinematic');
       setTimeout(()=>media.classList.remove('git-cinematic'),760);
@@ -137,7 +134,6 @@ window.PROFESSION_MUSIC = {
     };
     new MutationObserver(m=>{if(m.some(x=>x.addedNodes.length))flash()}).observe(media,{childList:true});
 
-    /* Replace the earlier broken player decoration with a sibling-based UI that survives setMusic() textContent resets. */
     const oldCount=player.querySelector('.git-track-count');
     const oldEq=player.querySelector('.git-eq');
     if(oldCount)oldCount.remove();
@@ -165,4 +161,39 @@ window.PROFESSION_MUSIC = {
     update();
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enhance);else enhance();
+})();
+
+/* Match the navigation controls to the Alt View pill and stack Home above Random Table. */
+(function(){
+  const addNavStyle=()=>{
+    const style=document.createElement('style');
+    style.textContent=`
+      .home-link,.git-random{
+        display:inline-flex!important;align-items:center;gap:9px;
+        padding:11px 15px!important;
+        border:1px solid rgba(248,243,233,.3)!important;
+        border-radius:999px!important;
+        background:rgba(16,22,21,.68)!important;
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        color:#aeb8b0!important;
+        font:500 10px var(--mono)!important;
+        letter-spacing:.12em!important;
+        text-transform:uppercase;
+        opacity:.92;
+        transition:background .25s ease,border-color .25s ease,color .25s ease,transform .25s ease;
+        box-sizing:border-box;
+        z-index:80;
+      }
+      .home-link{top:34px!important;left:clamp(20px,5vw,78px)!important;}
+      .git-random{top:78px!important;left:clamp(20px,5vw,78px)!important;right:auto!important;}
+      .home-link:hover,.git-random:hover{background:rgba(16,22,21,.82)!important;border-color:rgba(248,243,233,.48)!important;color:var(--cream)!important;transform:translateY(-1px)}
+      @media(max-width:800px){
+        .home-link{top:max(48px,calc(env(safe-area-inset-top) + 34px))!important;left:14px!important;padding:11px 14px!important;font-size:9px!important}
+        .git-random{top:max(91px,calc(env(safe-area-inset-top) + 77px))!important;left:14px!important;right:auto!important;padding:11px 14px!important;font-size:9px!important}
+      }
+    `;
+    document.head.appendChild(style);
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addNavStyle);else addNavStyle();
 })();
