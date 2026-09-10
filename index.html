@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Great Indian Table</title>
 <meta name="description" content="A photographic archive of tables and the people who work at them across India.">
+<meta name="archive-build" content="2026-09-10-18">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -22,7 +23,8 @@
 <body>
 <section class="hero" id="top"><div class="hero-media" aria-hidden="true"></div><div class="hero-copy"><p class="hero-kicker">A photographic archive of where India works</p><h1>The Great Indian <em>Table</em></h1><button class="hero-cta" type="button" data-explore>Enter the tables <span>→</span></button></div></section>
 <section class="archive" id="stories" aria-label="Full-screen table stories"><div class="archive-intro"><button class="home-link" type="button" data-home>← Home</button><h2>The stories are in the details.</h2></div><div class="story-viewer"><div class="viewer-media" id="viewer-media"></div><div class="viewer-info"><p class="viewer-profession" id="viewer-profession"></p><h2 class="viewer-name" id="viewer-name"></h2><p class="viewer-quote" id="viewer-quote"></p><p class="viewer-location" id="viewer-location"></p><div class="viewer-actions"><button class="viewer-arrow" type="button" data-slide="-1" aria-label="Previous story">←</button><button class="viewer-arrow" type="button" data-slide="1" aria-label="Next story">→</button><button class="alt-view" id="alt-view" type="button" hidden>Alt View</button><span class="view-count" id="view-count"></span></div></div><div class="spotify-player" id="spotify-player" aria-label="Spotify table soundtrack"></div></div><div class="story-thumbs" id="story-thumbs" aria-label="Choose a story"></div></section>
-<script src="assets/stories.js?v=20260910-2"></script>
+<div id="build-marker" aria-hidden="true">GIT / MAIN · BUILD 2026.09.10.18</div>
+<script src="assets/stories.js?v=20260910-3"></script>
 <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 <script>
 (()=>{const stories=Array.isArray(window.STORIES)?window.STORIES:[];const esc=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const media=document.getElementById('viewer-media'),thumbs=document.getElementById('story-thumbs'),altBtn=document.getElementById('alt-view'),viewCount=document.getElementById('view-count'),spotifyHost=document.getElementById('spotify-player');let activeIndex=0,total=stories.length,imageIndex=0,transitionTimer=0,spotifyReady=false;
