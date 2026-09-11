@@ -17,6 +17,12 @@ window.STORIES = [
   { id:"aditi-sharma", images:["assets/img/UPSC.PNG","assets/img/UPSC (2).PNG"], image:"assets/img/UPSC.PNG", profession:"UPSC Aspirant", quote:"Some tables hold books. Mine holds a future I am still trying to earn.", name:"Aditi Sharma", location:"Prayagraj, Uttar Pradesh" }
 ];
 
+/* Requested curation runs before index.html's viewer initialises. */
+(function(){
+  const freelancer=window.STORIES.find(s=>s.id==='priya-deshmukh');
+  if(freelancer){const i=window.STORIES.indexOf(freelancer);window.STORIES.splice(i,1);window.STORIES.splice(2,0,freelancer)}
+})();
+
 (function(){
   const style=document.createElement('style');
   style.textContent=`
@@ -58,11 +64,5 @@ window.STORIES = [
 (function(){
   document.addEventListener('DOMContentLoaded',()=>{
     const random=document.querySelector('.git-random');if(random)random.remove();
-    const profession=document.getElementById('viewer-profession'),name=document.getElementById('viewer-name'),location=document.getElementById('viewer-location');
-    if(profession&&name&&location){
-      const sync=()=>{name.setAttribute('data-meta',name.textContent||'');location.setAttribute('data-meta',location.textContent||'')};
-      new MutationObserver(sync).observe(name,{childList:true,characterData:true,subtree:true});
-      new MutationObserver(sync).observe(location,{childList:true,characterData:true,subtree:true});
-    }
   });
 })();
