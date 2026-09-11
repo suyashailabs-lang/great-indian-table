@@ -22,10 +22,12 @@ window.STORIES = [
   style.textContent=`
     .hero:after{background:linear-gradient(180deg,rgba(8,12,11,.08) 0%,rgba(8,12,11,.16) 48%,rgba(8,12,11,.38) 100%)}
     .hero-copy{text-shadow:0 3px 28px rgba(0,0,0,.58)}
-    .hero-cta{position:relative;animation:gitEnterPulse 2.8s ease-in-out infinite;will-change:transform,opacity}
-    .hero-cta:after{content:"";position:absolute;left:-18px;right:-18px;top:-10px;bottom:-10px;border-radius:10px;background:rgba(239,154,126,.10);opacity:0;animation:gitEnterGlow 2.8s ease-in-out infinite;pointer-events:none}
-    @keyframes gitEnterPulse{0%,58%,100%{opacity:1;transform:translateY(0)}64%{opacity:.58;transform:translateY(-1px)}70%{opacity:1;transform:translateY(0)}}
-    @keyframes gitEnterGlow{0%,52%,100%{opacity:0;transform:scale(.94)}62%{opacity:.9;transform:scale(1)}72%{opacity:0;transform:scale(1.04)}}
+    .hero-cta{position:relative;animation:gitEnterGlint 3.6s ease-in-out infinite;will-change:opacity,transform}
+    .hero-cta:before{content:"";position:absolute;left:-20px;right:-20px;bottom:-5px;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(239,154,126,.1) 25%,rgba(239,154,126,.95) 50%,rgba(239,154,126,.1) 75%,transparent 100%);transform:scaleX(0);transform-origin:center;opacity:0;pointer-events:none;animation:gitEnterSweep 3.6s ease-in-out infinite}
+    .hero-cta:after{content:"";position:absolute;inset:-8px -16px;border-radius:10px;box-shadow:0 0 0 1px rgba(239,154,126,.1),0 0 24px rgba(239,154,126,.12);opacity:0;animation:gitEnterHalo 3.6s ease-in-out infinite;pointer-events:none}
+    @keyframes gitEnterGlint{0%,62%,100%{opacity:1;transform:translateY(0)}66%{opacity:.82;transform:translateY(-1px)}70%{opacity:1;transform:translateY(0)}}
+    @keyframes gitEnterSweep{0%,50%,100%{opacity:0;transform:scaleX(0)}58%{opacity:1;transform:scaleX(1)}68%{opacity:0;transform:scaleX(0)}}
+    @keyframes gitEnterHalo{0%,50%,100%{opacity:0;transform:scale(.98)}58%{opacity:.8;transform:scale(1)}68%{opacity:0;transform:scale(1.03)}}
     @keyframes gitCinematicFlash{0%{opacity:0;transform:scale(1.02)}18%{opacity:.16}100%{opacity:0;transform:scale(1)}}
     @keyframes gitCopyIn{0%{opacity:.2;transform:translate(-50%,-38%) translateY(10px)}100%{opacity:1;transform:translate(-50%,-42%) translateY(0)}}
     #viewer-media.git-cinematic:before{content:"";position:absolute;inset:0;z-index:4;background:#050807;pointer-events:none;animation:gitCinematicFlash .72s cubic-bezier(.2,.7,.2,1) both}
@@ -45,13 +47,13 @@ window.STORIES = [
   const reorderMeta=()=>{const info=document.querySelector('.viewer-info'),quote=document.getElementById('viewer-quote'),profession=document.getElementById('viewer-profession'),name=document.getElementById('viewer-name'),location=document.getElementById('viewer-location');if(!info||!quote||!profession||!name||!location)return;let meta=document.getElementById('viewer-meta');if(!meta){meta=document.createElement('div');meta.id='viewer-meta';meta.className='viewer-meta';info.insertBefore(meta,quote);meta.append(profession,name,location)}info.append(quote,meta)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reorderMeta,{once:true});else reorderMeta();
 
-  /* Warm every story image immediately. These are also the source images used by the thumbnails. */
-  const preloadStoryImages=()=>{const urls=[...new Set((window.STORIES||[]).flatMap(s=>s.images||[]).filter(Boolean))];urls.forEach((src,i)=>{const img=new Image();img.decoding='async';img.fetchPriority=i<8?'high':'auto';img.loading='eager';img.src=src})};
+  /* Performance: do not download every full-resolution story image on first paint. */
+  const preloadStoryImages=()=>{const stories=window.STORIES||[];const urls=[...new Set(stories.slice(0,2).flatMap(s=>s.images||[]).filter(Boolean))];urls.forEach((src,i)=>{const img=new Image();img.decoding='async';img.fetchPriority=i<2?'high':'auto';img.src=src})};
   preloadStoryImages();
 
-  /* Make every thumbnail eager as soon as it is rendered so navigation does not wait on lazy loading. */
+  /* Thumbnails should be lazy; the viewer image remains the priority resource. */
   const thumbs=document.getElementById('story-thumbs');
-  if(thumbs){const eagerThumbs=()=>thumbs.querySelectorAll('img').forEach(img=>{img.loading='eager';img.decoding='async';img.fetchPriority='low'});eagerThumbs();new MutationObserver(eagerThumbs).observe(thumbs,{childList:true,subtree:true})}
+  if(thumbs){const tuneThumbs=()=>thumbs.querySelectorAll('img').forEach((img,i)=>{img.loading=i<5?'eager':'lazy';img.decoding='async';img.fetchPriority=i<3?'low':'auto'});tuneThumbs();new MutationObserver(tuneThumbs).observe(thumbs,{childList:true,subtree:true})}
 
   const media=document.getElementById('viewer-media');
   if(media){media.classList.add('git-parallax');let raf=0;media.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||window.innerWidth<801)return;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const r=media.getBoundingClientRect();const x=((e.clientX-r.left)/r.width-.5)*10;const y=((e.clientY-r.top)/r.height-.5)*7;media.style.setProperty('--git-px',`${x.toFixed(2)}px`);media.style.setProperty('--git-py',`${y.toFixed(2)}px`)})});media.addEventListener('pointerleave',()=>{media.style.setProperty('--git-px','0px');media.style.setProperty('--git-py','0px')});const enhanceImages=()=>media.querySelectorAll('img').forEach(img=>img.classList.add('git-parallax-layer'));enhanceImages();let cinematicTimer=0;const triggerCinematic=()=>{media.classList.remove('git-cinematic');void media.offsetWidth;media.classList.add('git-cinematic');clearTimeout(cinematicTimer);cinematicTimer=setTimeout(()=>media.classList.remove('git-cinematic'),760)};new MutationObserver(mutations=>{if(mutations.some(m=>m.type==='childList'&&m.addedNodes.length)){enhanceImages();triggerCinematic()}}).observe(media,{childList:true,subtree:true})}
