@@ -22,32 +22,81 @@ window.STORIES = [
   style.textContent=`
     .hero:after{background:linear-gradient(180deg,rgba(8,12,11,.08) 0%,rgba(8,12,11,.16) 48%,rgba(8,12,11,.38) 100%)}
     .hero-copy{text-shadow:0 3px 28px rgba(0,0,0,.58)}
-    .hero-cta{position:relative;animation:gitEnterGlint 3.6s ease-in-out infinite;will-change:filter,transform}
-    .hero-cta:after{content:"";position:absolute;left:-20px;right:-20px;top:-12px;bottom:-12px;border-radius:12px;background:linear-gradient(105deg,transparent 20%,rgba(255,241,226,.7) 48%,transparent 72%);transform:translateX(-130%);opacity:0;pointer-events:none;mix-blend-mode:screen;animation:gitEnterSweep 3.6s ease-in-out infinite}
-    @keyframes gitEnterGlint{0%,72%,100%{filter:brightness(1);transform:translateY(0)}78%{filter:brightness(1.18);transform:translateY(-1px)}84%{filter:brightness(1);transform:translateY(0)}}
-    @keyframes gitEnterSweep{0%,70%{opacity:0;transform:translateX(-130%)}76%{opacity:.9;transform:translateX(0%)}83%,100%{opacity:0;transform:translateX(130%)}}
-    @keyframes gitCinematicFlash{0%{opacity:0;transform:scale(1.02)}18%{opacity:.16}100%{opacity:0;transform:scale(1)}}
-    @keyframes gitCopyIn{0%{opacity:.2;transform:translate(-50%,-38%) translateY(10px)}100%{opacity:1;transform:translate(-50%,-42%) translateY(0)}}
-    #viewer-media.git-cinematic:before{content:"";position:absolute;inset:0;z-index:4;background:#050807;pointer-events:none;animation:gitCinematicFlash .72s cubic-bezier(.2,.7,.2,1) both}
-    #viewer-media.git-cinematic + .viewer-info{animation:gitCopyIn .72s cubic-bezier(.2,.7,.2,1) both}
-    .git-parallax-layer{will-change:transform;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
-    #viewer-media.git-parallax .git-parallax-layer{transform:scale(1.035) translate3d(var(--git-px,0px),var(--git-py,0px),0)}
+
+    /* Make the primary CTA read unmistakably as the next action. */
+    .hero-cta{position:relative;animation:gitEnterAttention 4.2s ease-in-out infinite;will-change:transform,filter,box-shadow}
+    .hero-cta:after{content:"";position:absolute;inset:-11px -17px;border:1px solid rgba(255,241,226,.34);border-radius:12px;box-shadow:0 0 0 0 rgba(239,154,126,0);opacity:0;pointer-events:none;animation:gitEnterRing 4.2s ease-in-out infinite}
+    @keyframes gitEnterAttention{0%,64%,100%{filter:brightness(1);transform:translateY(0);text-shadow:inherit}69%{filter:brightness(1.3);transform:translateY(-1px);text-shadow:0 0 16px rgba(255,230,210,.35)}74%{filter:brightness(1);transform:translateY(0);text-shadow:inherit}}
+    @keyframes gitEnterRing{0%,63%,100%{opacity:0;transform:scale(.86);box-shadow:0 0 0 0 rgba(239,154,126,0)}67%{opacity:1;transform:scale(1);box-shadow:0 0 0 7px rgba(239,154,126,.10),0 0 28px rgba(239,154,126,.18)}74%{opacity:0;transform:scale(1.08);box-shadow:0 0 0 14px rgba(239,154,126,0),0 0 38px rgba(239,154,126,0)}}
+
+    /* Story metadata and visible controls. */
+    .viewer-info{width:min(1100px,88vw);text-shadow:0 2px 30px rgba(0,0,0,.72);display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .viewer-quote{order:1;margin:0 auto 20px;max-width:820px;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 34px rgba(0,0,0,.82),0 0 3px rgba(0,0,0,1)}
+    .viewer-meta{order:2;display:inline-flex;align-items:center;justify-content:center;gap:0;padding:8px 13px;border-radius:999px;background:rgba(8,12,11,.48);border:1px solid rgba(248,243,233,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 5px 22px rgba(0,0,0,.22)}
+    .viewer-meta .viewer-name,.viewer-meta .viewer-profession,.viewer-meta .viewer-location{display:inline!important;margin:0!important;font:500 12px var(--mono)!important;letter-spacing:.09em!important;text-transform:uppercase!important;opacity:.95!important;color:#fff!important;text-shadow:0 2px 8px rgba(0,0,0,.85)!important;vertical-align:middle!important}
+    .viewer-meta .viewer-profession:after,.viewer-meta .viewer-name:after{content:"  ·  ";opacity:.55;margin:0 .45em}
     .git-random{display:none!important}
-    .git-music-enhanced{gap:8px}.git-track-count{font:7px var(--mono);letter-spacing:.12em;opacity:.48;margin-left:7px;white-space:nowrap}
-    .git-eq{display:inline-flex;align-items:flex-end;gap:2px;height:12px;margin-left:6px;vertical-align:middle;opacity:.7}.git-eq i{display:block;width:2px;height:5px;background:currentColor;border-radius:2px;animation:gitEq .75s ease-in-out infinite alternate}.git-eq i:nth-child(2){height:9px;animation-delay:-.3s}.git-eq i:nth-child(3){height:6px;animation-delay:-.55s}@keyframes gitEq{from{transform:scaleY(.45)}to{transform:scaleY(1)}}.git-eq.is-paused i{animation-play-state:paused;transform:scaleY(.5)}
-    .git-music-progress{position:absolute;left:16px;right:16px;bottom:-1px;height:2px;border-radius:2px;background:rgba(248,243,233,.12);overflow:hidden}.git-music-progress i{display:block;width:0;height:100%;background:var(--accent);transition:width .5s linear}
-    .viewer-info{width:min(1100px,88vw);text-shadow:0 2px 30px rgba(0,0,0,.72);display:flex;flex-direction:column;align-items:center;justify-content:center}.viewer-quote{order:1;margin:0 auto 20px;max-width:820px;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 34px rgba(0,0,0,.82),0 0 3px rgba(0,0,0,1)}
-    .viewer-meta{order:2;display:inline-flex;align-items:center;justify-content:center;gap:0;padding:8px 13px;border-radius:999px;background:rgba(8,12,11,.48);border:1px solid rgba(248,243,233,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 5px 22px rgba(0,0,0,.22)}.viewer-meta .viewer-name,.viewer-meta .viewer-profession,.viewer-meta .viewer-location{display:inline!important;margin:0!important;font:500 12px var(--mono)!important;letter-spacing:.09em!important;text-transform:uppercase!important;opacity:.95!important;color:#fff!important;text-shadow:0 2px 8px rgba(0,0,0,.85)!important;vertical-align:middle!important}.viewer-meta .viewer-profession:after,.viewer-meta .viewer-name:after{content:"  ·  ";opacity:.55;margin:0 .45em}
     .archive-intro .home-link,.alt-view{top:34px!important;min-height:37px!important;padding:11px 15px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
     .archive-intro .home-link{background:rgba(12,17,16,.36)!important;border:1px solid rgba(255,255,255,.34)!important;color:#fff!important;border-radius:12px!important;backdrop-filter:blur(14px) saturate(125%)!important;-webkit-backdrop-filter:blur(14px) saturate(125%)!important;box-shadow:0 8px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.2)!important;text-shadow:0 1px 8px rgba(0,0,0,.75)!important}
     .archive-intro .home-link:hover,.archive-intro .home-link:focus-visible{background:rgba(18,24,23,.5)!important;border-color:rgba(255,255,255,.56)!important;box-shadow:0 10px 34px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.24)!important;transform:translateY(-1px)}
     .git-keyboard-hint{left:50%!important;right:auto!important;bottom:2px!important;transform:translateX(-50%)!important;white-space:nowrap!important}
-    @media(max-width:800px){.viewer-info{top:43%;width:calc(100vw - 30px)}.viewer-quote{margin-bottom:15px;font-size:clamp(1.65rem,8.1vw,2.55rem);text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 26px rgba(0,0,0,.88),0 0 3px #000}.viewer-meta{max-width:calc(100vw - 42px);padding:7px 10px}.viewer-meta .viewer-name,.viewer-meta .viewer-profession,.viewer-meta .viewer-location{font-size:9px!important;letter-spacing:.055em!important}.archive-intro .home-link,.alt-view{top:max(48px,calc(env(safe-area-inset-top) + 34px))!important;min-height:35px!important;padding:10px 13px!important}.archive-intro .home-link{backdrop-filter:blur(12px) saturate(120%)!important;-webkit-backdrop-filter:blur(12px) saturate(120%)!important}.git-keyboard-hint{display:block!important;bottom:1px!important;font-size:7px!important}}
+
+    /* Desktop mouse parallax. */
+    .git-parallax-layer{will-change:transform;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+    #viewer-media.git-parallax .git-parallax-layer{transform:scale(1.045) translate3d(var(--git-px,0px),var(--git-py,0px),0)}
+
+    /* Cinematic transition on every story image change. */
+    @keyframes gitCinematicFlash{0%{opacity:0;transform:scale(1.03)}18%{opacity:.32}45%{opacity:.12}100%{opacity:0;transform:scale(1)}}
+    @keyframes gitCopyIn{0%{opacity:.2;transform:translate(-50%,-38%) translateY(10px)}100%{opacity:1;transform:translate(-50%,-42%) translateY(0)}}
+    #viewer-media.git-cinematic:before{content:"";position:absolute;inset:0;z-index:4;background:#050807;pointer-events:none;animation:gitCinematicFlash .9s cubic-bezier(.2,.7,.2,1) both}
+    #viewer-media.git-cinematic + .viewer-info{animation:gitCopyIn .9s cubic-bezier(.2,.7,.2,1) both}
+
+    /* Performance: only the first two stories are warmed; later images load when needed. */
+    .git-music-enhanced{gap:8px}.git-track-count{font:7px var(--mono);letter-spacing:.12em;opacity:.48;margin-left:7px;white-space:nowrap}
+    .git-eq{display:inline-flex;align-items:flex-end;gap:2px;height:12px;margin-left:6px;vertical-align:middle;opacity:.7}.git-eq i{display:block;width:2px;height:5px;background:currentColor;border-radius:2px;animation:gitEq .75s ease-in-out infinite alternate}.git-eq i:nth-child(2){height:9px;animation-delay:-.3s}.git-eq i:nth-child(3){height:6px;animation-delay:-.55s}@keyframes gitEq{from{transform:scaleY(.45)}to{transform:scaleY(1)}}.git-eq.is-paused i{animation-play-state:paused;transform:scaleY(.5)}
+    .git-music-progress{position:absolute;left:16px;right:16px;bottom:-1px;height:2px;border-radius:2px;background:rgba(248,243,233,.12);overflow:hidden}.git-music-progress i{display:block;width:0;height:100%;background:var(--accent);transition:width .5s linear}
+
+    @media(max-width:800px){
+      .viewer-info{top:43%;width:calc(100vw - 30px)}
+      .viewer-quote{margin-bottom:15px;font-size:clamp(1.65rem,8.1vw,2.55rem);text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 26px rgba(0,0,0,.88),0 0 3px #000}
+      .viewer-meta{max-width:calc(100vw - 42px);padding:7px 10px}
+      .viewer-meta .viewer-name,.viewer-meta .viewer-profession,.viewer-meta .viewer-location{font-size:9px!important;letter-spacing:.055em!important}
+      .archive-intro .home-link,.alt-view{top:max(48px,calc(env(safe-area-inset-top) + 34px))!important;min-height:35px!important;padding:10px 13px!important}
+      .archive-intro .home-link{backdrop-filter:blur(12px) saturate(120%)!important;-webkit-backdrop-filter:blur(12px) saturate(120%)!important}
+      .git-keyboard-hint{display:block!important;bottom:1px!important;font-size:7px!important}
+
+      /* Mobile has no hover pointer, so the image gently drifts by itself. */
+      .git-parallax-layer{animation:gitMobileDrift 11s ease-in-out infinite alternate!important;transform-origin:center center!important}
+      #viewer-media.git-parallax .git-parallax-layer{transform:scale(1.07) translate3d(0,0,0)}
+      @keyframes gitMobileDrift{0%{transform:scale(1.07) translate3d(-7px,-4px,0)}50%{transform:scale(1.095) translate3d(4px,2px,0)}100%{transform:scale(1.07) translate3d(7px,-2px,0)}}
+      @keyframes gitMobileCinematicFlash{0%{opacity:0;transform:scale(1.055)}14%{opacity:.34}38%{opacity:.14}100%{opacity:0;transform:scale(1)}}
+      #viewer-media.git-cinematic:before{animation:gitMobileCinematicFlash .95s cubic-bezier(.2,.7,.2,1) both}
+    }
   `;document.head.appendChild(style);
+
   const reorderMeta=()=>{const info=document.querySelector('.viewer-info'),quote=document.getElementById('viewer-quote'),profession=document.getElementById('viewer-profession'),name=document.getElementById('viewer-name'),location=document.getElementById('viewer-location');if(!info||!quote||!profession||!name||!location)return;let meta=document.getElementById('viewer-meta');if(!meta){meta=document.createElement('div');meta.id='viewer-meta';meta.className='viewer-meta';info.insertBefore(meta,quote);meta.append(profession,name,location)}info.append(quote,meta)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reorderMeta,{once:true});else reorderMeta();
+
   const preloadStoryImages=()=>{const stories=window.STORIES||[];const urls=[...new Set(stories.slice(0,2).flatMap(s=>s.images||[]).filter(Boolean))];urls.forEach(src=>{const img=new Image();img.decoding='async';img.fetchPriority='high';img.src=src})};
   preloadStoryImages();
-  const thumbs=document.getElementById('story-thumbs');if(thumbs){const optimizeThumbs=()=>thumbs.querySelectorAll('img').forEach((img,i)=>{img.loading=i<4?'eager':'lazy';img.decoding='async';img.fetchPriority=i<2?'high':'low'});optimizeThumbs();new MutationObserver(optimizeThumbs).observe(thumbs,{childList:true,subtree:true})}
-  const media=document.getElementById('viewer-media');if(media){media.classList.add('git-parallax');let raf=0;media.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||window.innerWidth<801)return;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const r=media.getBoundingClientRect();const x=((e.clientX-r.left)/r.width-.5)*10;const y=((e.clientY-r.top)/r.height-.5)*7;media.style.setProperty('--git-px',`${x.toFixed(2)}px`);media.style.setProperty('--git-py',`${y.toFixed(2)}px`)})});media.addEventListener('pointerleave',()=>{media.style.setProperty('--git-px','0px');media.style.setProperty('--git-py','0px')});const enhanceImages=()=>media.querySelectorAll('img').forEach(img=>img.classList.add('git-parallax-layer'));enhanceImages();let cinematicTimer=0;const triggerCinematic=()=>{media.classList.remove('git-cinematic');void media.offsetWidth;media.classList.add('git-cinematic');clearTimeout(cinematicTimer);cinematicTimer=setTimeout(()=>media.classList.remove('git-cinematic'),760)};new MutationObserver(mutations=>{if(mutations.some(m=>m.type==='childList'&&m.addedNodes.length)){enhanceImages();triggerCinematic()}}).observe(media,{childList:true,subtree:true})}
+
+  const thumbs=document.getElementById('story-thumbs');
+  if(thumbs){const optimizeThumbs=()=>thumbs.querySelectorAll('img').forEach((img,i)=>{img.loading=i<4?'eager':'lazy';img.decoding='async';img.fetchPriority=i<2?'high':'low'});optimizeThumbs();new MutationObserver(optimizeThumbs).observe(thumbs,{childList:true,subtree:true})}
+
+  const media=document.getElementById('viewer-media');
+  if(media){
+    media.classList.add('git-parallax');
+    let raf=0;
+    media.addEventListener('pointermove',e=>{
+      if(e.pointerType==='touch'||window.innerWidth<801)return;
+      cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(()=>{const r=media.getBoundingClientRect();const x=((e.clientX-r.left)/r.width-.5)*10;const y=((e.clientY-r.top)/r.height-.5)*7;media.style.setProperty('--git-px',`${x.toFixed(2)}px`);media.style.setProperty('--git-py',`${y.toFixed(2)}px`)})
+    });
+    media.addEventListener('pointerleave',()=>{media.style.setProperty('--git-px','0px');media.style.setProperty('--git-py','0px')});
+    const enhanceImages=()=>media.querySelectorAll('img').forEach(img=>img.classList.add('git-parallax-layer'));
+    enhanceImages();
+    let cinematicTimer=0;
+    const triggerCinematic=()=>{media.classList.remove('git-cinematic');void media.offsetWidth;media.classList.add('git-cinematic');clearTimeout(cinematicTimer);cinematicTimer=setTimeout(()=>media.classList.remove('git-cinematic'),980)};
+    new MutationObserver(mutations=>{if(mutations.some(m=>m.type==='childList'&&m.addedNodes.length)){enhanceImages();triggerCinematic()}}).observe(media,{childList:true,subtree:true})
+  }
 })();
