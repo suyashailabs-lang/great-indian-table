@@ -4,10 +4,19 @@ document.write('<script src="assets/stories.base.js?v=20260912-1"><\/script>');
 
 (function(){
   const applyCorrections=()=>{
-    document.title="What's on your Indian Table?";
+    document.title="Whats on your indian table?";
 
-    const heading=document.querySelector('.hero h1');
-    if(heading)heading.innerHTML="Whats on your <em>Indian Table?</em>";
+    const applyHeading=()=>{
+      const heading=document.querySelector('.hero h1');
+      if(heading){
+        heading.innerHTML="Whats on your <em>indian table?</em>";
+        heading.setAttribute('aria-label','Whats on your indian table?');
+      }
+    };
+    applyHeading();
+    setTimeout(applyHeading,0);
+    setTimeout(applyHeading,100);
+    setTimeout(applyHeading,500);
 
     const fixAbout=()=>{
       const modal=document.querySelector('.git-about-modal');
