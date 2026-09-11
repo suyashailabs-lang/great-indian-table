@@ -1,5 +1,7 @@
 (async()=>{
   await import('./music-base.js');
+  /* The Boat Builder story is removed; its curated playlist now belongs to the Fisherman story. */
+  if(window.PROFESSION_MUSIC?.["Boat Builder"]){window.PROFESSION_MUSIC["Fisherman"]=window.PROFESSION_MUSIC["Boat Builder"];delete window.PROFESSION_MUSIC["Boat Builder"];}
   const install=()=>{
     const professionEl=document.getElementById('viewer-profession');
     const titleEl=document.getElementById('music-title');
