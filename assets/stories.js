@@ -44,6 +44,9 @@ window.STORIES = [
     @media(max-width:800px){.viewer-info{top:43%;width:calc(100vw - 30px)}.viewer-quote{margin-bottom:15px;font-size:clamp(1.65rem,8.1vw,2.55rem);text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 26px rgba(0,0,0,.88),0 0 3px #000}.viewer-meta{max-width:calc(100vw - 42px);padding:7px 10px}.viewer-meta .viewer-name,.viewer-meta .viewer-profession,.viewer-meta .viewer-location{font-size:9px!important;letter-spacing:.055em!important}.archive-intro .home-link,.alt-view{top:max(48px,calc(env(safe-area-inset-top) + 34px))!important;min-height:35px!important;padding:10px 13px!important}.git-keyboard-hint{display:block!important;bottom:1px!important;font-size:7px!important}}
   `;document.head.appendChild(style);
 
+  const cta=document.querySelector('.hero-cta');
+  if(cta)cta.textContent='Enter the Table';
+
   const reorderMeta=()=>{const info=document.querySelector('.viewer-info'),quote=document.getElementById('viewer-quote'),profession=document.getElementById('viewer-profession'),name=document.getElementById('viewer-name'),location=document.getElementById('viewer-location');if(!info||!quote||!profession||!name||!location)return;let meta=document.getElementById('viewer-meta');if(!meta){meta=document.createElement('div');meta.id='viewer-meta';meta.className='viewer-meta';info.insertBefore(meta,quote);meta.append(profession,name,location)}info.append(quote,meta)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reorderMeta,{once:true});else reorderMeta();
 
