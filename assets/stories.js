@@ -45,9 +45,13 @@ window.STORIES = [
   const reorderMeta=()=>{const info=document.querySelector('.viewer-info'),quote=document.getElementById('viewer-quote'),profession=document.getElementById('viewer-profession'),name=document.getElementById('viewer-name'),location=document.getElementById('viewer-location');if(!info||!quote||!profession||!name||!location)return;let meta=document.getElementById('viewer-meta');if(!meta){meta=document.createElement('div');meta.id='viewer-meta';meta.className='viewer-meta';info.insertBefore(meta,quote);meta.append(profession,name,location)}info.append(quote,meta)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reorderMeta,{once:true});else reorderMeta();
 
-  /* Start warming the primary story images immediately, not after DOMContentLoaded. */
-  const preloadStoryImages=()=>{const urls=[...new Set((window.STORIES||[]).map(s=>s.images?.[0]).filter(Boolean))];const load=()=>urls.forEach((src,i)=>{const img=new Image();img.decoding='async';img.fetchPriority=i<4?'high':'low';img.src=src});if('requestIdleCallback' in window)requestIdleCallback(load,{timeout:700});else setTimeout(load,100)};
-  setTimeout(preloadStoryImages,80);
+  /* Warm every story image immediately. These are also the source images used by the thumbnails. */
+  const preloadStoryImages=()=>{const urls=[...new Set((window.STORIES||[]).flatMap(s=>s.images||[]).filter(Boolean))];urls.forEach((src,i)=>{const img=new Image();img.decoding='async';img.fetchPriority=i<8?'high':'auto';img.loading='eager';img.src=src})};
+  preloadStoryImages();
+
+  /* Make every thumbnail eager as soon as it is rendered so navigation does not wait on lazy loading. */
+  const thumbs=document.getElementById('story-thumbs');
+  if(thumbs){const eagerThumbs=()=>thumbs.querySelectorAll('img').forEach(img=>{img.loading='eager';img.decoding='async';img.fetchPriority='low'});eagerThumbs();new MutationObserver(eagerThumbs).observe(thumbs,{childList:true,subtree:true})}
 
   const media=document.getElementById('viewer-media');
   if(media){media.classList.add('git-parallax');let raf=0;media.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||window.innerWidth<801)return;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const r=media.getBoundingClientRect();const x=((e.clientX-r.left)/r.width-.5)*10;const y=((e.clientY-r.top)/r.height-.5)*7;media.style.setProperty('--git-px',`${x.toFixed(2)}px`);media.style.setProperty('--git-py',`${y.toFixed(2)}px`)})});media.addEventListener('pointerleave',()=>{media.style.setProperty('--git-px','0px');media.style.setProperty('--git-py','0px')});const enhanceImages=()=>media.querySelectorAll('img').forEach(img=>img.classList.add('git-parallax-layer'));enhanceImages();let cinematicTimer=0;const triggerCinematic=()=>{media.classList.remove('git-cinematic');void media.offsetWidth;media.classList.add('git-cinematic');clearTimeout(cinematicTimer);cinematicTimer=setTimeout(()=>media.classList.remove('git-cinematic'),760)};new MutationObserver(mutations=>{if(mutations.some(m=>m.type==='childList'&&m.addedNodes.length)){enhanceImages();triggerCinematic()}}).observe(media,{childList:true,subtree:true})}
