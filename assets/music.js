@@ -19,6 +19,33 @@ window.PROFESSION_MUSIC={
 };
 
 (()=>{
+ /* One early capture-phase keyboard owner. This runs before the document-level story handler in index.html. */
+ const keydown=(e)=>{
+  if(e.defaultPrevented||e.isComposing)return;
+  const t=e.target;
+  if(t&&(t.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(t.tagName)))return;
+  const player=document.getElementById('music-player');
+  const click=id=>{const el=document.getElementById(id);if(el){e.preventDefault();e.stopImmediatePropagation();el.click();return true}return false};
+  if(e.code==='Space'){
+   if(click('music-play'))return;
+  }else if(e.code==='ArrowUp'){
+   if(click('music-prev'))return;
+  }else if(e.code==='ArrowDown'){
+   if(click('music-next'))return;
+  }else if(e.code==='ArrowLeft'||e.code==='ArrowRight'){
+   const stories=document.body.classList.contains('is-stories');
+   if(stories){
+    const sel=`.viewer-arrow[data-slide="${e.code==='ArrowLeft'?'prev':'next'}"]`;
+    const el=document.querySelector(sel);
+    if(el){e.preventDefault();e.stopImmediatePropagation();el.click()}
+   }
+  }else if(e.code==='Escape'&&document.body.classList.contains('is-stories')){
+   const home=document.querySelector('[data-home]');
+   if(home){e.preventDefault();e.stopImmediatePropagation();home.click()}
+  }
+ };
+ window.addEventListener('keydown',keydown,true);
+
  const init=()=>{
   const player=document.getElementById('music-player'),profession=document.getElementById('viewer-profession'),play=document.getElementById('music-play');
   if(!player||!profession)return;
@@ -30,9 +57,6 @@ window.PROFESSION_MUSIC={
   const render=()=>{const p=profession.textContent.trim(),list=window.PROFESSION_MUSIC[p]||[],current=document.getElementById('music-title')?.textContent.trim()||'';box.innerHTML=`<div class="git-playlist-head"><span>PLAYLIST</span><span>${list.length} TRACKS</span></div>`+list.map((x,i)=>`<button type="button" class="git-playlist-row${x.title===current?' is-current':''}" data-song="${i}"><span class="git-playlist-num">${String(i+1).padStart(2,'0')}</span><span class="git-playlist-dot"></span><span class="git-playlist-title">${esc(x.title)}</span></button>`).join('');box.querySelectorAll('[data-song]').forEach(b=>b.onclick=()=>{const listNow=window.PROFESSION_MUSIC[profession.textContent.trim()]||[],cur=document.getElementById('music-title')?.textContent.trim()||'',from=listNow.findIndex(x=>x.title===cur),target=+b.dataset.song,steps=(target-(from<0?0:from)+listNow.length)%listNow.length,n=document.getElementById('music-next');if(n)for(let i=0;i<steps;i++)n.click()})};
   const open=()=>{render();player.classList.add('git-playlist-open');trigger.classList.add('is-active')},close=()=>{player.classList.remove('git-playlist-open');trigger.classList.remove('is-active')};trigger.onclick=e=>{e.preventDefault();e.stopPropagation();player.classList.contains('git-playlist-open')?close():open()};trigger.onmouseenter=open;trigger.onfocus=open;player.onmouseleave=close;
   new MutationObserver(render).observe(profession,{childList:true,characterData:true,subtree:true});render();
-
-  /* Start the first track after the user enters the story viewer; later story changes
-     are handled by index.html's existing loadMusic() while preserving playback. */
   const autoplay=()=>{if(document.body.classList.contains('is-stories')&&play&&play.getAttribute('aria-label')!=='Pause music')play.click()};
   new MutationObserver(m=>{if(m.some(x=>x.attributeName==='class'))setTimeout(autoplay,120)}).observe(document.body,{attributes:true,attributeFilter:['class']});
   setTimeout(autoplay,180);
