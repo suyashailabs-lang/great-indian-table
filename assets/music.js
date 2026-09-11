@@ -20,7 +20,7 @@ window.PROFESSION_MUSIC={
 
 (()=>{
  const init=()=>{
-  const player=document.getElementById('music-player'),profession=document.getElementById('viewer-profession');
+  const player=document.getElementById('music-player'),profession=document.getElementById('viewer-profession'),play=document.getElementById('music-play');
   if(!player||!profession)return;
   const style=document.createElement('style');style.textContent=`
    .git-music-playlist{position:absolute!important;left:0!important;right:0!important;bottom:calc(100% + 6px)!important;display:none!important;max-height:min(340px,48vh)!important;overflow:auto!important;padding:10px!important;border:1px solid rgba(248,243,233,.18)!important;border-radius:20px!important;background:rgba(13,18,17,.97)!important;backdrop-filter:blur(20px)!important;box-shadow:0 18px 60px rgba(0,0,0,.55)!important;z-index:200!important}.music-player.git-playlist-open .git-music-playlist{display:block!important}.git-playlist-head{display:flex;justify-content:space-between;padding:3px 6px 9px;color:#aeb8b0;font:7px var(--mono);letter-spacing:.14em;text-transform:uppercase}.git-playlist-row{width:100%;display:flex;gap:10px;padding:9px 8px;border:0;border-radius:10px;text-align:left;color:#d9d5cc;background:transparent;font:10px var(--body)}.git-playlist-row:hover,.git-playlist-row.is-current{background:rgba(248,243,233,.08);color:var(--cream)}.git-playlist-num{width:20px;flex:0 0 20px;color:#929b95;font:7px var(--mono)}.git-playlist-dot{width:5px;height:5px;flex:0 0 5px;border-radius:50%;background:var(--accent);opacity:0;margin-top:3px}.git-playlist-row.is-current .git-playlist-dot{opacity:1}.git-playlist-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.git-playlist-trigger{font:8px var(--mono)!important;letter-spacing:.1em;text-transform:uppercase;width:auto!important;padding:0 8px!important;opacity:.75}`;document.head.appendChild(style);
@@ -30,5 +30,12 @@ window.PROFESSION_MUSIC={
   const render=()=>{const p=profession.textContent.trim(),list=window.PROFESSION_MUSIC[p]||[],current=document.getElementById('music-title')?.textContent.trim()||'';box.innerHTML=`<div class="git-playlist-head"><span>PLAYLIST</span><span>${list.length} TRACKS</span></div>`+list.map((x,i)=>`<button type="button" class="git-playlist-row${x.title===current?' is-current':''}" data-song="${i}"><span class="git-playlist-num">${String(i+1).padStart(2,'0')}</span><span class="git-playlist-dot"></span><span class="git-playlist-title">${esc(x.title)}</span></button>`).join('');box.querySelectorAll('[data-song]').forEach(b=>b.onclick=()=>{const listNow=window.PROFESSION_MUSIC[profession.textContent.trim()]||[],cur=document.getElementById('music-title')?.textContent.trim()||'',from=listNow.findIndex(x=>x.title===cur),target=+b.dataset.song,steps=(target-(from<0?0:from)+listNow.length)%listNow.length,n=document.getElementById('music-next');if(n)for(let i=0;i<steps;i++)n.click()})};
   const open=()=>{render();player.classList.add('git-playlist-open');trigger.classList.add('is-active')},close=()=>{player.classList.remove('git-playlist-open');trigger.classList.remove('is-active')};trigger.onclick=e=>{e.preventDefault();e.stopPropagation();player.classList.contains('git-playlist-open')?close():open()};trigger.onmouseenter=open;trigger.onfocus=open;player.onmouseleave=close;
   new MutationObserver(render).observe(profession,{childList:true,characterData:true,subtree:true});render();
- };if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+
+  /* Start the first track after the user enters the story viewer; later story changes
+     are handled by index.html's existing loadMusic() while preserving playback. */
+  const autoplay=()=>{if(document.body.classList.contains('is-stories')&&play&&play.getAttribute('aria-label')!=='Pause music')play.click()};
+  new MutationObserver(m=>{if(m.some(x=>x.attributeName==='class'))setTimeout(autoplay,120)}).observe(document.body,{attributes:true,attributeFilter:['class']});
+  setTimeout(autoplay,180);
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
