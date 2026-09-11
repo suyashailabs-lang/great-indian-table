@@ -1,6 +1,6 @@
 /* Load the music database synchronously before the viewer initialises. */
 if(!window.PROFESSION_MUSIC){
-  document.write('<script src="assets/music-base.js?v=20260911-2"><\\/script>');
+  document.write('<script src="assets/music-base.js?v=20260911-3"><\/script>');
 }
 
 /* Keep the YouTube API callback safe even if the API finishes before the viewer script. */
@@ -61,24 +61,30 @@ if(!window.PROFESSION_MUSIC){
   delete window.PROFESSION_MUSIC["Boat Builder"];
   delete window.PROFESSION_MUSIC["Graphic Designer"];
 
+  /* Capture arrow keys before the older music-base listener. We handle the
+     navigation once here, then stop the event so index.html/music-base cannot
+     advance a second time. */
+  document.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    const tag=document.activeElement?.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||document.activeElement?.isContentEditable)return;
+    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;
+    if(!document.body.classList.contains('is-stories'))return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const dir=e.key==='ArrowLeft'?-1:1;
+    document.querySelector(`.viewer-arrow[data-slide="${dir}"]`)?.click();
+  },true);
+
   const install=()=>{
     const professionEl=document.getElementById('viewer-profession');
     const play=document.getElementById('music-play');
     if(!professionEl||!play)return;
 
-    const pause=()=>{
-      if(play.getAttribute('aria-label')==='Pause music')play.click();
-    };
-
-    /* Pause only once before a navigation click. The previous implementation also
-       owned ArrowLeft/ArrowRight and caused the core viewer to advance twice. */
-    const stopBeforeStoryChange=()=>pause();
+    const pause=()=>{if(play.getAttribute('aria-label')==='Pause music')play.click()};
     document.addEventListener('click',e=>{
-      if(e.target.closest('.viewer-arrow,.story-thumb,[data-home]'))stopBeforeStoryChange();
+      if(e.target.closest('.viewer-arrow,.story-thumb,[data-home]'))pause();
     },true);
-
-    /* Navigation is intentionally NOT handled here. index.html owns the single
-       ArrowLeft/ArrowRight listener, so one keypress = exactly one story. */
 
     /* Autoplay after the core viewer has finished changing the profession. */
     let autoplayTimer=0;
@@ -92,20 +98,6 @@ if(!window.PROFESSION_MUSIC){
     new MutationObserver(m=>{
       if(m.some(x=>x.attributeName==='class'&&document.body.classList.contains('is-stories')))autoplayStoryMusic();
     }).observe(document.body,{attributes:true,attributeFilter:['class']});
-
-    /* Keep playlist data/rendering in sync whenever the story changes. The base
-       music UI listens to the same profession field, and this event gives it a
-       second reliable refresh point for the appended playlists. */
-    const refreshPlaylist=()=>{
-      const trigger=document.querySelector('.git-playlist-trigger');
-      if(trigger){trigger.dispatchEvent(new Event('git:playlist-refresh'))}
-      const box=document.querySelector('.git-music-playlist');
-      if(box && document.querySelector('.music-player')?.classList.contains('git-playlist-open')){
-        box.dispatchEvent(new Event('git:playlist-refresh'));
-      }
-    };
-    new MutationObserver(()=>setTimeout(refreshPlaylist,0)).observe(professionEl,{childList:true,characterData:true,subtree:true});
-
     autoplayStoryMusic();
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
