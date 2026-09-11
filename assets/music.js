@@ -1,6 +1,7 @@
 (async()=>{
   await import('./music-base.js');
-  /* Final profession names/playlists. Graphic Designer is now permanently named Freelancer. */
+
+  /* Keep profession naming canonical: Graphic Designer is now Freelancer everywhere. */
   Object.assign(window.PROFESSION_MUSIC,{
     "Fisherman":[
       {title:"Apna Desh",url:"https://www.youtube.com/embed/UkJBBWGtSYo"},
@@ -45,6 +46,8 @@
       {title:"Aaj Main Upar",url:"https://www.youtube.com/embed/cBhehE8AbUA"}
     ]
   });
+  delete window.PROFESSION_MUSIC["Boat Builder"];
+  delete window.PROFESSION_MUSIC["Graphic Designer"];
 
   const install=()=>{
     const professionEl=document.getElementById('viewer-profession');
@@ -53,11 +56,12 @@
     const pause=()=>{if(play&&play.getAttribute('aria-label')==='Pause music')play.click()};
     const stopBeforeStoryChange=()=>{pause();setTimeout(pause,0);setTimeout(pause,80)};
 
-    /* Keep the existing keyboard/navigation behaviour intact. */
+    /* Stop the current track before any story-navigation click reaches the core viewer. */
     document.addEventListener('click',e=>{
       if(e.target.closest('.viewer-arrow,.story-thumb,[data-home]')) stopBeforeStoryChange();
     },true);
 
+    /* Story changes can also come from wheel/touch/navigation code, so watch the profession field too. */
     if(professionEl){
       let last=professionEl.textContent;
       new MutationObserver(()=>{
@@ -66,6 +70,7 @@
       }).observe(professionEl,{childList:true,characterData:true,subtree:true});
     }
 
+    /* Own the horizontal arrow keys in capture phase so the older keyboard listener cannot fire as well. */
     document.addEventListener('keydown',e=>{
       if(e.metaKey||e.ctrlKey||e.altKey)return;
       const tag=document.activeElement?.tagName;
@@ -97,14 +102,13 @@
       }).observe(media,{childList:true,subtree:true});
     }
 
-    /* Autoplay each story's first track after navigation. A user entering the viewer has
-       already interacted with the page, and later navigation is itself a user gesture. */
+    /* Autoplay the first track whenever the story changes. */
     let autoplayTimer=0;
     const autoplayStoryMusic=()=>{
       clearTimeout(autoplayTimer);
       autoplayTimer=setTimeout(()=>{
         if(document.body.classList.contains('is-stories')&&play&&play.getAttribute('aria-label')!=='Pause music')play.click();
-      },220);
+      },250);
     };
     if(professionEl)new MutationObserver(autoplayStoryMusic).observe(professionEl,{childList:true,characterData:true,subtree:true});
     new MutationObserver(m=>{if(m.some(x=>x.attributeName==='class'&&document.body.classList.contains('is-stories')))autoplayStoryMusic()}).observe(document.body,{attributes:true,attributeFilter:['class']});
