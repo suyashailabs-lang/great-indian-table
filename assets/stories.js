@@ -7,7 +7,7 @@ document.write('<script src="assets/stories.base.js?v=20260912-1"><\/script>');
     document.title="What's on your Indian Table?";
 
     const heading=document.querySelector('.hero h1');
-    if(heading)heading.innerHTML="What's on your Indian <em>Table?</em>";
+    if(heading)heading.innerHTML="Whats on your <em>Indian Table?</em>";
 
     const fixAbout=()=>{
       const modal=document.querySelector('.git-about-modal');
