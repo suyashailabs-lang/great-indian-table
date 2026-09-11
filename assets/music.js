@@ -1,6 +1,19 @@
+/* Load the music database synchronously so the viewer cannot race ahead of it. */
+if(!window.PROFESSION_MUSIC){
+  document.write('<script src="assets/music-base.js?v=20260911-1"><\/script>');
+}
+/* YouTube can finish loading before the inline viewer script assigns its callback.
+   Bridge the assignment so the callback is also fired when the API is already ready. */
 (()=>{
-  /* music-base.js is loaded synchronously by index.html before this file. */
-  /* Keep profession naming canonical: Graphic Designer is now Freelancer everywhere. */
+  let callback=null;
+  Object.defineProperty(window,'onYouTubeIframeAPIReady',{
+    configurable:true,
+    get(){return callback},
+    set(fn){callback=fn;if(typeof fn==='function'&&window.YT&&window.YT.Player)setTimeout(fn,0)}
+  });
+})();
+
+(()=>{
   Object.assign(window.PROFESSION_MUSIC||{}, {
     "Fisherman":[
       {title:"Apna Desh",url:"https://www.youtube.com/embed/UkJBBWGtSYo"},
