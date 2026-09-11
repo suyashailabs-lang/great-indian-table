@@ -1,6 +1,7 @@
 window.STORIES = [
   { id:"meena-devi", images:["assets/img/Tailor.PNG","assets/img/Hero.JPEG"], image:"assets/img/Tailor.PNG", profession:"Tailor", quote:"A stitch you rush is a stitch you redo. I have time for exactly one of those.", name:"Meena Devi", location:"Lucknow, Uttar Pradesh" },
   { id:"irfan-sheikh", images:["assets/img/Auto Mechanic.PNG","assets/img/Auto Mechanic (2).PNG"], image:"assets/img/Auto Mechanic.PNG", profession:"Auto Mechanic", quote:"Every engine tells you what's wrong. You just have to stop talking and listen.", name:"Irfan Sheikh", location:"Mumbai, Maharashtra" },
+  { id:"priya-deshmukh", images:["assets/img/Graphic Designer.PNG","assets/img/Graphic Designer (2).PNG"], image:"assets/img/Graphic Designer.PNG", profession:"Freelancer", quote:"Everyone has an opinion on design. Not everyone has a reason for it.", name:"Priya Deshmukh", location:"Pune, Maharashtra" },
   { id:"lakshmi-kumhar", images:["assets/img/Potter.PNG","assets/img/Potter (2).PNG"], image:"assets/img/Potter.PNG", profession:"Potter", quote:"The wheel doesn't lie. If your hand shakes, the pot shows it.", name:"Lakshmi Kumhar", location:"Jaipur, Rajasthan" },
   { id:"rahul-nair", images:["assets/img/Software Developer.PNG","assets/img/Software Developer (2).PNG"], image:"assets/img/Software Developer.PNG", profession:"Software Developer", quote:"Good code is a letter to the next person who has to fix your mistakes.", name:"Rahul Nair", location:"Bengaluru, Karnataka" },
   { id:"farida-ansari", images:["assets/img/Banarasi Weaver.PNG","assets/img/Banarasi Weaver (2).PNG"], image:"assets/img/Banarasi Weaver.PNG", profession:"Banarasi Weaver", quote:"A power loom copies the pattern. My hands copy my grandmother.", name:"Farida Ansari", location:"Varanasi, Uttar Pradesh" },
@@ -12,16 +13,9 @@ window.STORIES = [
   { id:"manisha-bose", images:["assets/img/Bookbinder.PNG","assets/img/Bookbinder (2).PNG"], image:"assets/img/Bookbinder.PNG", profession:"Bookbinder", quote:"A repaired book still remembers being broken. That's what makes it honest.", name:"Manisha Bose", location:"Kolkata, West Bengal" },
   { id:"devika-bhat", images:["assets/img/Puppeteer.PNG","assets/img/Puppeteer (2).PNG"], image:"assets/img/Puppeteer.PNG", profession:"Puppeteer", quote:"The puppet doesn't move. My hand does. People just forget that on purpose.", name:"Devika Bhat", location:"Udaipur, Rajasthan" },
   { id:"thomas-varghese", images:["assets/img/Carpenter.PNG","assets/img/Carpenter-2.PNG"], image:"assets/img/Carpenter.PNG", profession:"Carpenter", quote:"Furniture should outlive the person who ordered it. That's the whole job.", name:"Thomas Varghese", location:"Kochi, Kerala" },
-  { id:"priya-deshmukh", images:["assets/img/Graphic Designer.PNG","assets/img/Graphic Designer (2).PNG"], image:"assets/img/Graphic Designer.PNG", profession:"Freelancer", quote:"Everyone has an opinion on design. Not everyone has a reason for it.", name:"Priya Deshmukh", location:"Pune, Maharashtra" },
   { id:"mahesh-yadav", images:["assets/img/Truck Driver.PNG","assets/img/Truck Driver (2).PNG"], image:"assets/img/Truck Driver.PNG", profession:"Truck Driver", quote:"You learn a country by the roads you keep taking after everyone else has gone home.", name:"Mahesh Yadav", location:"Indore, Madhya Pradesh" },
   { id:"aditi-sharma", images:["assets/img/UPSC.PNG","assets/img/UPSC (2).PNG"], image:"assets/img/UPSC.PNG", profession:"UPSC Aspirant", quote:"Some tables hold books. Mine holds a future I am still trying to earn.", name:"Aditi Sharma", location:"Prayagraj, Uttar Pradesh" }
 ];
-
-/* Requested curation runs before index.html's viewer initialises. */
-(function(){
-  const freelancer=window.STORIES.find(s=>s.id==='priya-deshmukh');
-  if(freelancer){const i=window.STORIES.indexOf(freelancer);window.STORIES.splice(i,1);window.STORIES.splice(2,0,freelancer)}
-})();
 
 (function(){
   const style=document.createElement('style');
@@ -45,24 +39,51 @@ window.STORIES = [
     .git-music-progress{position:absolute;left:16px;right:16px;bottom:-1px;height:2px;border-radius:2px;background:rgba(248,243,233,.12);overflow:hidden}
     .git-music-progress i{display:block;width:0;height:100%;background:var(--accent);transition:width .5s linear}
     .viewer-info{width:min(1100px,88vw);text-shadow:0 2px 30px rgba(0,0,0,.72)}
-    .viewer-name,.viewer-profession,.viewer-location{display:inline!important;margin:0!important;font:500 10px var(--mono)!important;letter-spacing:.1em!important;text-transform:uppercase!important;opacity:.9!important;vertical-align:middle!important}
-    .viewer-profession:after,.viewer-name:after{content:"  ·  ";opacity:.45;margin:0 .35em}
-    .viewer-quote{text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 34px rgba(0,0,0,.82),0 0 3px rgba(0,0,0,1)}
+    .viewer-info{display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .viewer-quote{order:1;margin:0 auto 20px;max-width:820px;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 34px rgba(0,0,0,.82),0 0 3px rgba(0,0,0,1)}
+    .viewer-meta{order:2;display:inline-flex;align-items:center;justify-content:center;gap:0;padding:8px 13px;border-radius:999px;background:rgba(8,12,11,.48);border:1px solid rgba(248,243,233,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 5px 22px rgba(0,0,0,.22)}
+    .viewer-meta .viewer-name,.viewer-meta .viewer-profession,.viewer-meta .viewer-location{display:inline!important;margin:0!important;font:500 12px var(--mono)!important;letter-spacing:.09em!important;text-transform:uppercase!important;opacity:.95!important;color:#fff!important;text-shadow:0 2px 8px rgba(0,0,0,.85)!important;vertical-align:middle!important}
+    .viewer-meta .viewer-profession:after,.viewer-meta .viewer-name:after{content:"  ·  ";opacity:.55;margin:0 .45em}
     .archive-intro .home-link,.alt-view{top:34px!important;min-height:37px!important;padding:11px 15px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
     .git-keyboard-hint{left:50%!important;right:auto!important;bottom:2px!important;transform:translateX(-50%)!important;white-space:nowrap!important}
     @media(max-width:800px){
-      .viewer-info{top:43%;width:calc(100vw - 38px)}
-      .viewer-profession,.viewer-name,.viewer-location{font-size:8px!important;letter-spacing:.07em!important}
-      .viewer-quote{font-size:clamp(1.65rem,8.1vw,2.55rem);text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 26px rgba(0,0,0,.88),0 0 3px #000}
+      .viewer-info{top:43%;width:calc(100vw - 30px)}
+      .viewer-quote{margin-bottom:15px;font-size:clamp(1.65rem,8.1vw,2.55rem);text-shadow:0 3px 12px rgba(0,0,0,.95),0 8px 26px rgba(0,0,0,.88),0 0 3px #000}
+      .viewer-meta{max-width:calc(100vw - 42px);padding:7px 10px}
+      .viewer-meta .viewer-name,.viewer-meta .viewer-profession,.viewer-meta .viewer-location{font-size:9px!important;letter-spacing:.055em!important}
       .archive-intro .home-link,.alt-view{top:max(48px,calc(env(safe-area-inset-top) + 34px))!important;min-height:35px!important;padding:10px 13px!important}
       .git-keyboard-hint{display:block!important;bottom:1px!important;font-size:7px!important}
     }
   `;
   document.head.appendChild(style);
-})();
 
-(function(){
-  document.addEventListener('DOMContentLoaded',()=>{
-    const random=document.querySelector('.git-random');if(random)random.remove();
-  });
+  const reorderMeta=()=>{
+    const info=document.querySelector('.viewer-info');
+    const quote=document.getElementById('viewer-quote');
+    const profession=document.getElementById('viewer-profession');
+    const name=document.getElementById('viewer-name');
+    const location=document.getElementById('viewer-location');
+    if(!info||!quote||!profession||!name||!location)return;
+    let meta=document.getElementById('viewer-meta');
+    if(!meta){meta=document.createElement('div');meta.id='viewer-meta';meta.className='viewer-meta';info.insertBefore(meta,quote);meta.append(profession,name,location)}
+    info.append(quote,meta);
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reorderMeta,{once:true});else reorderMeta();
+
+  const media=document.getElementById('viewer-media');
+  if(media){
+    media.classList.add('git-parallax');
+    let raf=0;
+    media.addEventListener('pointermove',e=>{
+      if(e.pointerType==='touch'||window.innerWidth<801)return;
+      cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(()=>{const r=media.getBoundingClientRect();const x=((e.clientX-r.left)/r.width-.5)*10;const y=((e.clientY-r.top)/r.height-.5)*7;media.style.setProperty('--git-px',`${x.toFixed(2)}px`);media.style.setProperty('--git-py',`${y.toFixed(2)}px`)})
+    });
+    media.addEventListener('pointerleave',()=>{media.style.setProperty('--git-px','0px');media.style.setProperty('--git-py','0px')});
+    const enhanceImages=()=>media.querySelectorAll('img').forEach(img=>img.classList.add('git-parallax-layer'));
+    enhanceImages();
+    let cinematicTimer=0;
+    const triggerCinematic=()=>{media.classList.remove('git-cinematic');void media.offsetWidth;media.classList.add('git-cinematic');clearTimeout(cinematicTimer);cinematicTimer=setTimeout(()=>media.classList.remove('git-cinematic'),760)};
+    new MutationObserver(mutations=>{if(mutations.some(m=>m.type==='childList'&&m.addedNodes.length)){enhanceImages();triggerCinematic()}}).observe(media,{childList:true,subtree:true});
+  }
 })();
