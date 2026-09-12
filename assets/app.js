@@ -263,6 +263,7 @@
   }
 
   function showStory(index) {
+    const wasPlaying = musicPlaying;
     storyIndex = (index + stories.length) % stories.length;
     imageIndex = 0;
     musicIndex = 0;
@@ -276,6 +277,8 @@
     renderThumbs();
     setTrack(0, false);
     triggerCinematic();
+
+    if (wasPlaying) playCurrentTrack();
   }
 
   function showAlternateImage() {
