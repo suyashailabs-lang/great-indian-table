@@ -3,10 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Backend Test</title>
+  <title>Test Submit</title>
 </head>
 <body>
-  <h1>Backend Test</h1>
-  <p>This page is retained for testing the backend submission endpoint.</p>
+  <form id="test-form">
+    <input id="name" name="name" placeholder="Name">
+    <input id="email" name="email" type="email" placeholder="Email">
+    <textarea id="message" name="message" placeholder="Message"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+  <pre id="result"></pre>
+  <script>
+    const form = document.getElementById('test-form');
+    const result = document.getElementById('result');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      result.textContent = 'Submitting...';
+      try {
+        const body = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        result.textContent = await response.text();
+      } catch (error) {
+        result.textContent = String(error);
+      }
+    });
+  </script>
 </body>
 </html>
