@@ -9,8 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/app.css">
+  <style>
+    /* Keep the final homepage copy hidden until the app is ready.
+       This prevents stale/cached copy from flashing during navigation. */
+    body.is-loading .hero-copy { opacity: 0; }
+    .hero-copy { transition: opacity .18s ease; }
+  </style>
 </head>
-<body>
+<body class="is-loading">
   <main>
     <section class="hero" id="top" aria-label="The Great Indian Table">
       <div class="hero-media" aria-hidden="true"></div>
