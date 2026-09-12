@@ -1,54 +1,19 @@
-/* Thin override layer: preserve the existing stories implementation in a renamed blob,
-   then apply the latest copy/link corrections after the original setup runs. */
-document.write('<script src="assets/stories.base.js?v=20260912-1"><\/script>');
-
-(function(){
-  const applyCorrections=()=>{
-    document.title="What's on your Table?";
-
-    const applyHeading=()=>{
-      const heading=document.querySelector('.hero h1');
-      if(heading){
-        heading.innerHTML="What's on your <em>Table?</em>";
-        heading.setAttribute('aria-label',"What's on your Table?");
-      }
-    };
-    applyHeading();
-    setTimeout(applyHeading,0);
-    setTimeout(applyHeading,100);
-    setTimeout(applyHeading,500);
-
-    const fixAbout=()=>{
-      const modal=document.querySelector('.git-about-modal');
-      if(!modal)return false;
-
-      modal.querySelectorAll('a').forEach(a=>{
-        if((a.textContent||'').trim()==='Suyash'){
-          a.href='https://x.com/suyashsngh';
-          a.target='_blank';
-          a.rel='noopener noreferrer';
-        }
-      });
-
-      const walker=document.createTreeWalker(modal,NodeFilter.SHOW_TEXT);
-      const nodes=[];
-      while(walker.nextNode())nodes.push(walker.currentNode);
-      nodes.forEach(node=>{
-        if(node.nodeValue&&node.nodeValue.includes('we researches')){
-          node.nodeValue=node.nodeValue.replace(/we researches/g,'we researched');
-        }
-      });
-      return true;
-    };
-
-    if(!fixAbout()){
-      const observer=new MutationObserver(()=>{
-        if(fixAbout())observer.disconnect();
-      });
-      observer.observe(document.body,{childList:true,subtree:true});
-    }
-  };
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyCorrections,{once:true});
-  else applyCorrections();
-})();
+/* The Great Indian Table — story content only. */
+window.STORIES = [
+  { id:"meena-devi", images:["assets/img/Tailor.PNG","assets/img/Hero.JPEG"], profession:"Tailor", quote:"A stitch you rush is a stitch you redo. I have time for exactly one of those.", name:"Meena Devi", location:"Lucknow" },
+  { id:"irfan-sheikh", images:["assets/img/Auto Mechanic.PNG","assets/img/Auto Mechanic (2).PNG"], profession:"Auto Mechanic", quote:"Every engine tells you what's wrong. You just have to stop talking and listen.", name:"Irfan Sheikh", location:"Mumbai" },
+  { id:"priya-deshmukh", images:["assets/img/Graphic Designer.PNG","assets/img/Graphic Designer (2).PNG"], profession:"Freelancer", quote:"Everyone has an opinion on design. Not everyone has a reason for it.", name:"Priya Deshmukh", location:"Pune" },
+  { id:"lakshmi-kumhar", images:["assets/img/Potter.PNG","assets/img/Potter (2).PNG"], profession:"Potter", quote:"The wheel doesn't lie. If your hand shakes, the pot shows it.", name:"Lakshmi Kumhar", location:"Jaipur" },
+  { id:"rahul-nair", images:["assets/img/Software Developer.PNG","assets/img/Software Developer (2).PNG"], profession:"Software Developer", quote:"Good code is a letter to the next person who has to fix your mistakes.", name:"Rahul Nair", location:"Bengaluru" },
+  { id:"farida-ansari", images:["assets/img/Banarasi Weaver.PNG","assets/img/Banarasi Weaver (2).PNG"], profession:"Banarasi Weaver", quote:"A power loom copies the pattern. My hands copy my grandmother.", name:"Farida Ansari", location:"Varanasi" },
+  { id:"bipul-das", images:["assets/img/fisherman.PNG","assets/img/Fisherman (2).PNG","assets/img/Fisherman (3).PNG"], profession:"Fisherman", quote:"The sea gives you exactly what it wants to, not what you need.", name:"Bipul Das", location:"Guwahati" },
+  { id:"ganesh-achari", images:["assets/img/Goldsmith.PNG","assets/img/Goldsmith (2).PNG"], profession:"Goldsmith", quote:"Gold forgives almost nothing. That's why I still work slowly.", name:"Ganesh Achari", location:"Madurai" },
+  { id:"babulal-soni", images:["assets/img/Chai Stall Owner.PNG","assets/img/Chai Stall Owner (2).PNG"], profession:"Chai Stall Owner", quote:"People don't come back for the tea. They come back for five minutes of being asked how they are.", name:"Babulal Soni", location:"Jodhpur" },
+  { id:"noor-fatima", images:["assets/img/Bangle Maker.PNG","assets/img/Bangle Maker (2).PNG"], profession:"Bangle Maker", quote:"No two of my bangles are the same, even when the customer asks for that.", name:"Noor Fatima", location:"Hyderabad" },
+  { id:"kiran-singh", images:["assets/img/Farmer.PNG","assets/img/Farmer (2).PNG"], profession:"Farmer", quote:"The land doesn't care about your plans. It only cares about your patience.", name:"Kiran Singh", location:"Amritsar" },
+  { id:"manisha-bose", images:["assets/img/Bookbinder.PNG","assets/img/Bookbinder (2).PNG"], profession:"Bookbinder", quote:"A repaired book still remembers being broken. That's what makes it honest.", name:"Manisha Bose", location:"Kolkata" },
+  { id:"devika-bhat", images:["assets/img/Puppeteer.PNG","assets/img/Puppeteer (2).PNG"], profession:"Puppeteer", quote:"The puppet doesn't move. My hand does. People just forget that on purpose.", name:"Devika Bhat", location:"Udaipur" },
+  { id:"thomas-varghese", images:["assets/img/Carpenter.PNG","assets/img/Carpenter-2.PNG"], profession:"Carpenter", quote:"Furniture should outlive the person who ordered it. That's the whole job.", name:"Thomas Varghese", location:"Kochi" },
+  { id:"mahesh-yadav", images:["assets/img/Truck Driver.PNG","assets/img/Truck Driver (2).PNG"], profession:"Truck Driver", quote:"You learn a country by the roads you keep taking after everyone else has gone home.", name:"Mahesh Yadav", location:"Indore" },
+  { id:"aditi-sharma", images:["assets/img/UPSC.PNG","assets/img/UPSC (2).PNG"], profession:"UPSC Aspirant", quote:"Some tables hold books. Mine holds a future I am still trying to earn.", name:"Aditi Sharma", location:"Prayagraj" }
+];

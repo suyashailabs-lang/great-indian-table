@@ -1,57 +1,47 @@
 # The Great Indian Table
 
-A static, visual archive of real tables, desks, and workspaces across India.
+A single-page visual archive of the people, places and workspaces behind everyday India.
 
-## Requirements
+## Frontend
 
-- A modern web browser
-- Python 3, or another local static-file server
+The production site is intentionally dependency-light:
 
-No package installation, build step, or environment variables are required for the frontend.
+```text
+index.html              page structure and copy
+assets/
+  app.css               all production styles
+  app.js                story viewer, music UI, navigation and interactions
+  stories.js            story content only
+  music.js              playlist data only
+  img/                  photography
+```
+
+There is no build step and no framework. The page can be served directly by Vercel, Netlify, GitHub Pages, or any static host.
 
 ## Run locally
 
-From the project root, start a local server:
+From the project root:
 
 ```powershell
 py -m http.server 8000
 ```
 
-Then open [http://localhost:8000](http://localhost:8000) in your browser.
+Then open `http://localhost:8000`.
 
-To stop the server, press `Ctrl+C` in the terminal.
+Serving the project over HTTP is preferable to opening `index.html` with `file://`, because the browser's module/network security rules are closer to production behaviour.
 
-> Avoid opening the HTML files directly with `file://`: serving them locally more closely matches production behavior and prevents browser restrictions around requests.
+## Story data
 
-## Pages
+`assets/stories.js` is the single source of truth for the 16 stories shown in the viewer. Keep presentation and interaction logic out of this file.
 
-- `index.html` - immersive photographic archive homepage
-- `explore.html` - browse tables
-- `gallery.html` - visual gallery
-- `story.html` - individual table stories
-- `add-your-desk.html` - contribution form
-- `final-index.html` - alternate/final landing-page version
+## Music
 
-## Project structure
+`assets/music.js` is the single source of truth for the playlists. Playback is handled by `assets/app.js` through the YouTube IFrame API.
 
-```text
-assets/
-  app.js       Shared frontend behaviour
-  data.js      Table/story data
-  stories.js   Workbook-derived public story records
-  style.css    Shared styling
-  img/         Local image assets
-backend/
-  apps-script.gs       Google Apps Script submissions endpoint
-  test-submit.html     Manual endpoint test page
-```
+## Backend
 
-## Submission backend
+`backend/` contains the optional Google Apps Script submission prototype from the earlier contribution flow. It is not loaded by the current single-page experience.
 
-The optional submission flow is implemented in `backend/apps-script.gs`. It is intended to run as a Google Apps Script web app backed by a Google Sheet and Drive folder. Before deploying it, replace the configured sheet and folder IDs with resources you control, then configure the deployed web-app URL in the frontend as needed.
+## Compatibility routes
 
-## Deployment
-
-Deploy the repository contents to any static host, such as Netlify, GitHub Pages, or Vercel. Set the publish directory to the repository root and use `index.html` as the entry page.
-
-The site loads D3, TopoJSON, Google Fonts, and map data from external CDNs, so a network connection is required for those features.
+`explore.html`, `gallery.html`, `story.html`, `add-your-desk.html`, and `final-index.html` are lightweight redirects kept for old links and bookmarks. The production experience lives in `index.html`.
