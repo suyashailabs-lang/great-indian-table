@@ -241,6 +241,8 @@ body.is-stories .archive { display: block; }
   inset: 0;
   overflow: hidden;
   background: var(--dark-soft);
+  --px: 0px;
+  --py: 0px;
 }
 
 .viewer-media::after {
@@ -259,16 +261,38 @@ body.is-stories .archive { display: block; }
   height: 100%;
   display: block;
   object-fit: cover;
-  transform: scale(1.015);
+  --image-x: 0px;
+  --image-y: 0px;
+  --image-scale: 1.015;
+  transform: translate3d(calc(var(--px) + var(--image-x)), calc(var(--py) + var(--image-y)), 0) scale(var(--image-scale));
   opacity: 1;
   transition: opacity .75s cubic-bezier(.22,.61,.36,1), transform 1.25s cubic-bezier(.2,.7,.2,1), filter .75s ease;
   will-change: transform, opacity, filter;
 }
 
-.viewer-media img.is-old { opacity: 0; transform: scale(1.035) translateX(-18px); filter: blur(1px); }
-.viewer-media img.is-new { opacity: 0; transform: scale(1.06) translateX(18px); filter: blur(2px); }
-.viewer-media img.is-new.is-visible { opacity: 1; transform: scale(1.015) translateX(0); filter: blur(0); }
-.viewer-media.is-parallax img { transform: scale(1.045) translate3d(var(--px,0px), var(--py,0px), 0); }
+.viewer-media img.is-old {
+  opacity: 0;
+  --image-x: -18px;
+  --image-y: 0px;
+  --image-scale: 1.035;
+  filter: blur(1px);
+}
+
+.viewer-media img.is-new {
+  opacity: 0;
+  --image-x: 18px;
+  --image-y: 0px;
+  --image-scale: 1.06;
+  filter: blur(2px);
+}
+
+.viewer-media img.is-new.is-visible {
+  opacity: 1;
+  --image-x: 0px;
+  --image-y: 0px;
+  --image-scale: 1.015;
+  filter: blur(0);
+}
 
 .viewer-info {
   position: absolute;
@@ -531,16 +555,17 @@ body.is-stories .archive { display: block; }
 .cinematic-flash::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
   z-index: 4;
-  background: #050807;
+  background: radial-gradient(circle at 50% 48%, rgba(248,243,233,.32), rgba(5,8,7,.68) 58%, rgba(5,8,7,.9));
   pointer-events: none;
   animation: cinematicFlash .9s cubic-bezier(.2,.7,.2,1) both;
 }
 @keyframes cinematicFlash {
-  0% { opacity: 0; transform: scale(1.03); }
-  18% { opacity: .32; }
-  45% { opacity: .12; }
+  0% { opacity: 0; transform: scale(1.035); }
+  15% { opacity: .72; }
+  34% { opacity: .28; }
+  54% { opacity: .11; }
   100% { opacity: 0; transform: scale(1); }
 }
 
