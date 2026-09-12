@@ -21,12 +21,32 @@
     /* Homepage title accent: a warmer amber reads more clearly against the
        hero photograph while keeping the existing editorial look. */
     .hero-title em { color: #e8a06f; }
+
+    /* Homepage hero loop: fill the same visual frame as the former hero photo. */
+    .hero-media.hero-video {
+      width: 106%;
+      height: 106%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
   </style>
 </head>
 <body class="is-loading">
   <main>
     <section class="hero" id="top" aria-label="The Great Indian Table">
-      <div class="hero-media" aria-hidden="true"></div>
+      <video
+        class="hero-media hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="assets/img/Hero.JPEG"
+        aria-hidden="true"
+      >
+        <source src="assets/img/Tailoring_shop_video_loop_animation_20260912192909.mp4" type="video/mp4">
+      </video>
       <div class="hero-copy">
         <p class="hero-kicker">Music x Photographic - An archive of where India works!</p>
         <h1 class="hero-title"><span>What's on your</span><em>Table?</em></h1>
