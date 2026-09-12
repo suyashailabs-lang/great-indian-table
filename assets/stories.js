@@ -4,13 +4,13 @@ document.write('<script src="assets/stories.base.js?v=20260912-1"><\/script>');
 
 (function(){
   const applyCorrections=()=>{
-    document.title="Whats on your indian table?";
+    document.title="What's on your Table?";
 
     const applyHeading=()=>{
       const heading=document.querySelector('.hero h1');
       if(heading){
-        heading.innerHTML="Whats on your <em>indian table?</em>";
-        heading.setAttribute('aria-label','Whats on your indian table?');
+        heading.innerHTML="What's on your <em>Table?</em>";
+        heading.setAttribute('aria-label',"What's on your Table?");
       }
     };
     applyHeading();
